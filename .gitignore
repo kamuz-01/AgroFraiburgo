@@ -39,6 +39,7 @@ build/
 # Arquivos do sistema operacional
 .DS_Store
 Thumbs.db
+.gitattributes
 
 # Pastas de arquivos de upload
 documentos-produtores/
