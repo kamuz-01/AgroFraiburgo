@@ -2,12 +2,12 @@
 
 ## Sobre o Projeto
 
-O AgroFraiburgo é um sistema de gestão para produtores agrícolas, desenvolvido com Spring Boot para otimizar processos e facilitar o gerenciamento de documentação e registros.
+O AgroFraiburgo é um protótipo de aplicativo para disponibilizar informações sobre as feiras de alimentos produzidos pela agricultura familiar na cidade de Fraiburgo/SC.
 
 ## Funcionalidades Principais
 
-- 📄 Gerenciamento de documentos dos produtores
-- 👤 Gestão de usuários com imagens de perfil
+- 📄 Revisão da documentação dos produtores
+- 👤 Gestão de usuários
 - 🔒 Sistema de autenticação seguro
 - 📱 Interface responsiva e amigável
 
@@ -15,12 +15,22 @@ O AgroFraiburgo é um sistema de gestão para produtores agrícolas, desenvolvid
 
 - Java Spring Boot
 - Maven
-- Base de Dados (a ser especificada)
+- Base de Dados MySQL
 - Spring Security
+- Jbcrypt
+- RabbitMQ
+- Thymeleaf
+- Spring Dev Tools.
+- Axios
+- HMTL5
+- CSS3
+- Bootstrap
+- Javascript
 
 ## Requisitos
 
 - Java 11 ou superior
+- SpringBoot 3.x ou superior
 - Maven 3.x
 - IDE compatível (recomendado VS Code ou Spring Tool Suite)
 
@@ -84,12 +94,16 @@ Contributions são bem-vindas! Para contribuir com o projeto, siga os passos aba
 
 ## Licença
 
-Este projeto está sob a licença [a ser definida]. Veja o arquivo `LICENSE` para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
 ## Contato
 
-[Seu Nome] - [seu.email@exemplo.com]
+Karli De Jesus Munoz Manzano
+
+📧 mailto:karli.manzano@estudantes.ifc.edu.br
 
 ---
 
-*Desenvolvido com ❤️ para a comunidade agrícola de Fraiburgo
+*Desenvolvido com ❤️ para a agricultura familiar de Fraiburgo
+
+*Todos os direitos reservados © 2025
