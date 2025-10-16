@@ -1,6 +1,6 @@
 # AgroFraiburgo 🌱
 
-## Sobre o Projeto
+## Sobre o Projeto 👨🏻‍💻
 
 &nbsp;&nbsp;&nbsp;&nbsp;O aplicativo web AgroFraiburgo é um protótipo de aplicativo para disponibilizar informações sobre as feiras de alimentos produzidos pela agricultura familiar na cidade de Fraiburgo/SC.
 
