@@ -2,7 +2,11 @@
 
 ## Sobre o Projeto
 
-O AgroFraiburgo é um protótipo de aplicativo para disponibilizar informações sobre as feiras de alimentos produzidos pela agricultura familiar na cidade de Fraiburgo/SC.
+O aplicativo web AgroFraiburgo é um protótipo de aplicativo para disponibilizar informações sobre as feiras de alimentos produzidos pela agricultura familiar na cidade de Fraiburgo/SC.
+
+Esse aplicativo faz parte da temática do meu Trabalho de Conclusão de Curso (TCC) para a obtenção do diploma como Tecnólogo en Análise e Desenvolvimento de sistemas Pelo Instituto Federal Catarinense - Campus Fraiburgo.
+
+Atualmente foram implementadas algumas das funcionalidades propostas, motivo pelo qual disponibilizo esse repositório, caso alguém tenha interesse em concluir todas as funcionalidades propostas, de forma que possa futuramente ser disponibilizado para o público-alvo.
 
 ## Funcionalidades Principais
 
