@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="AgroFraiburgo">
+	<meta name="description" content="AgriFamiliar - O primeiro marketplace informativo para agricultura familiar de Fraiburgo.">
+	<link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+	<title>AgroFraiburgo - Conectando produtores familiares e consumidores conscientes</title>
+	<!-- Android: cor da barra superior -->
+	<meta name="theme-color" content="#F0E8D4" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#F0E8D4" media="(prefers-color-scheme: dark)">
+	<link rel="manifest" href="/manifest.json">
+	<link rel="stylesheet" href="css/estilos-pagina_inicial.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<header class="header" id="header" role="banner">
+    <div class="container">
+        <div class="nav-wrapper">
+            <div class="logo">
+                <svg class="logo-img" role="img"
+                        aria-label="Logotipo da AgriFamiliar" version="1.0" xmlns="http://www.w3.org/2000/svg" width="1280.000000pt" height="1169.000000pt"
+                        viewBox="0 0 1280.000000 1169.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,1169.000000) scale(0.100000,-0.100000)" fill="#28a645" stroke="none">
+                            <path d="M11975 11683 c-49 -2 -200 -10 -334 -18 -1403 -89 -2667 -379 -3644
+                            -836 -1024 -479 -1749 -1155 -2124 -1981 -175 -387 -274 -779 -314 -1245 -15
+                            -187 -7 -699 16 -888 20 -174 58 -411 91 -575 49 -240 182 -737 183 -685 27
+                            827 102 1402 252 1935 279 988 793 1761 1650 2478 1002 839 2444 1456 4022
+                            1722 203 34 304 48 642 89 53 6 20 8 -140 8 -115 -1 -250 -2 -300 -4z"/>
+                        <path d="M12290 11644 c-642 -96 -1424 -306 -2071 -554 -1266 -487 -2259
+                            -1163 -2992 -2035 -569 -677 -901 -1425 -1051 -2366 -60 -372 -76 -597 -86
+                            -1179 -5 -272 -12 -511 -15 -530 -3 -19 -15 -98 -26 -175 -78 -541 -300 -1346
+                            -607 -2205 -103 -289 -260 -702 -271 -713 -4 -4 -42 81 -84 190 -299 776 -481
+                            1393 -558 1893 -16 104 -20 179 -20 325 5 1001 -182 1706 -611 2309 -196 275
+                            -498 583 -803 820 -121 95 -401 281 -545 363 -514 295 -1155 536 -1794 678
+                            -226 49 -425 84 -505 88 l-54 2 -24 -85 c-165 -601 -212 -1162 -137 -1645 164
+                            -1056 917 -1843 2184 -2280 541 -187 1067 -293 1787 -360 54 -5 72 -11 76 -23
+                            2 -10 50 -159 106 -332 385 -1188 632 -2178 657 -2630 l6 -105 -95 -215 c-52
+                            -118 -118 -268 -147 -332 l-53 -118 18 -42 c40 -91 100 -184 160 -243 145
+                            -145 339 -181 567 -105 95 32 225 96 273 135 27 21 27 22 15 76 -6 29 -14 113
+                            -17 186 -28 673 366 2305 1080 4477 56 170 76 220 92 226 11 5 110 15 220 24
+                            665 55 1430 193 2050 371 1752 504 2922 1379 3451 2582 168 382 267 771 316
+                            1243 19 185 16 722 -5 930 -39 376 -98 709 -192 1075 -78 305 -76 300 -105
+                            302 -14 1 -99 -9 -190 -23z"/>
+            
+                        <path d="M265 8571 c11 -5 67 -14 125 -21 568 -62 1245 -243 1805 -480 787
+                        -334 1461 -855 1868 -1443 370 -534 562 -1199 595 -2062 l8 -190 23 75 c13 41
+                        38 135 56 210 173 702 164 1312 -27 1840 -195 539 -609 1004 -1192 1340 -576
+                        331 -1345 563 -2226 670 -239 29 -490 49 -690 55 -96 3 -218 7 -270 10 -57 2
+                        -87 1 -75 -4z"/>
+                        </g>
+                    </svg>
+                <a href="/" aria-label="Ir para a página inicial" title="Ir para a página inicial">
+                	<span class="text-logo-preto">Agro<span class="text-logo-verde">Fraiburgo</span></span>
+            	</a>
+            </div>
+            <nav class="nav" id="nav" role="navigation">
+                <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu"
+                    aria-expanded="false">Menu
+                    <span id="hamburger"></span>
+                </button>
+                <ul id="menu" class="nav-list">
+                    <li><a href="/produtos" class="nav-link">Produtos</a></li>
+                    <li><a href="#produtores" class="nav-link">Produtores</a></li>
+                    <li><a href="/sobre" class="nav-link">Sobre</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+            <button class="btn btn-outline" aria-label="Fazer login" onclick="window.location.href='/login'">
+  				<i class="fas fa-sign-in-alt"></i> Entrar
+			</button>  
+			<button class="btn btn-primary" aria-label="Criar conta" onclick="window.location.href='/criar_conta'">
+			<i class="fas fa-user-plus"></i> Cadastrar-se
+			</button>         
+            </div>
+        </div>
+    </div>
+</header>
+<main>
+        <!-- Hero Section -->
+        <section class="hero" role="banner">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="agro">🌱 Agricultura Familiar Brasileira</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Conectando <span class="text-green">produtores familiares</span> e
+                        <span class="text-green">consumidores conscientes</span>
+                    </h1>
+                    <p class="hero-description">
+                        O primeiro marketplace informativo para agricultura familiar de Fraiburgo. Descubra
+                        produtos frescos, conheça produtores locais e fortaleça a economia local.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-large" onclick="window.location.href='/produtos'"><i class="fas fa-search"></i> Explorar Produtos</button>
+                        <button class="btn btn-outline btn-large" onclick="window.location.href='/criar_conta'"><i class="fas fa-user-plus"></i> Cadastrar-se</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats" aria-label="Estatísticas da plataforma">
+            <h2>Impacto da Plataforma em Números</h2>
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">150+</div>
+                        <div class="stat-label">Produtores Cadastrados</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Produtos Disponíveis</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Cidades Atendidas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Satisfação dos Usuários</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Por que escolher o AgroFraiburgo?</h2>
+                    <p>Uma plataforma completa para conectar a agricultura familiar com consumidores conscientes</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true"><i class="fas fa-store"></i></div>
+                        <h3>Marketplace Local</h3>
+                        <p>Conecte-se diretamente com produtores da sua região</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
+                        <h3>Geolocalização</h3>
+                        <p>Encontre produtores próximos a você com facilidade</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
+                        <h3>Comunidade Ativa</h3>
+                        <p>Faça parte de uma rede de agricultura sustentável</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true"><i class="fas fa-leaf"></i></div>
+                        <h3>Produtos Frescos</h3>
+                        <p>Alimentos colhidos na hora, direto do produtor</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it Works Section -->
+        <section class="how-it-works-section">
+            <div class="container">
+                <h2>Como funciona</h2>
+                <p class="how-it-works-subtitle">Simples, rápido e eficiente</p>
+                <div class="steps-grid">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <h3>Cadastre-se</h3>
+                        <p>Crie sua conta gratuita e defina seu perfil: produtor, consumidor ou ambos.</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <h3>Explore</h3>
+                        <p>Navegue pelos produtos disponíveis, filtre por localização e categoria.</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <h3>Conecte-se</h3>
+                        <p>Entre em contato direto com produtores e consumidores da sua região.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Pronto para começar?</h2>
+                    <p>Junte-se a milhares de pessoas que já fazem parte da maior rede de agricultura familiar do Brasil</p>
+                    <div class="cta-buttons">
+                    	<button class="btn btn-secondary btn-large" aria-label="Criar conta" onclick="window.location.href='/criar_conta'">
+                    		<i class="fas fa-user-plus"></i> Cadastrar-se
+                    	</button>
+                        <button class="btn btn-outline-white btn-large" aria-label="Fazer login" onclick="window.location.href='/login'">
+                        	<i class="fas fa-sign-in-alt"></i> Fazer Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <svg class="logo-img" role="img"
+						aria-label="Logotipo da AgriFamiliar" version="1.0" xmlns="http://www.w3.org/2000/svg" width="1280.000000pt" height="1169.000000pt" 
+						viewBox="0 0 1280.000000 1169.000000" preserveAspectRatio="xMidYMid meet">
+						<metadata>
+							Created by potrace 1.15, written by Peter Selinger 2001-2017
+						</metadata>
+						<g transform="translate(0.000000,1169.000000) scale(0.100000,-0.100000)" fill="#28a645" stroke="none">
+							<path d="M11975 11683 c-49 -2 -200 -10 -334 -18 -1403 -89 -2667 -379 -3644
+								-836 -1024 -479 -1749 -1155 -2124 -1981 -175 -387 -274 -779 -314 -1245 -15
+								-187 -7 -699 16 -888 20 -174 58 -411 91 -575 49 -240 182 -737 183 -685 27
+									827 102 1402 252 1935 279 988 793 1761 1650 2478 1002 839 2444 1456 4022
+									1722 203 34 304 48 642 89 53 6 20 8 -140 8 -115 -1 -250 -2 -300 -4z"/>
+									
+							<path d="M12290 11644 c-642 -96 -1424 -306 -2071 -554 -1266 -487 -2259
+							-1163 -2992 -2035 -569 -677 -901 -1425 -1051 -2366 -60 -372 -76 -597 -86
+							-1179 -5 -272 -12 -511 -15 -530 -3 -19 -15 -98 -26 -175 -78 -541 -300 -1346
+							-607 -2205 -103 -289 -260 -702 -271 -713 -4 -4 -42 81 -84 190 -299 776 -481
+							1393 -558 1893 -16 104 -20 179 -20 325 5 1001 -182 1706 -611 2309 -196 275
+							-498 583 -803 820 -121 95 -401 281 -545 363 -514 295 -1155 536 -1794 678
+							-226 49 -425 84 -505 88 l-54 2 -24 -85 c-165 -601 -212 -1162 -137 -1645 164
+							-1056 917 -1843 2184 -2280 541 -187 1067 -293 1787 -360 54 -5 72 -11 76 -23
+							2 -10 50 -159 106 -332 385 -1188 632 -2178 657 -2630 l6 -105 -95 -215 c-52
+							-118 -118 -268 -147 -332 l-53 -118 18 -42 c40 -91 100 -184 160 -243 145
+							-145 339 -181 567 -105 95 32 225 96 273 135 27 21 27 22 15 76 -6 29 -14 113
+							-17 186 -28 673 366 2305 1080 4477 56 170 76 220 92 226 11 5 110 15 220 24
+							665 55 1430 193 2050 371 1752 504 2922 1379 3451 2582 168 382 267 771 316
+							1243 19 185 16 722 -5 930 -39 376 -98 709 -192 1075 -78 305 -76 300 -105
+							302 -14 1 -99 -9 -190 -23z"/>
+
+							<path d="M265 8571 c11 -5 67 -14 125 -21 568 -62 1245 -243 1805 -480 787
+							-334 1461 -855 1868 -1443 370 -534 562 -1199 595 -2062 l8 -190 23 75 c13 41
+							38 135 56 210 173 702 164 1312 -27 1840 -195 539 -609 1004 -1192 1340 -576
+							331 -1345 563 -2226 670 -239 29 -490 49 -690 55 -96 3 -218 7 -270 10 -57 2
+							-87 1 -75 -4z"/>
+						</g>
+					</svg>
+                    <span class="text-logo-branco">Agro<span class="text-logo-verde-footer">Fraiburgo</span></span>
+                </div>
+                    <p>Fortalecendo a agricultura familiar fraiburguense através da tecnologia.</p>
+                    <p class="footer-tagline">Feito com ❤️ para a agricultura familiar fraiburguense</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#produtos">Produtos</a></li>
+                        <li><a href="#produtores">Produtores</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> <a href="mailto:contato@agrifamiliar.com.br">contato@agrofraiburgo.com.br</a></p>
+                        <p><i class="fas fa-phone"></i> (11) 99999-0000</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Fraiburgo, SC</p>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Formas de pagamento</h3>
+                    <ul>
+					<li class="textos">
+						<p>
+							<img alt="Aceita Visa" src="imagens/visa.png" width="45" height="28"> Visa
+						</p>
+					</li>
+					<li class="textos">
+						<p>
+							<img alt="Aceita Mastercard" src="imagens/mastercard.jpg" width="45" height="28"> Mastercard
+						</p>
+					</li>
+					<li class="textos">
+						<p>
+							<img alt="Aceita American Express" src="imagens/american.png" width="45" height="28"> American Express
+						</p>
+					</li>
+					<li class="textos">
+						<p>
+							<img alt="Aceita Pix" src="imagens/pix.jpg" width="45" height="28"> Pix
+						</p>
+					</li>
+				</ul>
+                </div>
+            </div>            
+            <div class="footer-bottom">
+                <p>&copy; 2025 AgroFraiburgo. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.error('Erro ao registrar SW:', err));
+    });
+  }
+</script>
+
+<script type="text/javascript">
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton();
+});
+
+function showInstallButton() {
+  if (document.getElementById('installBtn')) return; // evita criar múltiplos
+
+  const btn = document.createElement('button');
+  btn.id = 'installBtn';
+  btn.textContent = 'Instalar AgroFraiburgo';
+  btn.setAttribute('aria-label', 'Instalar o aplicativo AgroFraiburgo');
+
+  btn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === 'accepted') {
+      console.log('Usuário aceitou instalar o app');
+      btn.style.display = 'none'; // Esconde o botão porque instalou
+    } else {
+      console.log('Usuário recusou a instalação');
+      // Não esconda o botão, deixe ele visível para nova tentativa
+    }
+
+    deferredPrompt = null; // opcional, pode manter para tentar mais tarde
+  });
+
+  document.body.appendChild(btn);
+}
+</script>
+   
+<script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script defer src="js/MenuResponsivo.js"></script>
+<script defer src="js/script.js"></script>
+</body>
+</html>

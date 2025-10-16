@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="Cadastre-se no AgroFraiburgo para comprar ou vender produtos oriundos da agricultura familiar fraiburguense" name="description"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+    <meta content="#F0E8D4" media="(prefers-color-scheme: light)" name="theme-color"/>
+    <meta content="#F0E8D4" media="(prefers-color-scheme: dark)" name="theme-color"/>
+    <link href="css/estilos-criar_conta.css" rel="stylesheet"/>
+    <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+    <link rel="manifest" href="/manifest.json">
+    <title>Criar Conta - AgroFraiburgo</title>
+    <script>
+	if ('serviceWorker' in navigator) {
+    	window.addEventListener('load', () => {
+      	navigator.serviceWorker.register('/service-worker.js')
+        	.then(reg => console.log('Service Worker registrado', reg))
+        	.catch(err => console.error('Erro ao registrar SW:', err));
+    	});
+  	}
+	</script>
+</head>
+<body>
+    <header class="header" id="header" role="banner">
+        <div class="container-header">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <svg aria-label="Logotipo da AgriFamiliar" class="logo-img" height="1169.000000pt" preserveaspectratio="xMidYMid meet" role="img" version="1.0" viewbox="0 0 1280.000000 1169.000000" width="1280.000000pt" xmlns="http://www.w3.org/2000/svg">
+                        <metadata>
+                            Created by potrace 1.15, written by Peter Selinger 2001-2017
+                        </metadata>
+                        <g fill="#28a645" stroke="none" transform="translate(0.000000,1169.000000) scale(0.100000,-0.100000)">
+                            <path d="M11975 11683 c-49 -2 -200 -10 -334 -18 -1403 -89 -2667 -379 -3644 -836 -1024 -479 -1749 -1155 -2124 -1981 -175 -387 -274 -779 -314 -1245 -15 -187 -7 -699 16 -888 20 -174 58 -411 91 -575 49 -240 182 -737 183 -685 27 827 102 1402 252 1935 279 988 793 1761 1650 2478 1002 839 2444 1456 4022 1722 203 34 304 48 642 89 53 6 20 8 -140 8 -115 -1 -250 -2 -300 -4z"></path>
+                            <path d="M12290 11644 c-642 -96 -1424 -306 -2071 -554 -1266 -487 -2259 -1163 -2992 -2035 -569 -677 -901 -1425 -1051 -2366 -60 -372 -76 -597 -86 -1179 -5 -272 -12 -511 -15 -530 -3 -19 -15 -98 -26 -175 -78 -541 -300 -1346 -607 -2205 -103 -289 -260 -702 -271 -713 -4 -4 -42 81 -84 190 -299 776 -481 1393 -558 1893 -16 104 -20 179 -20 325 5 1001 -182 1706 -611 2309 -196 275 -498 583 -803 820 -121 95 -401 281 -545 363 -514 295 -1155 536 -1794 678 -226 49 -425 84 -505 88 l-54 2 -24 -85 c-165 -601 -212 -1162 -137 -1645 164 -1056 917 -1843 2184 -2280 541 -187 1067 -293 1787 -360 54 -5 72 -11 76 -23 2 -10 50 -159 106 -332 385 -1188 632 -2178 657 -2630 l6 -105 -95 -215 c-52 -118 -118 -268 -147 -332 l-53 -118 18 -42 c40 -91 100 -184 160 -243 145 -145 339 -181 567 -105 95 32 225 96 273 135 27 21 27 22 15 76 -6 29 -14 113 -17 186 -28 673 366 2305 1080 4477 56 170 76 220 92 226 11 5 110 15 220 24 665 55 1430 193 2050 371 1752 504 2922 1379 3451 2582 168 382 267 771 316 1243 19 185 16 722 -5 930 -39 376 -98 709 -192 1075 -78 305 -76 300 -105 302 -14 1 -99 -9 -190 -23z"></path>
+                            <path d="M265 8571 c11 -5 67 -14 125 -21 568 -62 1245 -243 1805 -480 787 -334 1461 -855 1868 -1443 370 -534 562 -1199 595 -2062 l8 -190 23 75 c13 41 38 135 56 210 173 702 164 1312 -27 1840 -195 539 -609 1004 -1192 1340 -576 331 -1345 563 -2226 670 -239 29 -490 49 -690 55 -96 3 -218 7 -270 10 -57 2 -87 1 -75 -4z"></path>
+                        </g>
+                    </svg>
+                    <a href="/" class="log" aria-label="Ir para a página inicial" title="Ir para a página inicial">
+                    	<span class="text-logo-preto">Agro<span class="text-logo-verde">Fraiburgo</span></span>
+					</a>
+                </div>
+                <nav class="nav" id="nav" role="navigation">
+                    <button aria-controls="menu" aria-expanded="false" aria-haspopup="true" aria-label="Abrir Menu" id="btn-mobile">Menu
+                        <span id="hamburger"></span>
+                    </button>
+                    <ul class="nav-list" id="menu">
+                        <li><a class="nav-link" href="/produtos">Produtos</a></li>
+                        <li><a class="nav-link" href="#produtores">Produtores</a></li>
+                        <li><a class="nav-link" href="/sobre">Sobre</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button aria-label="Fazer login" class="btn btn-outline" onclick="window.location.href='/login'">Entrar</button>
+                    <button aria-label="Criar conta" class="btn btn-cadastro" onclick="window.location.href='/criar_conta'">Cadastrar-se</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="container">
+        <div class="header-login">
+            <h1>Criar conta</h1>
+            <p>Faça seu cadastro e descubra os produtos que a agricultura familiar fraiburguense tem a lhe oferecer.</p>
+        </div>
+        <form id="signupForm" action="/criar_conta" enctype="multipart/form-data" novalidate>
+            <fieldset class="imagens-usuario">
+                <legend class="required">Imagens do Usuário</legend>
+                <div class="upload-container">
+                    <div class="upload-box" data-type="perfil">
+                        <input type="file" id="imagemPerfil" name="imagemPerfil" accept="image/*" hidden />
+                        <label for="imagemPerfil" class="upload-label" id="dropPerfil" title="Clique ou arraste uma imagem">
+                            <i class="fas fa-camera"></i>
+                            <img id="previewPerfil" src="/imagens-usuarios/defaults/perfil.png" alt="Foto de Perfil" />
+                        </label>
+                        <button type="button" class="remove-btn" id="removePerfil" aria-label="Remover foto de perfil">✖</button>
+                        <p>Foto de perfil</p>
+                    </div>                    
+                    <div class="upload-box">
+                        <input type="file" id="imagemCapa" name="imagemCapa" accept="image/*" hidden />
+                        <label for="imagemCapa" class="upload-label" id="dropCapa" title="Clique ou arraste uma imagem">
+                            <i class="fas fa-camera"></i>
+                            <img id="previewCapa" src="/imagens-usuarios/defaults/capa.png" alt="Foto de Capa" />
+                        </label>
+                        <button type="button" class="remove-btn" id="removeCapa" aria-label="Remover imagem de capa">✖</button>
+                        <p>Imagem de capa</p>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="dados-pessoais">
+                <legend class="required">Dados pessoais</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nome">Nome</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input autocomplete="given-name" id="nome" name="nome" placeholder="Seu nome" required type="text"/>
+                        </div>
+                        <div class="error-message" id="nomeError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sobrenome">Sobrenome</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input autocomplete="family-name" id="sobrenome" name="sobrenome" placeholder="Seu Sobrenome" required type="text"/>
+                        </div>
+                        <div class="error-message" id="sobrenomeError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpf">CPF</label>
+                        <div class="input-icon">
+                            <i class="fas fa-id-card"></i>
+                            <input id="cpf" inputmode="numeric" maxlength="14" name="cpf" placeholder="Seu CPF" required type="text"/>
+                        </div>
+                        <div class="error-message" id="cpfError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataNascimento">Data de Nascimento</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <input id="dataNascimento" name="dataNascimento" onkeydown="return false;" placeholder="Sua data de nascimento" required type="text"/>
+                        </div>
+                        <div class="error-message" id="dataNascimentoError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sexo">Sexo</label>
+                        <div class="input-icon">
+                            <i class="fas fa-restroom"></i>
+                            <select aria-describedby="sexoError" id="sexo" name="sexo">
+                                <option value="Feminino">Feminino</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Não-binário">Não-binário</option>
+                                <option value="Agênero">Agênero</option>
+                                <option value="anônimo">Prefiro não dizer</option>
+                            </select>
+                        </div>
+                        <div class="error-message" id="sexoError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <div class="input-icon">
+                            <i class="fas fa-phone"></i>
+                            <input aria-describedby="telefoneError" autocomplete="tel" id="telefone" inputmode="tel" maxlength="15" name="telefone" placeholder="(11) 99999-0000" type="tel"/>
+                        </div>
+                        <div class="error-message" id="telefoneError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input id="email" inputmode="text" name="email" placeholder="seu@email.com" required type="email" autocomplete="username"/>
+                        </div>
+                        <div class="error-message" id="emailError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade">Cidade</label>
+                        <div class="input-icon">
+                            <i class="fas fa-city"></i>
+                            <input aria-describedby="cidadeError" autocomplete="address-level2" id="cidade" name="cidade" placeholder="Sua cidade" type="text"/>
+                        </div>
+                        <div class="error-message" id="cidadeError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="estado">Estado</label>
+                        <div class="input-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <select aria-describedby="estadoError" autocomplete="address-level1" id="estado" name="estado">
+                                <option value="AC">AC</option>
+                                <option value="AL">AL</option>
+                                <option value="AP">AP</option>
+                                <option value="AM">AM</option>
+                                <option value="BA">BA</option>
+                                <option value="CE">CE</option>
+                                <option value="DF">DF</option>
+                                <option value="ES">ES</option>
+                                <option value="GO">GO</option>
+                                <option value="MA">MA</option>
+                                <option value="MT">MT</option>
+                                <option value="MS">MS</option>
+                                <option value="MG">MG</option>
+                                <option value="PA">PA</option>
+                                <option value="PB">PB</option>
+                                <option value="PR">PR</option>
+                                <option value="PE">PE</option>
+                                <option value="PI">PI</option>
+                                <option value="RJ">RJ</option>
+                                <option value="RN">RN</option>
+                                <option value="RS">RS</option>
+                                <option value="RO">RO</option>
+                                <option value="RR">RR</option>
+                                <option value="SC">SC</option>
+                                <option value="SP">SP</option>
+                                <option value="SE">SE</option>
+                                <option value="TO">TO</option>
+                            </select>
+                        </div>
+                        <div class="error-message" id="estadoError" role="alert"></div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="user-type">
+                <legend class="required">Definição de usuário</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nomeLogin">Nome</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="nomeLogin" name="nomeLogin" placeholder="Seu usuário para iniciar sessão" required type="text"/>
+                        </div>
+                        <div class="error-message" id="nomeLoginError" role="alert"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="senha" name="senha" placeholder="********" required type="password" autocomplete="new-password"/>
+                        </div>
+                        <div class="error-message" id="senhaError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar senha</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="confirmPassword" name="confirmPassword" placeholder="********" required type="password" autocomplete="new-password"/>
+                        </div>
+                        <div class="error-message" id="confirmPasswordError" role="alert"></div>
+                    </div>
+                </div>
+                <h2>Tipo de usuário</h2>
+                <div aria-required="true" class="radio-group" role="radiogroup">
+                    <label class="radio-option">
+                        <input name="tipoUsuario" required type="radio" value="CONSUMIDOR"/>
+                        <div class="radio-content">
+                            <div class="radio-title">👤 Consumidor</div>
+                            <div class="radio-description">Quero encontrar produtos locais</div>
+                        </div>
+                    </label>
+                    <label class="radio-option">
+                        <input name="tipoUsuario" required type="radio" value="PRODUTOR"/>
+                        <div class="radio-content">
+                            <div class="radio-title">🌾 Produtor</div>
+                            <div class="radio-description">Quero vender meus produtos</div>
+                        </div>
+                    </label>
+                    <div class="error-message" id="tipoUsuarioError" role="alert"></div>
+                </div>
+            </fieldset>
+            <fieldset class="documentos-obrigatorios">
+				<legend class="required">Envío de documentos obrigatórios</legend>
+				 <div class="content">
+    				<div class="info">
+      					<strong>Atenção:</strong> Para concluir o seu cadastro como produtor, envie os seguintes documentos:
+      					<ul>
+        					<li>🪪 CPF, CNH ou RG</li>
+        					<li>🏠 Comprovante de residência</li>
+        					<li>📄 Declaração de aptidão ao PRONAF (DAP)</li>
+        					<li>🌱 Certificado de produção orgânica</li>
+        					<li>🔎 Código de rastreabilidade (para frutas, legumes e verduras)</li>
+        					<li>🧾 Número de inscrição estadual</li>
+        					<li>🏢 Alvará sanitário</li>
+      					</ul>
+    				</div>
+				 </div>
+      			<!-- Campos com drag and drop -->
+      			<div class="upload-group" data-label="Documento de identidade" data-name="docIdentidade"></div>
+      			<div class="upload-group" data-label="Comprovante de residência" data-name="comprovanteResidencia"></div>
+      			<div class="upload-group" data-label="Declaração de aptidão ao PRONAF (DAP)" data-name="cadastroAgriculturaFamiliar"></div>
+      			<div class="upload-group" data-label="Certificado de produção orgânica" data-name="certificadoOrganico"></div>
+      			<div class="upload-group" data-label="Código de rastreabilidade (FL&V)" data-name="codigoRastreabilidade"></div>
+      			<div class="upload-group" data-label="Número de inscrição estadual" data-name="inscricaoEstadual"></div>
+      			<div class="upload-group" data-label="Alvará sanitário" data-name="alvaraSanitario"></div>
+				 
+            </fieldset>
+            <div id="button-container" style="margin-top:20px;"></div>
+        </form>
+        <div class="login-link">
+            Já tem uma conta? <a href="/login" onclick="showLogin()">Faça login aqui</a>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/validacoes-criar_conta.js"></script>
+    <script src="js/MenuResponsivo.js"></script>
+
+    <script>
+  // ========== Mostrar requisitos se for produtor ==========
+  function mostrarRequisitos(eProdutor) {
+  const documentos = document.querySelector('.documentos-obrigatorios');
+  if (!documentos) return;
+
+  const inputs = documentos.querySelectorAll("input[type='file']");
+
+  if (eProdutor) {
+    documentos.classList.add('mostrar');
+    inputs.forEach(input => input.removeAttribute("disabled"));
+    inputs.forEach(input => input.setAttribute("required", "true"));
+  } else {
+    documentos.classList.remove('mostrar');
+    inputs.forEach(input => input.removeAttribute("required"));
+    inputs.forEach(input => input.setAttribute("disabled", "true"));
+  }
+}
+
+  function initRadioTipoUsuario() {
+    const radios = document.querySelectorAll("input[name='tipoUsuario']");
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        mostrarRequisitos(radio.value === 'PRODUTOR');
+        renderBotao();
+        if (window.validateTipoUsuario) window.validateTipoUsuario();
+      });
+    });
+
+    const selecionado = document.querySelector("input[name='tipoUsuario']:checked");
+    mostrarRequisitos(selecionado?.value === 'PRODUTOR');
+  }
+
+  // ========== Mostrar botão dinâmico ==========
+  function renderBotao() {
+  const selecionado = document.querySelector("input[name='tipoUsuario']:checked");
+  const container = document.getElementById("button-container");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (!selecionado) return;
+
+  if (selecionado.value === "CONSUMIDOR") {
+    const btn = document.createElement("button");
+    btn.id = "submitBtn";
+    btn.type = "submit";
+    btn.className = "submit-btn botao botao-verde";
+    btn.innerHTML = `<span class="btn-text">Criar conta</span>`;
+    container.appendChild(btn);
+
+  } else if (selecionado.value === "PRODUTOR") {
+    const btn = document.createElement("button");
+    btn.id = "submitBtn";
+    btn.type = "button";
+    btn.className = "submit-btn botao botao-laranja";
+    btn.innerHTML = `<span class="btn-text">Criar conta produtor</span>`;
+    container.appendChild(btn);
+
+    btn.addEventListener("click", async () => {
+      const form = document.getElementById("signupForm");
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      let isValid = true;
+      if (window.validateField && window.validateFullName) isValid = window.validateField(document.getElementById('nome'), document.getElementById('nomeError'), window.validateFullName) && isValid;
+      if (window.validateField && window.validateSobrenome) isValid = window.validateField(document.getElementById('sobrenome'), document.getElementById('sobrenomeError'), window.validateSobrenome) && isValid;
+      if (window.validateField && window.validateCPF) isValid = window.validateField(document.getElementById('cpf'), document.getElementById('cpfError'), window.validateCPF) && isValid;
+      if (window.validateField && window.validateNascimento) isValid = window.validateField(document.getElementById('dataNascimento'), document.getElementById('dataNascimentoError'), window.validateNascimento) && isValid;
+      if (window.validateField && window.validateEmail) isValid = window.validateField(document.getElementById('email'), document.getElementById('emailError'), window.validateEmail) && isValid;
+      if (window.validateField && window.validateUserName) isValid = window.validateField(document.getElementById('nomeLogin'), document.getElementById('nomeLoginError'), window.validateUserName) && isValid;
+      if (window.validateField && window.validatePassword) isValid = window.validateField(document.getElementById('senha'), document.getElementById('senhaError'), window.validatePassword) && isValid;
+      if (window.validateField && window.validateConfirmPassword) isValid = window.validateField(document.getElementById('confirmPassword'), document.getElementById('confirmPasswordError'), window.validateConfirmPassword) && isValid;
+      if (window.validateField && window.validatePhone) isValid = window.validateField(document.getElementById('telefone'), document.getElementById('telefoneError'), window.validatePhone) && isValid;
+      if (window.validateField && window.validateCity) isValid = window.validateField(document.getElementById('cidade'), document.getElementById('cidadeError'), window.validateCity) && isValid;
+      if (window.validateField && window.validateState) isValid = window.validateField(document.getElementById('estado'), document.getElementById('estadoError'), window.validateState) && isValid;
+      if (window.validateTipoUsuario) isValid = window.validateTipoUsuario() && isValid;
+
+      if (!isValid) {
+        const firstInvalid = form.querySelector('[aria-invalid="true"]');
+        if (firstInvalid) firstInvalid.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.querySelector('.btn-text').textContent = 'Enviando...';
+
+      try {
+        const formData = new FormData(form);
+        formData.delete('confirmPassword');
+
+        const response = await axios.post('/api/usuarios/cadastro-multipart', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        btn.disabled = false;
+        btn.querySelector('.btn-text').textContent = 'Criar conta produtor';
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Sucesso!',
+          text: response.data?.message || 'Conta criada com sucesso!',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a645'
+        }).then((result) => {
+       		if (result.isConfirmed) {
+        		window.location.href = '/login';
+        	}
+        });
+
+        form.reset();
+        resetUploads();
+        renderBotao();
+
+      } catch (error) {
+        btn.disabled = false;
+        btn.querySelector('.btn-text').textContent = 'Criar conta produtor';
+        const msg = error.response?.data?.error || error.response?.data || "Erro ao cadastrar produtor.";
+        
+        await Swal.fire({
+          icon: 'error',
+          title: 'Erro!',
+          text: typeof msg === 'string' ? msg : JSON.stringify(msg),
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+  }
+}
+
+  // ========== Manipulação de arquivos (perfil + capa) ==========
+  function handleFiles(fileList, input, preview, removeBtn, label, defaultSrc) {
+    const file = fileList?.[0];
+    if (!file) return;
+
+    const MAX_MB = 20;
+    if (!file.type.startsWith("image/")) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Arquivo inválido',
+        text: 'Por favor, envie uma imagem válida.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ff9800'
+      });
+      return;
+    }
+
+    if (file.size > MAX_MB * 1024 * 1024) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Arquivo muito grande',
+        text: `Imagem muito grande. Envie até ${MAX_MB} MB.`,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ff9800'
+      });
+      return;
+    }
+
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      label.querySelector("i").style.display = "none";
+      removeBtn.style.display = "block";
+      label.classList.remove("is-dragover");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function setupUploadDnd({ inputId, previewId, removeBtnId, dropAreaId, defaultSrc }) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    const removeBtn = document.getElementById(removeBtnId);
+    const label = document.getElementById(dropAreaId);
+
+    if (!input || !preview || !removeBtn || !label) return;
+
+    input.addEventListener("change", function () {
+      if (this.files?.length) {
+        handleFiles(this.files, input, preview, removeBtn, label, defaultSrc);
+      }
+    });
+
+    removeBtn.addEventListener("click", function () {
+      input.value = "";
+      preview.src = defaultSrc;
+      preview.style.display = "none";
+      label.querySelector("i").style.display = "block";
+      removeBtn.style.display = "none";
+      label.classList.remove("is-dragover");
+    });
+
+    ["dragenter", "dragover"].forEach(evt => {
+      label.addEventListener(evt, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        label.classList.add("is-dragover");
+      });
+    });
+
+    ["dragleave", "dragend", "drop"].forEach(evt => {
+      label.addEventListener(evt, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (evt !== "drop") label.classList.remove("is-dragover");
+      });
+    });
+
+    label.addEventListener("drop", e => {
+      const files = e.dataTransfer.files;
+      handleFiles(files, input, preview, removeBtn, label, defaultSrc);
+    });
+  }
+
+  function initUploads() {
+    setupUploadDnd({
+      inputId: "imagemPerfil",
+      previewId: "previewPerfil",
+      removeBtnId: "removePerfil",
+      dropAreaId: "dropPerfil",
+      defaultSrc: "/imagens-usuarios/defaults/perfil.png"
+    });
+
+    setupUploadDnd({
+      inputId: "imagemCapa",
+      previewId: "previewCapa",
+      removeBtnId: "removeCapa",
+      dropAreaId: "dropCapa",
+      defaultSrc: "/imagens-usuarios/defaults/capa.webp"
+    });
+  }
+  
+  function resetUploads() {
+    const inputPerfil = document.getElementById("imagemPerfil");
+    const previewPerfil = document.getElementById("previewPerfil");
+    const removePerfil = document.getElementById("removePerfil");
+    const labelPerfil = document.getElementById("dropPerfil");
+
+    inputPerfil.value = "";
+    previewPerfil.src = "/imagens-usuarios/defaults/perfil.png";
+    previewPerfil.style.display = "none";
+    labelPerfil.querySelector("i").style.display = "block";
+    removePerfil.style.display = "none";
+
+    const inputCapa = document.getElementById("imagemCapa");
+    const previewCapa = document.getElementById("previewCapa");
+    const removeCapa = document.getElementById("removeCapa");
+    const labelCapa = document.getElementById("dropCapa");
+
+    inputCapa.value = "";
+    previewCapa.src = "/imagens-usuarios/defaults/capa.webp";
+    previewCapa.style.display = "none";
+    labelCapa.querySelector("i").style.display = "block";
+    removeCapa.style.display = "none";
+  }
+
+  // ========== Lógica de envio do formulário ==========
+  function initFormulario() {
+    const form = document.getElementById("signupForm");
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked')?.value;
+      if (!tipoUsuario) {
+        if (window.validateTipoUsuario) window.validateTipoUsuario();
+        return;
+      }
+
+      if (tipoUsuario !== 'CONSUMIDOR') return;
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      let isValid = true;
+      if (window.validateField && window.validateFullName) isValid = window.validateField(document.getElementById('nome'), document.getElementById('nomeError'), window.validateFullName) && isValid;
+      if (window.validateField && window.validateSobrenome) isValid = window.validateField(document.getElementById('sobrenome'), document.getElementById('sobrenomeError'), window.validateSobrenome) && isValid;
+      if (window.validateField && window.validateCPF) isValid = window.validateField(document.getElementById('cpf'), document.getElementById('cpfError'), window.validateCPF) && isValid;
+      if (window.validateField && window.validateNascimento) isValid = window.validateField(document.getElementById('dataNascimento'), document.getElementById('dataNascimentoError'), window.validateNascimento) && isValid;
+      if (window.validateField && window.validateEmail) isValid = window.validateField(document.getElementById('email'), document.getElementById('emailError'), window.validateEmail) && isValid;
+      if (window.validateField && window.validateUserName) isValid = window.validateField(document.getElementById('nomeLogin'), document.getElementById('nomeLoginError'), window.validateUserName) && isValid;
+      if (window.validateField && window.validatePassword) isValid = window.validateField(document.getElementById('senha'), document.getElementById('senhaError'), window.validatePassword) && isValid;
+      if (window.validateField && window.validateConfirmPassword) isValid = window.validateField(document.getElementById('confirmPassword'), document.getElementById('confirmPasswordError'), window.validateConfirmPassword) && isValid;
+      if (window.validateField && window.validatePhone) isValid = window.validateField(document.getElementById('telefone'), document.getElementById('telefoneError'), window.validatePhone) && isValid;
+      if (window.validateField && window.validateCity) isValid = window.validateField(document.getElementById('cidade'), document.getElementById('cidadeError'), window.validateCity) && isValid;
+      if (window.validateField && window.validateState) isValid = window.validateField(document.getElementById('estado'), document.getElementById('estadoError'), window.validateState) && isValid;
+      if (window.validateTipoUsuario) isValid = window.validateTipoUsuario() && isValid;
+
+      if (!isValid) {
+        const firstInvalid = form.querySelector('[aria-invalid="true"]');
+        if (firstInvalid) firstInvalid.focus();
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      if (!submitBtn) {
+        console.error('Erro: #submitBtn não encontrado.');
+        await Swal.fire({
+          icon: 'error',
+          title: 'Erro interno',
+          text: 'Botão de envio não encontrado.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d33'
+        });
+        return;
+      }
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.querySelector('.btn-text').textContent = 'Enviando...';
+
+        const formData = new FormData(form);
+        formData.delete('confirmPassword');
+        
+        const response = await axios.post('/api/usuarios/cadastro-multipart', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        submitBtn.disabled = false;
+        submitBtn.querySelector('.btn-text').textContent = 'Criar conta';
+
+        if (response.data?.isProdutor) {
+          const dados = {};
+          formData.forEach((v, k) => {
+            if (!(v instanceof File) && k !== 'confirmPassword') dados[k] = v;
+          });
+          
+          await Swal.fire({
+            icon: 'success',
+            title: 'Redirecionando...',
+            text: 'Prossiga com o envio dos documentos.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+          
+          window.location.href = response.data.redirect;
+        } else {
+          await Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: response.data?.message || 'Conta criada com sucesso!',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#28a645'
+          }).then((result) => {
+         		if (result.isConfirmed) {
+            		window.location.href = '/login';
+            	}
+          });
+          
+          form.reset();
+          resetUploads();
+          renderBotao();
+        }
+      } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.querySelector('.btn-text').textContent = 'Criar conta';
+        const errorMessage = error.response?.data?.error || error.response?.data || 'Erro ao cadastrar usuário. Tente novamente.';
+        console.error('Erro no envio:', error);
+        
+        await Swal.fire({
+          icon: 'error',
+          title: 'Erro no cadastro',
+          text: typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage),
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+  }
+
+  // ========== Executa tudo quando o DOM estiver pronto ==========
+  document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener("dragover", e => e.preventDefault());
+    window.addEventListener("drop", e => e.preventDefault());
+
+    initRadioTipoUsuario();
+    renderBotao();
+    initUploads();
+    initFormulario();
+  });
+</script>
+
+ <script>
+ document.addEventListener("DOMContentLoaded", function () {
+	  const uploadGroups = document.querySelectorAll('.upload-group');
+
+	  uploadGroups.forEach(group => {
+	    const label = group.dataset.label;
+	    const name = group.dataset.name;
+
+	    const container = document.createElement('div');
+	    container.classList.add('form-group');
+
+	    const labelElem = document.createElement('label');
+	    labelElem.classList.add('doc-upload-label');
+	    labelElem.innerHTML = `${label} <span class="required">*</span>`;
+	    container.appendChild(labelElem);
+
+	    const dropzone = document.createElement('div');
+	    dropzone.classList.add('dropzone');
+	    dropzone.innerHTML = `<p>Arraste e solte o arquivo aqui ou clique para selecionar</p>
+	                          <input type="file" name="${name}" accept=".pdf,.jpg,.jpeg,.png">`;
+	    container.appendChild(dropzone);
+
+	    const fileNameContainer = document.createElement('div');
+	    fileNameContainer.classList.add('file-name');
+	    fileNameContainer.style.display = 'none';
+	    container.appendChild(fileNameContainer);
+
+	    group.appendChild(container);
+
+	    const input = dropzone.querySelector('input');
+	    dropzone.addEventListener('click', () => input.click());
+
+	    input.addEventListener('change', () => {
+	      if (input.files.length > 0) {
+	        showFileName(input.files[0].name);
+	      }
+	    });
+
+	    dropzone.addEventListener('dragover', (e) => {
+	      e.preventDefault();
+	      dropzone.classList.add('dragover');
+	    });
+
+	    dropzone.addEventListener('dragleave', () => {
+	      dropzone.classList.remove('dragover');
+	    });
+
+	    dropzone.addEventListener('drop', (e) => {
+	      e.preventDefault();
+	      dropzone.classList.remove('dragover');
+	      if (e.dataTransfer.files.length > 0) {
+	        input.files = e.dataTransfer.files;
+	        showFileName(input.files[0].name);
+	      }
+	    });
+
+	    function showFileName(name) {
+	      fileNameContainer.innerHTML = `
+	        <span>📄 ${name}</span>
+	        <button type="button" class="remove-file" title="Remover arquivo">&times;</button>
+	      `;
+	      fileNameContainer.style.display = 'flex';
+
+	      const removeBtn = fileNameContainer.querySelector('.remove-file');
+	      removeBtn.addEventListener('click', () => {
+	        input.value = "";
+	        fileNameContainer.style.display = 'none';
+	      });
+	    }
+	  });
+
+	  const selecionado = document.querySelector("input[name='tipoUsuario']:checked");
+	  mostrarRequisitos(selecionado?.value === 'PRODUTOR');
+	});
+    
+    document.addEventListener("DOMContentLoaded", () => {
+    	  const form = document.getElementById("uploadForm");
+          
+          if (!form) return;
+
+    	  form.addEventListener("submit", async (e) => {
+    	    e.preventDefault();
+
+    	    try {
+    	      const formData = new FormData(form);
+
+    	      const dados = JSON.parse(localStorage.getItem("cadastroProdutor"));
+    	      if (!dados) {
+    	        await Swal.fire({
+    	          icon: 'error',
+    	          title: 'Erro',
+    	          text: 'Dados do cadastro não encontrados.',
+    	          confirmButtonText: 'OK',
+    	          confirmButtonColor: '#d33'
+    	        });
+    	        return;
+    	      }
+
+    	      Object.entries(dados).forEach(([chave, valor]) => {
+    	        formData.append(chave, valor);
+    	      });
+
+    	      const response = await axios.post("/api/usuarios/cadastro-multipart", formData, {
+    	        headers: { "Content-Type": "multipart/form-data" }
+    	      });
+
+    	      await Swal.fire({
+    	        icon: 'success',
+    	        title: 'Sucesso!',
+    	        text: response.data?.message || 'Cadastro concluído com sucesso!',
+    	        confirmButtonText: 'OK',
+    	        confirmButtonColor: '#28a645'
+    	      }).then((result) => {
+    	      	if (result.isConfirmed) {
+    	        	window.location.href = '/login';
+    	        }
+    	      });
+    	      
+    	      localStorage.removeItem("cadastroProdutor");
+    	      window.location.href = "/login";
+    	    } catch (error) {
+    	      console.error("Erro no envio:", error);
+    	      const msg = error.response?.data?.error || "Falha no cadastro. Tente novamente.";
+    	      
+    	      await Swal.fire({
+    	        icon: 'error',
+    	        title: 'Erro no cadastro',
+    	        text: msg,
+    	        confirmButtonText: 'OK',
+    	        confirmButtonColor: '#d33'
+    	      });
+    	    }
+    	  });
+    	});
+  </script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Acesse o sistema do Consultório de Psicologia Vida & Equilíbrio para gerenciar consultas, pacientes e agenda.">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/estilos-login.css">
+  <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Android: cor da barra superior -->
+<meta name="theme-color" content="#F0E8D4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#F0E8D4" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="/manifest.json">
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.error('Erro ao registrar SW:', err));
+    });
+  }
+</script>
+</head>
+<body>
+	<header class="header" id="header" role="banner">
+    <div class="container-header">
+        <div class="nav-wrapper">
+            <div class="logo">
+                <svg class="logo-img" role="img"
+                        aria-label="Logotipo da AgriFamiliar" version="1.0" xmlns="http://www.w3.org/2000/svg" width="1280.000000pt" height="1169.000000pt"
+                        viewBox="0 0 1280.000000 1169.000000" preserveAspectRatio="xMidYMid meet">
+                        <metadata>
+                            Created by potrace 1.15, written by Peter Selinger 2001-2017
+                        </metadata>
+                        <g transform="translate(0.000000,1169.000000) scale(0.100000,-0.100000)" fill="#28a645" stroke="none">
+                            <path d="M11975 11683 c-49 -2 -200 -10 -334 -18 -1403 -89 -2667 -379 -3644
+                            -836 -1024 -479 -1749 -1155 -2124 -1981 -175 -387 -274 -779 -314 -1245 -15
+                            -187 -7 -699 16 -888 20 -174 58 -411 91 -575 49 -240 182 -737 183 -685 27
+                            827 102 1402 252 1935 279 988 793 1761 1650 2478 1002 839 2444 1456 4022
+                            1722 203 34 304 48 642 89 53 6 20 8 -140 8 -115 -1 -250 -2 -300 -4z"/>
+                        <path d="M12290 11644 c-642 -96 -1424 -306 -2071 -554 -1266 -487 -2259
+                            -1163 -2992 -2035 -569 -677 -901 -1425 -1051 -2366 -60 -372 -76 -597 -86
+                            -1179 -5 -272 -12 -511 -15 -530 -3 -19 -15 -98 -26 -175 -78 -541 -300 -1346
+                            -607 -2205 -103 -289 -260 -702 -271 -713 -4 -4 -42 81 -84 190 -299 776 -481
+                            1393 -558 1893 -16 104 -20 179 -20 325 5 1001 -182 1706 -611 2309 -196 275
+                            -498 583 -803 820 -121 95 -401 281 -545 363 -514 295 -1155 536 -1794 678
+                            -226 49 -425 84 -505 88 l-54 2 -24 -85 c-165 -601 -212 -1162 -137 -1645 164
+                            -1056 917 -1843 2184 -2280 541 -187 1067 -293 1787 -360 54 -5 72 -11 76 -23
+                            2 -10 50 -159 106 -332 385 -1188 632 -2178 657 -2630 l6 -105 -95 -215 c-52
+                            -118 -118 -268 -147 -332 l-53 -118 18 -42 c40 -91 100 -184 160 -243 145
+                            -145 339 -181 567 -105 95 32 225 96 273 135 27 21 27 22 15 76 -6 29 -14 113
+                            -17 186 -28 673 366 2305 1080 4477 56 170 76 220 92 226 11 5 110 15 220 24
+                            665 55 1430 193 2050 371 1752 504 2922 1379 3451 2582 168 382 267 771 316
+                            1243 19 185 16 722 -5 930 -39 376 -98 709 -192 1075 -78 305 -76 300 -105
+                            302 -14 1 -99 -9 -190 -23z"/>
+            
+                        <path d="M265 8571 c11 -5 67 -14 125 -21 568 -62 1245 -243 1805 -480 787
+                        -334 1461 -855 1868 -1443 370 -534 562 -1199 595 -2062 l8 -190 23 75 c13 41
+                        38 135 56 210 173 702 164 1312 -27 1840 -195 539 -609 1004 -1192 1340 -576
+                        331 -1345 563 -2226 670 -239 29 -490 49 -690 55 -96 3 -218 7 -270 10 -57 2
+                        -87 1 -75 -4z"/>
+                        </g>
+                    </svg>
+                <a href="/" class="log" aria-label="Ir para a página inicial" title="Ir para a página inicial">
+                	<span class="text-logo-preto">Agro<span class="text-logo-verde">Fraiburgo</span></span>
+            	</a>
+            </div>
+            <nav class="nav" id="nav" role="navigation">
+                <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu"
+                    aria-expanded="false">Menu
+                    <span id="hamburger"></span>
+                </button>
+                <ul id="menu" class="nav-list">
+                    <li><a href="/produtos" class="nav-link">Produtos</a></li>
+                    <li><a href="#produtores" class="nav-link">Produtores</a></li>
+                    <li><a href="/sobre" class="nav-link">Sobre</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" aria-label="Fazer login" onclick="window.location.href='/login'">Entrar</button>
+                <button class="btn btn-cadastro" aria-label="Criar conta" onclick="window.location.href='/criar_conta'">Cadastrar-se</button>
+            </div>
+        </div>
+    </div>
+</header>
+  <section class="container">
+    <div class="image-side">
+      <div class="image-text">
+        <p class="frase-topo"><strong>A força de Fraiburgo está nas mãos de quem cultiva e na consciência de quem valoriza.</strong></p>
+        <p class="frase-base">Venha e descubra os produtos que a agricultura familiar fraiburguense tem para você.</p>
+      </div>
+    </div>
+    <div class="login-side">
+      <div class="login-container">
+        <h1>Bem-vindo de volta!</h1>
+        <p class="frase-login">Entre com suas credenciais para acessar sua conta</p>
+
+        <form id="loginForm" novalidate>
+          <div class="form-outline">
+            <input type="text" id="nomeLogin" name="text" required placeholder=" " autocomplete="on">
+            <label for="nomeLogin">Usuário</label>
+          </div>
+
+          <div class="form-outline">
+            <input type="password" id="password" name="password" required placeholder=" " autocomplete="current-password">
+            <label for="password">Senha</label>
+          </div>
+
+          <div class="options">
+            <label class="mostrar-senha">
+              <input type="checkbox" id="showPassword" onclick="togglePassword()"> Mostrar senha
+            </label>
+          </div>
+
+          <div class="form-options">
+            <label class="remember-me">
+              <input type="checkbox" id="rememberMe" name="rememberMe"> Lembrar de mim
+            </label>
+            <a href="#" class="forgot-password" onclick="showForgotPassword()">Esqueci minha senha</a>
+          </div>
+
+          <input type="submit" value="Entrar" class="btn-primary">
+        </form>
+
+        <div class="divider"><span>ou</span></div>
+
+        <div class="social-login">
+          <button type="button" class="social-btn google-btn" onclick="loginWithGoogle()">
+            <div class="social-icon"> 
+				<svg viewBox="0 0 24 24" width="20" height="20">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+			</div>
+            Continuar com Google
+          </button>
+          <button type="button" class="social-btn facebook-btn" onclick="loginWithFacebook()">
+            <div class="social-icon">
+				<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+			</div>
+            Continuar com Facebook
+          </button>          
+        </div>
+
+        <div class="signup-link">
+          Não tem uma conta?<br>Quer se cadastrar como produtor? <a href="/criar_conta" onclick="showSignup()">Cadastre-se aqui</a>
+        </div>
+      </div>
+    </div>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function togglePassword() {
+      const pwd = document.getElementById("password");
+      pwd.type = pwd.type === "password" ? "text" : "password";
+    }
+
+    function showForgotPassword() {
+      alert("Redirecionando para recuperação de senha...");
+    }
+
+    function showSignup() {
+      alert("Redirecionando para a página de cadastro...");
+    }
+
+    function loginWithGoogle() {
+        window.location.href = "/oauth2/authorization/google";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const nomeLogin = document.getElementById("nomeLogin").value;
+          const senha = document.getElementById("password").value;
+
+          try {
+            const response = await axios.post("/api/auth/login", { nomeLogin, senha });
+
+            Swal.fire({
+              icon: "success",
+              title: "Login realizado!",
+              text: response.data.message,
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            const tipoUsuario = response.data.tipoUsuario;
+
+            setTimeout(() => {
+              if (tipoUsuario === "PRODUTOR") {
+                window.location.href = "/home_produtor";
+              } else if (tipoUsuario === "MODERADOR") {
+                window.location.href = "/home_moderador";
+              } else {
+                window.location.href = "/home_consumidor";
+              }
+            }, 2000);
+
+          } catch (err) {
+            console.error("Erro de login:", err.response?.data || err.message);
+
+            Swal.fire({
+              icon: "error",
+              title: "Erro de login",
+              text: err.response?.data?.error || "Falha no login",
+              confirmButtonText: "Tentar novamente"
+            });
+          }
+        });
+      });
+  </script>
+  
+<script>
+  // Inicializa o SDK do Facebook
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1327322419399441',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v23.0'
+    });
+    FB.AppEvents.logPageView();
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  // Função de login
+  function loginWithFacebook() {
+      FB.login(function(response) {
+          if (response.authResponse) {
+              console.log("Usuário logado com sucesso");
+              const accessToken = response.authResponse.accessToken;
+              console.log("Access Token:", accessToken);
+
+              fetch('/api/auth/facebook', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ accessToken })
+              }).then(res => {
+                  if (res.ok) {
+                      window.location.href = "/home_consumidor";
+                  } else {
+                	  Swal.fire({
+                		  icon: "error",
+                		  title: "Erro de login",
+                		  text: "Falha no login com Facebook!",
+                		  confirmButtonText: "Tente novamente mais tarde!"
+                		});
+
+                  }
+              });
+          } else {
+        	  Swal.fire({
+        		  icon: "error",
+        		  title: "Erro de login",
+        		  text: "KLogin não autorizado!",
+        		  confirmButtonText: "Tente novamente mais tarde!"
+        		});
+          }
+      }, {scope: 'email,public_profile'});
+  }
+</script>
+
+<script>
+  // Remove o #_=_ da URL (bug do Facebook)
+  if (window.location.hash === "#_=_") {
+    history.replaceState
+      ? history.replaceState(null, null, window.location.pathname)
+      : window.location.hash = "";
+  }
+</script>
+
+</body>
+</html>

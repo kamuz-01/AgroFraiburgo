@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="css/estilos-home_moderador.css">
+	<link rel="stylesheet" href="css/estilos-cadastro_moderadores.css">
+<!-- Font Awesome para ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+    <link rel="manifest" href="/manifest.json">
+	<link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+<title>Insert title here</title>
+</head>
+<body>
+    
+ <header id="header-menu" role="banner">
+           <div class="logo">
+                <a href="#" aria-label="Ir para a página inicial" class="log">
+                	<svg class="logo-img" role="img"
+                        aria-label="Logotipo da AgriFamiliar" version="1.0" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 1280.000000 1169.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,1169.000000) scale(0.100000,-0.100000)" fill="#28a645" stroke="none">
+                            <path d="M11975 11683 c-49 -2 -200 -10 -334 -18 -1403 -89 -2667 -379 -3644
+                            -836 -1024 -479 -1749 -1155 -2124 -1981 -175 -387 -274 -779 -314 -1245 -15
+                            -187 -7 -699 16 -888 20 -174 58 -411 91 -575 49 -240 182 -737 183 -685 27
+                            827 102 1402 252 1935 279 988 793 1761 1650 2478 1002 839 2444 1456 4022
+                            1722 203 34 304 48 642 89 53 6 20 8 -140 8 -115 -1 -250 -2 -300 -4z"/>
+                        <path d="M12290 11644 c-642 -96 -1424 -306 -2071 -554 -1266 -487 -2259
+                            -1163 -2992 -2035 -569 -677 -901 -1425 -1051 -2366 -60 -372 -76 -597 -86
+                            -1179 -5 -272 -12 -511 -15 -530 -3 -19 -15 -98 -26 -175 -78 -541 -300 -1346
+                            -607 -2205 -103 -289 -260 -702 -271 -713 -4 -4 -42 81 -84 190 -299 776 -481
+                            1393 -558 1893 -16 104 -20 179 -20 325 5 1001 -182 1706 -611 2309 -196 275
+                            -498 583 -803 820 -121 95 -401 281 -545 363 -514 295 -1155 536 -1794 678
+                            -226 49 -425 84 -505 88 l-54 2 -24 -85 c-165 -601 -212 -1162 -137 -1645 164
+                            -1056 917 -1843 2184 -2280 541 -187 1067 -293 1787 -360 54 -5 72 -11 76 -23
+                            2 -10 50 -159 106 -332 385 -1188 632 -2178 657 -2630 l6 -105 -95 -215 c-52
+                            -118 -118 -268 -147 -332 l-53 -118 18 -42 c40 -91 100 -184 160 -243 145
+                            -145 339 -181 567 -105 95 32 225 96 273 135 27 21 27 22 15 76 -6 29 -14 113
+                            -17 186 -28 673 366 2305 1080 4477 56 170 76 220 92 226 11 5 110 15 220 24
+                            665 55 1430 193 2050 371 1752 504 2922 1379 3451 2582 168 382 267 771 316
+                            1243 19 185 16 722 -5 930 -39 376 -98 709 -192 1075 -78 305 -76 300 -105
+                            302 -14 1 -99 -9 -190 -23z"/>
+            
+                        <path d="M265 8571 c11 -5 67 -14 125 -21 568 -62 1245 -243 1805 -480 787
+                        -334 1461 -855 1868 -1443 370 -534 562 -1199 595 -2062 l8 -190 23 75 c13 41
+                        38 135 56 210 173 702 164 1312 -27 1840 -195 539 -609 1004 -1192 1340 -576
+                        331 -1345 563 -2226 670 -239 29 -490 49 -690 55 -96 3 -218 7 -270 10 -57 2
+                        -87 1 -75 -4z"/>
+                        </g>
+                    </svg>
+                     <span class="text-logo-preto">Agro<span class="text-logo-verde">Fraiburgo</span></span>
+            	</a>
+            </div>
+        <nav id="nav" role="navigation">
+            <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu"
+                aria-expanded="false">
+                Menu <span id="hamburger"></span>
+            </button>
+
+            <ul id="menu-admin" class="navbar-nav">
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-1" href="#" id="alertDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  						<span class="position-relative">
+    						<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 640 640">
+        						<!-- path... -->
+        						<path d="M320 64C302.3 64 288 78.3 288 96L288 99.2C215 114 160 178.6 160 256L160 277.7C160 325.8 143.6 372.5 113.6 410.1L103.8 
+        							422.3C98.7 428.6 96 436.4 96 444.5C96 464.1 111.9 480 131.5 480L508.4 480C528 480 543.9 464.1 543.9 444.5C543.9 436.4 541.2 
+        							428.6 536.1 422.3L526.3 410.1C496.4 372.5 480 325.8 480 277.7L480 256C480 178.6 425 114 352 99.2L352 96C352 78.3 337.7 64 320 
+        							64zM258 528C265.1 555.6 290.2 576 320 576C349.8 576 374.9 555.6 382 528L258 528z"
+        						/>
+    						</svg>
+    						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="alert-count" style="font-size: 0.7rem;">
+        						0
+    						</span>
+  						</span>
+  						<span>Notificações</span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="alertDropdown" id="alert-list">
+    					<li><span class="dropdown-item">Sem novos cadastros</span></li>
+  					</ul>
+				</li>		
+            
+            	<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/cadastro_moderadores">
+            	 		<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+  							<path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+  							<path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/>
+						</svg> 
+						Cadastrar moderador
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/cadastro_feira">
+            	 		<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+						  <!-- Ícone de localização -->
+							  <path d="M12 1c-3.148 0-6 2.553-6 5.702 0 3.148 2.602 6.907 6 12.298 3.398-5.391 6-9.15 6-12.298 0-3.149-2.851-5.702-6-5.702zm0 8c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z"/>
+							  <path d="M20 15h-3.135c-.385.641-.798 1.309-1.232 2h3.131l.5 1h-4.264l-.344.544-.289.456h.558l.858 2h-7.488l.858-2h.479l-.289-.456-.343-.544h-2.042l-1.011-1h2.42c-.435-.691-.848-1.359-1.232-2h-3.135l-4 8h24l-4-8zm-12.794 6h-3.97l1.764-3.528 1.516 1.528h1.549l-.859 2zm8.808-2h3.75l1 2h-3.892l-.858-2z"/>
+							
+							  <!-- Círculo branco maior -->
+							  <circle cx="12" cy="7" r="3.4" fill="#b7d8c3"/>
+							
+							  <!-- Sinal de "+" maior e centralizado -->
+							  <text x="12" y="7.5" text-anchor="middle" dominant-baseline="middle" font-size="6.8" font-weight="bold" fill="black">+</text>
+						</svg>
+						Cadastrar feira
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-1" href="/listagem_feiras">
+            	 		<svg
+						   viewBox="0 0 512 512"
+						   width="40"
+						   height="40"
+						   version="1.1"
+						   id="svg6"
+						   xmlns="http://www.w3.org/2000/svg">						  						
+						  <!-- Contorno da folha -->
+						  <path
+						     d="M 45.708992,16.516469 H 393.22502 c 15.99398,0 28.95968,14.628857 28.95968,32.674469 V 460.88927 c 0,18.0456 -12.9657,32.67447 -28.95968,32.67447 H 45.708992 c -15.993967,0 -28.959673,-14.62887 -28.959673,-32.67447 V 137.03582 49.190938 c 0,-18.045612 12.965706,-32.674469 28.959673,-32.674469 z"
+						     fill="none"
+						     stroke="#000000"
+						     stroke-width="27.685"
+						     stroke-linejoin="round"
+						     stroke-linecap="round"
+						     id="path1" />
+						  <!-- Linhas de texto da folha -->
+						  <rect
+						     x="56.620968"
+						     y="63.037506"
+						     width="320.13458"
+						     height="27.935318"
+						     rx="21.404537"
+						     fill="#000000"
+						     id="rect2"
+						     style="stroke-width:1.54216" />
+						  <rect
+						     x="58.609314"
+						     y="417.73608"
+						     width="315.49811"
+						     height="27.935318"
+						     rx="21.094538"
+						     fill="#000000"
+						     id="rect2-2"
+						     style="stroke-width:1.53095" />
+						  <rect
+						     x="57.296265"
+						     y="110.51747"
+						     width="147.81889"
+						     height="24.623545"
+						     rx="14.432132"
+						     fill="#000000"
+						     id="rect4-5-1"
+						     style="stroke-width:1.45459" />
+						  <rect
+						     x="58.272964"
+						     y="157.37775"
+						     width="100.12937"
+						     height="24.623545"
+						     rx="15.074852"
+						     fill="#000000"
+						     id="rect4-5-1-4"
+						     style="stroke-width:1.19717" />
+						  <!-- Círculo da lupa -->
+						  <ellipse
+						     cx="273.94669"
+						     cy="248.09668"
+						     fill="none"
+						     stroke="#000000"
+						     stroke-width="31.2483"
+						     id="circle5"
+						     rx="109.241"
+						     ry="113.00158" />
+						  <!-- Cabo da lupa -->
+						  <g
+						     transform="matrix(1.8330513,1.8671576,-1.8330513,1.8671576,356.69635,326.26733)"
+						     id="g6">
+						    <rect
+						       x="0"
+						       y="-10"
+						       width="80"
+						       height="20"
+						       rx="10"
+						       ry="10"
+						       fill="#000000"
+						       id="rect6" />
+						  </g>
+						  <path
+						     d="m 273.65771,182.00841 c -28.96094,0 -52.43935,23.40818 -52.43935,52.29128 0,23.34441 34.27307,65.90413 47.40421,81.35138 2.62308,3.13024 7.44718,3.13024 10.07028,0 13.13114,-15.44725 47.40418,-57.99988 47.40418,-81.35138 0,-28.8831 -23.47837,-52.29128 -52.43932,-52.29128 z m 0,67.99351 c -9.41693,0 -17.0442,-7.61386 -17.0442,-16.99835 0,-9.3916 7.63435,-16.99839 17.0442,-16.99839 9.40981,0 17.04419,7.60679 17.04419,16.99839 0,9.38449 -7.63438,16.99835 -17.04419,16.99835 z"
+						     id="path1-0"
+						     style="stroke-width:0.709219" />
+						  <rect
+						     x="59.7141"
+						     y="202.45537"
+						     width="80.258743"
+						     height="24.623545"
+						     rx="13.134804"
+						     fill="#000000"
+						     id="rect4-5-1-4-8"
+						     style="stroke-width:1.07182" />
+						  <rect
+						     x="60.350582"
+						     y="247.72833"
+						     width="76.284615"
+						     height="24.623545"
+						     rx="15.396221"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4"
+						     style="stroke-width:1.04495" />
+						  <rect
+						     x="61"
+						     y="291"
+						     width="84.232872"
+						     height="24.623545"
+						     rx="12.198111"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4-5"
+						     style="stroke-width:1.09804" />
+						  <rect
+						     x="59.764549"
+						     y="333.7128"
+						     width="112.71411"
+						     height="24.623545"
+						     rx="11.004716"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4-7"
+						     style="stroke-width:1.27018" />
+						  <rect
+						     x="60.778782"
+						     y="376.1048"
+						     width="178.94957"
+						     height="24.623545"
+						     rx="17.471539"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4-7-1"
+						     style="stroke-width:1.60045" />
+						</svg>
+						Consultar feira
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/administrar_usuarios">
+            	 		<svg fill="#000000" width="40px" height="40px" viewBox="0 -64 640 640" xmlns="http://www.w3.org/2000/svg">
+            	 			<path d="M610.5 341.3c2.6-14.1 2.6-28.5 0-42.6l25.8-14.9c3-1.7 4.3-5.2 3.3-8.5-6.7-21.6-18.2-41.2-33.2-57.4-2.3-2.5-6-3.1-9-1.4l-25.8 
+            	 				14.9c-10.9-9.3-23.4-16.5-36.9-21.3v-29.8c0-3.4-2.4-6.4-5.7-7.1-22.3-5-45-4.8-66.2 0-3.3.7-5.7 3.7-5.7 7.1v29.8c-13.5 4.8-26 12-36.9 
+            	 				21.3l-25.8-14.9c-2.9-1.7-6.7-1.1-9 1.4-15 16.2-26.5 35.8-33.2 57.4-1 3.3.4 6.8 3.3 8.5l25.8 14.9c-2.6 14.1-2.6 28.5 0 42.6l-25.8 
+            	 				14.9c-3 1.7-4.3 5.2-3.3 8.5 6.7 21.6 18.2 41.1 33.2 57.4 2.3 2.5 6 3.1 9 1.4l25.8-14.9c10.9 9.3 23.4 16.5 36.9 21.3v29.8c0 3.4 2.4 
+            	 				6.4 5.7 7.1 22.3 5 45 4.8 66.2 0 3.3-.7 5.7-3.7 5.7-7.1v-29.8c13.5-4.8 26-12 36.9-21.3l25.8 14.9c2.9 1.7 6.7 1.1 9-1.4 15-16.2 
+            	 				26.5-35.8 33.2-57.4 1-3.3-.4-6.8-3.3-8.5l-25.8-14.9zM496 368.5c-26.8 0-48.5-21.8-48.5-48.5s21.8-48.5 48.5-48.5 48.5 21.8 48.5 
+            	 				48.5-21.7 48.5-48.5 48.5zM96 224c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm224 32c1.9 0 3.7-.5 5.6-.6 
+            	 				8.3-21.7 20.5-42.1 36.3-59.2 7.4-8 17.9-12.6 28.9-12.6 6.9 0 13.7 1.8 19.6 5.3l7.9 4.6c.8-.5 1.6-.9 2.4-1.4 7-14.6 11.2-30.8 11.2-48 
+            	 				0-61.9-50.1-112-112-112S208 82.1 208 144c0 61.9 50.1 112 112 112zm105.2 194.5c-2.3-1.2-4.6-2.6-6.8-3.9-8.2 4.8-15.3 9.8-27.5 9.8-10.9 
+            	 				0-21.4-4.6-28.9-12.6-18.3-19.8-32.3-43.9-40.2-69.6-10.7-34.5 24.9-49.7 25.8-50.3-.1-2.6-.1-5.2 0-7.8l-7.9-4.6c-3.8-2.2-7-5-9.8-8.1-3.3.2-6.5.6-9.8.6-24.6 
+            	 				0-47.6-6-68.5-16h-8.3C179.6 288 128 339.6 128 403.2V432c0 26.5 21.5 48 48 48h255.4c-3.7-6-6.2-12.8-6.2-20.3v-9.2zM173.1 274.6C161.5 
+            	 				263.1 145.6 256 128 256H64c-35.3 0-64 28.7-64 64v32c0 17.7 14.3 32 32 32h65.9c6.3-47.4 34.9-87.3 75.2-109.4z"/>
+            	 		</svg>
+						Administrar Usuarios
+					</a>
+				</li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown5" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="icon"> 
+						<!-- Bonequinho --> 
+						<path class="person" d="M16 12.771h-3.091c-.542 0-.82-.188-1.055-.513l-1.244-1.674-2.029 2.199 1.008 1.562c.347.548.373.922.373 
+							1.42v4.235h-1.962v-3.981c-.016-1.1-1.695-2.143-2.313-1.253l-1.176 1.659c-.261.372-.706.498-1.139.498h-3.372v-1.906l2.532-.001c.397 							
+							0 .741-.14.928-.586l1.126-2.75c.196-.41.46-.782.782-1.102l2.625-2.6-.741-.647c-.223-.195-.521-.277-.812-.227l-2.181.381-.342-1.599 
+							2.992-.571c.561-.107 1.042.075 1.461.462l2.882 2.66c.456.414.924 1.136 1.654 2.215.135.199.323.477.766.477h2.328v1.642zm-2.982-5.042c1.02-.195 
+							1.688-1.182 1.493-2.201-.172-.901-.96-1.528-1.845-1.528-1.186 0-2.07 1.078-1.85 2.234.196 1.021 1.181 1.69 2.202 1.495z
+						"/> 
+			<!-- Porta --> 
+			<path class="door" d="M18 2v15l6 5V2h-6z"/> 
+		</svg>  Sair
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown5">
+                        <li class="foto-perfil d-flex justify-content-center"><img th:src="@{|${imagemPerfil}|}" alt="Foto do usuário" width="75" height="75" class="rounded-circle"></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="usuario" href="#"><strong>Olá, </strong><strong th:text="${nome}"></strong></a></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="nivelAcesso" href="#"><strong th:text="${tipoUsuario}"></strong></a></li>                      
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" id="sair" href="/logout">Sair</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="container">
+        <div class="header-login">
+            <h1>Criar conta</h1>
+            <p>Faça seu cadastro e descubra os produtos que a agricultura familiar fraiburguense tem a lhe oferecer.</p>
+        </div>
+        <div class="success-message" id="successMessage" role="alert" tabindex="-1" style="display: none;">
+            Conta criada com sucesso!
+        </div>
+        <form id="signupForm" action="/criar_conta" enctype="multipart/form-data" novalidate>
+            <fieldset class="imagens-usuario">
+                <legend class="required">Imagens do Usuário</legend>
+                <div class="upload-container">
+                    <div class="upload-box" data-type="perfil">
+                        <input type="file" id="imagemPerfil" name="imagemPerfil" accept="image/*" hidden />
+                        <label for="imagemPerfil" class="upload-label" id="dropPerfil" title="Clique ou arraste uma imagem">
+                            <i class="fas fa-camera"></i>
+                            <img id="previewPerfil" src="/imagens-usuarios/defaults/perfil.png" alt="Foto de Perfil" />
+                        </label>
+                        <button type="button" class="remove-btn" id="removePerfil" aria-label="Remover foto de perfil">✖</button>
+                        <p>Foto de perfil</p>
+                    </div>                    
+                    <div class="upload-box">
+                        <input type="file" id="imagemCapa" name="imagemCapa" accept="image/*" hidden />
+                        <label for="imagemCapa" class="upload-label" id="dropCapa" title="Clique ou arraste uma imagem">
+                            <i class="fas fa-camera"></i>
+                            <img id="previewCapa" src="/imagens-usuarios/defaults/capa.png" alt="Foto de Capa" />
+                        </label>
+                        <button type="button" class="remove-btn" id="removeCapa" aria-label="Remover imagem de capa">✖</button>
+                        <p>Imagem de capa</p>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="dados-pessoais">
+                <legend class="required">Dados pessoais</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nome">Nome</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input autocomplete="given-name" id="nome" name="nome" placeholder="Seu nome" required type="text"/>
+                        </div>
+                        <div class="error-message" id="nomeError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sobrenome">Sobrenome</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input autocomplete="family-name" id="sobrenome" name="sobrenome" placeholder="Seu Sobrenome" required type="text"/>
+                        </div>
+                        <div class="error-message" id="sobrenomeError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpf">CPF</label>
+                        <div class="input-icon">
+                            <i class="fas fa-id-card"></i>
+                            <input id="cpf" inputmode="numeric" maxlength="14" name="cpf" placeholder="Seu CPF" required type="text"/>
+                        </div>
+                        <div class="error-message" id="cpfError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataNascimento">Data de Nascimento</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <input id="dataNascimento" name="dataNascimento" onkeydown="return false;" placeholder="Sua data de nascimento" required type="text"/>
+                        </div>
+                        <div class="error-message" id="dataNascimentoError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sexo">Sexo</label>
+                        <div class="input-icon">
+                            <i class="fas fa-restroom"></i>
+                            <select aria-describedby="sexoError" id="sexo" name="sexo">
+                                <option value="Feminino">Feminino</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Não-binário">Não-binário</option>
+                                <option value="Agênero">Agênero</option>
+                                <option value="anônimo">Prefiro não dizer</option>
+                            </select>
+                        </div>
+                        <div class="error-message" id="sexoError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <div class="input-icon">
+                            <i class="fas fa-phone"></i>
+                            <input aria-describedby="telefoneError" autocomplete="tel" id="telefone" inputmode="tel" maxlength="15" name="telefone" placeholder="(11) 99999-0000" type="tel"/>
+                        </div>
+                        <div class="error-message" id="telefoneError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input id="email" inputmode="text" name="email" placeholder="seu@email.com" required type="email" autocomplete="username"/>
+                        </div>
+                        <div class="error-message" id="emailError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade">Cidade</label>
+                        <div class="input-icon">
+                            <i class="fas fa-city"></i>
+                            <input aria-describedby="cidadeError" autocomplete="address-level2" id="cidade" name="cidade" placeholder="Sua cidade" type="text"/>
+                        </div>
+                        <div class="error-message" id="cidadeError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="estado">Estado</label>
+                        <div class="input-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <select aria-describedby="estadoError" autocomplete="address-level1" id="estado" name="estado">
+                                <option value="AC">AC</option>
+                                <option value="AL">AL</option>
+                                <option value="AP">AP</option>
+                                <option value="AM">AM</option>
+                                <option value="BA">BA</option>
+                                <option value="CE">CE</option>
+                                <option value="DF">DF</option>
+                                <option value="ES">ES</option>
+                                <option value="GO">GO</option>
+                                <option value="MA">MA</option>
+                                <option value="MT">MT</option>
+                                <option value="MS">MS</option>
+                                <option value="MG">MG</option>
+                                <option value="PA">PA</option>
+                                <option value="PB">PB</option>
+                                <option value="PR">PR</option>
+                                <option value="PE">PE</option>
+                                <option value="PI">PI</option>
+                                <option value="RJ">RJ</option>
+                                <option value="RN">RN</option>
+                                <option value="RS">RS</option>
+                                <option value="RO">RO</option>
+                                <option value="RR">RR</option>
+                                <option value="SC">SC</option>
+                                <option value="SP">SP</option>
+                                <option value="SE">SE</option>
+                                <option value="TO">TO</option>
+                            </select>
+                        </div>
+                        <div class="error-message" id="estadoError" role="alert"></div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="user-type">
+                <legend class="required">Definição de usuário</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nomeLogin">Nome</label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="nomeLogin" name="nomeLogin" placeholder="Seu usuário para iniciar sessão" required type="text"/>
+                        </div>
+                        <div class="error-message" id="nomeLoginError" role="alert"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="senha" name="senha" placeholder="********" required type="password" autocomplete="new-password"/>
+                        </div>
+                        <div class="error-message" id="senhaError" role="alert"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar senha</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="confirmPassword" name="confirmPassword" placeholder="********" required type="password" autocomplete="new-password"/>
+                        </div>
+                        <div class="error-message" id="confirmPasswordError" role="alert"></div>
+                    </div>
+                </div>
+            </fieldset>
+            <button id="submitBtn" type="submit" class="submit-btn botao botao-verde">
+			  <i class="fas fa-sign-in-alt"></i>
+			  <span class="btn-text">Criar conta</span>
+			</button>
+        </form>
+    </section>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="js/validacoes-criar_conta.js"></script>
+  <script src="js/MenuResponsivo.js"></script>
+
+  <script>
+    // Reset dos uploads
+    function resetUploads() {
+      document.getElementById("imagemPerfil").value = "";
+      document.getElementById("previewPerfil").src = "/imagens-usuarios/defaults/perfil.png";
+      document.getElementById("removePerfil").style.display = "none";
+
+      document.getElementById("imagemCapa").value = "";
+      document.getElementById("previewCapa").src = "/imagens-usuarios/defaults/capa.png";
+      document.getElementById("removeCapa").style.display = "none";
+    }
+
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.querySelector(".btn-text").textContent = "Enviando...";
+
+      try {
+        const formData = new FormData(form);
+        formData.delete("confirmPassword");
+        formData.append("tipoUsuario", "MODERADOR");
+
+        const response = await axios.post("/api/usuarios/cadastro-multipart", formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Conta criada!",
+          text: response.data?.message || "Moderador cadastrado com sucesso!",
+          confirmButtonText: "Ok"
+        });
+
+        form.reset();
+        resetUploads();
+
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Erro ao cadastrar",
+          text: error.response?.data?.error || "Tente novamente."
+        });
+      } finally {
+        btn.disabled = false;
+        btn.querySelector(".btn-text").textContent = "Criar conta moderador";
+      }
+    });
+    
+ // Preview imagem perfil
+    document.getElementById("imagemPerfil").addEventListener("change", function (event) {
+  	const file = event.target.files[0];
+	  if (file) {
+	    const preview = document.getElementById("previewPerfil");
+	    preview.src = URL.createObjectURL(file);
+	    preview.style.display = "block";
+	    document.querySelector("#dropPerfil i").style.display = "none";
+	    document.getElementById("removePerfil").style.display = "inline-block";
+	  }
+	});
+    // Remover imagem de perfil
+    document.getElementById("removePerfil").addEventListener("click", function () {
+	  const input = document.getElementById("imagemPerfil");
+	  input.value = "";
+	  const preview = document.getElementById("previewPerfil");
+	  preview.src = "/imagens-usuarios/defaults/perfil.png";
+	  preview.style.display = "block";
+	  document.querySelector("#dropPerfil i").style.display = "inline-block";
+	  this.style.display = "none";
+	});
+
+
+ // Preview imagem capa
+    document.getElementById("imagemCapa").addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const preview = document.getElementById("previewCapa");
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+		document.querySelector("#dropCapa i").style.display = "none";
+        document.getElementById("removeCapa").style.display = "inline-block";
+      }
+    });
+
+    // Remover imagem de capa
+    document.getElementById("removeCapa").addEventListener("click", function () {
+      const input = document.getElementById("imagemCapa");
+      input.value = "";
+      const preview = document.getElementById("previewCapa");
+      document.getElementById("previewCapa").src = "/imagens-usuarios/defaults/capa.png";
+      preview.style.display = "block";
+	  document.querySelector("#dropCapa i").style.display = "inline-block";
+      this.style.display = "none";
+    });
+  </script>
+
+    <script>
+async function carregarAlertas() {
+  try {
+    const response = await axios.get("/api/moderador/novos-produtores");
+    const data = response.data;
+
+    document.getElementById("alert-count").textContent = data.total;
+
+    const lista = document.getElementById("alert-list");
+    lista.innerHTML = "";
+
+    if (data.total > 0) {
+      data.produtores.forEach(produtor => {
+    	  lista.innerHTML += `
+    		  <li>
+    		  <a class="dropdown-item" href="/produtores_pendentes">
+    		      ${produtor.nome}
+    		    </a>
+    		  </li>
+    		`;
+      });
+    } else {
+      lista.innerHTML = `<li><span class="dropdown-item">Sem novos cadastros</span></li>`;
+    }
+
+  } catch (err) {
+    console.error("Erro ao buscar alertas", err);
+  }
+}
+
+carregarAlertas();
+setInterval(carregarAlertas, 10000); // atualiza a cada 10s
+</script>
+</body>
+</html>

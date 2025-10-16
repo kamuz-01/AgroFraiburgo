@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" type="image/x-icon" href="" >
+	<meta name="theme-color" content="#388E3C">
+	<title>Cadastro de Produtos</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" href="css/estilos-cadastro_produtos.css">
+	<link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+
+  <style>
+    .form-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }   
+    .product-image-preview {
+	  max-width: 100%;
+	  max-height: 200px;
+	  width: 100%;
+	  height: auto;
+	  border: 2px dashed #4CAF50;
+	  border-radius: 10px;
+	  display: none;
+	}
+    .btn-success {
+      background-color: #388E3C;
+      border-color: #388E3C;
+    }
+    .btn-success:hover {
+      background-color: #2E7D32;
+      border-color: #2E7D32;
+    }
+	.image-wrapper {
+	  position: relative;
+	  display: inline-block;
+	  max-width: 200px;
+	}
+
+	.btn-secondary{
+		background-color: #6c757d !important;
+		color: #fff !important;
+	}
+
+	.btn-close:hover{
+		background-color: red;
+	}
+.icon{
+   width: 40px;
+   height: 40px;
+}
+
+.icon .person {
+  fill: #4CAF50; /* verde para o boneco */
+}
+
+.icon .door {
+  fill: red; /* azul para a porta */
+}
+
+.col-md-8{
+	margin-bottom: 30px;
+}
+  </style>
+</head>
+<body>
+
+<header id="header-menu" role="banner">
+        <div class="logo">
+            <img src="imagens/logo-clinica.png" alt="Logo API REST"/>
+        </div>
+        <nav id="nav" role="navigation">
+            <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu"
+                aria-expanded="false">
+                Menu <span id="hamburger"></span>
+            </button>
+
+            <ul id="menu-admin" class="navbar-nav">
+            
+                 <li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/cadastro_produtos">
+						<svg
+						   version="1.1"
+						   id="Layer_1"
+						   viewBox="0 0 504 504"
+						   xml:space="preserve"
+						   xmlns="http://www.w3.org/2000/svg"
+						   width="40px"
+						   height="40px">
+						<rect
+						   x="26"
+						   y="2"
+						   style="fill:#F4EFEF;"
+						   width="368"
+						   height="496"
+						   id="rect1" />
+						<rect
+						   x="26"
+						   y="2"
+						   style="fill:#33A5D2;"
+						   width="368"
+						   height="68"
+						   id="rect2" />
+						<polygon
+						   style="fill:#7d8b95"
+						   points="462,497.2 440,438 483.6,438 "
+						   id="polygon2"
+						   transform="rotate(6.0150817,427.71688,189.64186)" />
+						<rect
+						   x="455.51782"
+						   y="-11.864655"
+						   style="fill:#13a289"
+						   width="44"
+						   height="404"
+						   id="rect3"
+						   transform="rotate(6.0150817)" />
+						<path
+						   style="fill:#7d8b95"
+						   d="m 497.92706,41.340847 2.55688,-24.265662 c 0.67066,-6.364764 -3.05582,-9.170711 -9.81838,-9.8832852 
+						   L 471.96907,5.221844 C 465.2065,4.5092697 457.39686,6.0996511 456.7262,12.464415 l -2.55688,24.265662 z"
+						   id="path3" />
+						<path
+						   d="M392,504H24c-2.4,0-4-1.6-4-4V4c0-2.4,1.6-4,4-4h368c2.4,0,4,1.6,4,4v496C396,502.4,394.4,504,392,504z 
+						   M28,496h360V8H28  V496z"
+						   id="path4" />
+						<path
+						   d="M392,76H24c-2.4,0-4-1.6-4-4V4c0-2.4,1.6-4,4-4h368c2.4,0,4,1.6,4,4v68C396,74.4,394.4,76,392,76z 
+						   M28,68h360V8H28V68z"
+						   id="path5" />
+						<path
+						   d="M350,148H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h280c2.4,0,4,1.6,4,4S352.4,148,350,148z"
+						   id="path6" />
+						<path
+						   d="M126,188H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h56c2.4,0,4,1.6,4,4S128.4,188,126,188z"
+						   id="path7" />
+						<path
+						   d="M350,188H162c-2.4,0-4-1.6-4-4s1.6-4,4-4h188c2.4,0,4,1.6,4,4S352.4,188,350,188z"
+						   id="path8" />
+						<path
+						   d="M350,228h-32c-2.4,0-4-1.6-4-4s1.6-4,4-4h32c2.4,0,4,1.6,4,4S352.4,228,350,228z"
+						   id="path9" />
+						<path
+						   d="M282,228H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h212c2.4,0,4,1.6,4,4S284.4,228,282,228z"
+						   id="path10" />
+						<path
+						   d="M350,268H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h280c2.4,0,4,1.6,4,4S352.4,268,350,268z"
+						   id="path11" />
+						<path
+						   d="M350,388H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h280c2.4,0,4,1.6,4,4S352.4,388,350,388z"
+						   id="path12" />
+						<path
+						   d="M126,308H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h56c2.4,0,4,1.6,4,4S128.4,308,126,308z"
+						   id="path13" />
+						<path
+						   d="M350,308H162c-2.4,0-4-1.6-4-4s1.6-4,4-4h188c2.4,0,4,1.6,4,4S352.4,308,350,308z"
+						   id="path14" />
+						<path
+						   d="M350,348h-32c-2.4,0-4-1.6-4-4s1.6-4,4-4h32c2.4,0,4,1.6,4,4S352.4,348,350,348z"
+						   id="path15" />
+						<path
+						   d="M282,348H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h212c2.4,0,4,1.6,4,4S284.4,348,282,348z"
+						   id="path16" />
+						<path
+						   d="M126,428H70c-2.4,0-4-1.6-4-4s1.6-4,4-4h56c2.4,0,4,1.6,4,4S128.4,428,126,428z"
+						   id="path17" />
+						<path
+						   d="M350,428H162c-2.4,0-4-1.6-4-4s1.6-4,4-4h188c2.4,0,4,1.6,4,4S352.4,428,350,428z"
+						   id="path18" />
+						<path
+						   d="m 425.43654,500.27127 c -1.5912,-0.16768 -3.05663,-1.52873 -3.28677,-3.16184 l -15.67529,-61.17944 
+						   c 0.0419,-0.39781 -0.31399,-0.83751 -0.27205,-1.23532 L 448.28617,35.30574 c 0.25151,-2.386787 
+						   2.01035,-3.810314 4.39715,-3.558817 2.38678,0.251497 3.81031,2.010352 3.55882,4.397138 l -41.95803,398.195549 
+						   12.82907,50.01974 22.97274,-46.2473 41.958,-398.19554 c 0.2515,-2.386787 2.01037,-3.810312 4.39714,-3.558817 
+						   2.38679,0.251498 3.81032,2.010352 3.55882,4.397139 L 457.95804,439.74597 c -0.042,0.3978 -0.0839,0.7956 
+						   -0.52355,1.15148 l -28.08245,56.56868 c -0.60739,1.94708 -2.32433,2.97279 -3.9155,2.80514 z"
+						   id="path19" />
+						<path
+						   d="m 451.06894,447.86878 -39.7798,-4.19162 c -2.38678,-0.2515 -3.81031,-2.01034 -3.55882,-4.39714 
+						   0.2515,-2.38677 2.01036,-3.81031 4.39715,-3.55881 l 39.77978,4.19161 c 2.38678,0.25151 3.81032,2.01035 
+						   3.55881,4.39714 -0.2515,2.3868 -2.01036,3.81031 -4.39712,3.55882 z"
+						   id="path20" />
+						<path
+						   d="m 495.18358,48.291627 c -2.38677,-0.251499 -3.81031,-2.010353 -3.55882,-4.397139 l 2.8503,-27.050246 
+						   c 0.12574,-1.193394 0.20959,-1.98899 0.2515,-2.386787 -0.75367,-0.481632 -3.14047,-0.733126 -4.73165,-0.900791 
+						   l -23.47007,-2.47305 c -7.55816,-0.796405 -7.64199,-8.1e-4 -7.85157,1.988178 l -2.8503,27.050247 c -0.2515,2.386787 
+						   -2.01035,3.810314 -4.39714,3.558817 -2.38678,-0.251498 -3.81031,-2.010352 -3.55881,-4.397139 l 2.85029,-27.050246 
+						   c 1.13173,-10.740539 11.07668,-9.6926367 16.64585,-9.1058119 l 23.47007,2.4730499 c 6.36476,0.6706577 12.72951,1.3413151 
+						   11.59778,12.081854 l -2.85029,27.050246 c -0.25151,2.386785 -2.01034,3.810312 -4.39714,3.558818 z"
+						   id="path21" />
+						<path
+						   d="M 493.40417,46.093057 453.6244,41.901448 c -2.38679,-0.251498 -3.81031,-2.010353 -3.55881,-4.397138 
+						   0.25149,-2.386787 2.01035,-3.810314 4.39713,-3.558818 l 39.77977,4.19161 c 2.38681,0.251496 3.81033,2.010351 
+						   3.55882,4.397138 -0.2515,2.386786 -2.01034,3.810312 -4.39714,3.558817 z"
+						   id="path22" />
+						<path
+						   d="m 440.81164,430.6994 -27.84584,-2.93415 c -2.3868,-0.25149 -3.81033,-2.01034 -3.55883,-4.39713 0.25151,-2.3868 
+						   2.01035,-3.81032 4.39715,-3.55881 l 27.84584,2.93412 c 2.38678,0.25149 3.81031,2.01035 3.55882,4.39715 
+						   -0.2515,2.38676 -2.01038,3.81031 -4.39714,3.55882 z"
+						   id="path23" />
+						</svg>
+						Cadastrar produto
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/lista_produtos">
+						<svg
+						   width="40"
+						   height="40"
+						   viewBox="0 0 225 256"
+						   version="1.1"
+						   id="svg1"
+						   xmlns="http://www.w3.org/2000/svg">
+						   <path
+						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2 Z"
+						     id="path2"
+						     style="fill:#338000" 
+						   />
+						   <path
+						     d="M 211.6,119.2 185.7,51.3 h -0.1 L 199.1,5 188.7,2 162,93.5 l 10.4,3 8.2,-28.3 17.1,44.1 h -25.3 v 6.9 h -25.9 v -0.3 c 0,-6.7 
+							 -4.9,-12.5 -11.6,-12.5 H 93.3 C 93.3,106.4 81.6,74 77.4,67 74.1,61.6 69,58.2 62.3,58.2 52,58.2 44.2,66.7 38.6,79 c -9.3,20.4 
+							 -13.3,45.5 -11,68.6 1.1,9.4 3.4,17.3 8.9,21.8 H 18 V 96.6 H 2.3 V 254 H 18 v -68.9 h 74.6 l -10.4,51.6 c -1.6,7.8 3.5,15.4 
+							 11.3,17 1,0.2 1.9,0.3 2.9,0.3 6.7,0 12.7,-4.7 14.1,-11.6 l 8.8,-43.7 11.2,30.1 c 2.2,5.8 7.7,9.4 13.5,9.4 1.7,0 3.4,-0.3 5,-0.9 
+							 7.5,-2.8 11.2,-11.1 8.5,-18.5 l -24.4,-65.5 c -2.1,-5.6 -7.5,-9.4 -13.5,-9.4 H 81 v -9.1 H 207 V 254 h 15.7 V 119.2 Z"
+						     id="path3"
+						     style="fill:#483e37" 
+						    />
+							<path
+						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2"
+						     id="path1"
+						     style="fill:#483e37" 
+							/>
+							<path
+						     style="fill:#44aa00;stroke-width:0.32"
+						     d="m 172.93984,119.55498 39.74127,-0.33118"
+						     id="path4" /><path
+						     style="fill:#803300;stroke-width:0.32"
+						     d="m 81.20375,119.88616 91.07374,-0.66236 50.00776,0.33118 0.33118,133.7956 H 206.71992 L 207.0511,134.45796 81.20375,134.12678 Z"
+						     id="path5" 
+							/>
+							<path
+						     style="fill:#803300;stroke-width:0.32"
+						     d="m 93.126131,185.79043 0.331178,-13.90945 0.662355,-2.64942 -75.177232,0.66236 -0.662355,-0.66236 -0.662355,-72.52781 
+							 -14.9029742,0.331178 -0.6623545,156.315652 15.5653287,0.33118 0.331177,-67.89133 z"
+						     id="path6" 
+							/>
+						</svg>
+						Administrar Produtos
+					</a>
+				</li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown5" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="icon"> 
+						<!-- Bonequinho --> 
+						<path class="person" d="M16 12.771h-3.091c-.542 0-.82-.188-1.055-.513l-1.244-1.674-2.029 2.199 1.008 1.562c.347.548.373.922.373 
+							1.42v4.235h-1.962v-3.981c-.016-1.1-1.695-2.143-2.313-1.253l-1.176 1.659c-.261.372-.706.498-1.139.498h-3.372v-1.906l2.532-.001c.397 							
+							0 .741-.14.928-.586l1.126-2.75c.196-.41.46-.782.782-1.102l2.625-2.6-.741-.647c-.223-.195-.521-.277-.812-.227l-2.181.381-.342-1.599 
+							2.992-.571c.561-.107 1.042.075 1.461.462l2.882 2.66c.456.414.924 1.136 1.654 2.215.135.199.323.477.766.477h2.328v1.642zm-2.982-5.042c1.02-.195 
+							1.688-1.182 1.493-2.201-.172-.901-.96-1.528-1.845-1.528-1.186 0-2.07 1.078-1.85 2.234.196 1.021 1.181 1.69 2.202 1.495z
+						"/> 
+			<!-- Porta --> 
+			<path class="door" d="M18 2v15l6 5V2h-6z"/> 
+		</svg>  Sair
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown5">
+                        <li class="foto-perfil d-flex justify-content-center"><img th:src="@{|${imagemPerfil}|}" alt="Foto do usuário" width="75" height="75" class="rounded-circle"></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="usuario" href="#"><strong>Olá, </strong><strong th:text="${nome}"></strong></a></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="nivelAcesso" href="#"><strong th:text="${tipoUsuario}"></strong></a></li>                      
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" id="sair" href="/logout">Sair</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header><br><br><br>
+    
+	<main class="container-fluid mt-5" role="main">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card" role="region" aria-labelledby="tituloForm">
+          <div class="card-header bg-success text-white">
+            <h4 id="tituloForm" class="mb-0"><i class="fas fa-plus me-2"></i>Cadastrar Novo Produto</h4>
+          </div>
+          <div class="card-body form-section">
+            <form id="formProduto" enctype="multipart/form-data" novalidate>
+              
+              <!-- Nome -->
+              <div class="mb-3">
+                <label for="nomeProduto" class="form-label">Nome do Produto <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="nomeProduto" name="nome_produto" required aria-required="true"
+                       placeholder="Ex: Tomates Orgânicos">
+              </div>
+
+              <!-- Descrição -->
+              <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="4"
+                          placeholder="Descreva o produto, como é cultivado, benefícios, etc."></textarea>
+              </div>
+
+              <!-- Preço -->
+              <div class="mb-3">
+                <label for="preco" class="form-label">Preço (R$) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="preco" name="preco" step="0.01" min="0.01" required aria-required="true"
+                       aria-describedby="precoHelp" placeholder="Ex: 5.50">
+                <small id="precoHelp" class="form-text text-muted">Informe o preço por unidade de medida.</small>
+              </div>
+
+              <!-- Unidade de Medida -->
+              <div class="mb-3">
+                <label for="unidadeMedida" class="form-label">Unidade de Medida</label>
+                <select class="form-select" id="unidadeMedida" name="unidade_medida">
+                  <option value="kg">Quilograma (kg)</option>
+                  <option value="g">Grama (g)</option>
+                  <option value="unidade">Unidade</option>
+                  <option value="litro">Litro (L)</option>
+                  <option value="ml">Milililtral (mL)</option>
+                  <option value="saco">Saco</option>
+		  <option value="pacote">Pacote</option>
+                  <option value="caixa">Caixa</option>
+                </select>
+              </div>
+
+              <!-- Quantidade -->
+              <div class="mb-3">
+                <label for="estoque" class="form-label">Quantidade em Estoque <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="estoque" name="quantidade_estoque" step="0.01" min="1" required aria-required="true"
+                       aria-describedby="estoqueHelp" placeholder="Ex: 50.00">
+                <small id="estoqueHelp" class="form-text text-muted">Informe a quantidade disponível em estoque.</small>
+              </div>
+
+              <!-- Status manual -->
+              <div class="mb-3">
+                <label for="statusProduto" class="form-label">Status do Produto</label>
+                <select class="form-select" id="statusProduto" name="status_produto">
+                  <option value="COM_ESTOQUE">Com estoque</option>
+                  <option value="SEM_ESTOQUE">Sem estoque</option>
+                </select>
+              </div>
+
+              <!-- Imagem -->
+              <div class="mb-3">
+                <label for="imagem" class="form-label">Imagem do Produto <span class="text-danger">*</span></label>
+                <input type="file" class="form-control" id="imagem" name="imagem_produto" accept="image/*" required aria-required="true">
+                <div class="mt-2 position-relative">
+                  <div class="mt-2 image-wrapper">
+				  	<img id="previewImagem" class="product-image-preview" alt="Pré-visualização do produto selecionado">
+				  	<button type="button" id="clearImage" class="btn-close position-absolute" style="top: 5px; right: 5px; display: none; z-index: 10;" aria-label="Remover imagem" title="Remover imagem"></button>
+				  </div>
+              	</div>
+
+              <!-- Mensagem de erro acessível -->
+              <div id="erroForm" class="alert alert-danger d-none" role="alert" tabindex="0"></div>
+
+              <!-- Botões -->
+              <div class="d-flex justify-content-between">
+                <a href="/home_produtor" class="btn btn-secondary">
+                  <i class="fas fa-arrow-left me-2"></i>Voltar ao Perfil
+                </a>
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-save me-2"></i>Cadastrar Produto
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Preview de imagem
+    document.getElementById('imagem').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('previewImagem');
+      const clearBtn = document.getElementById('clearImage');
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          clearBtn.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.style.display = 'none';
+        clearBtn.style.display = 'none';
+        preview.src = '';
+      }
+    });
+
+    // Limpar imagem
+    document.getElementById('clearImage').addEventListener('click', function() {
+      document.getElementById('imagem').value = '';
+      document.getElementById('previewImagem').style.display = 'none';
+      document.getElementById('previewImagem').src = '';
+      this.style.display = 'none';
+    });
+
+    // Validação acessível
+    document.getElementById('formProduto').addEventListener('submit', e => {
+      const preco = parseFloat(document.getElementById('preco').value);
+      const estoque = parseFloat(document.getElementById('estoque').value);
+      const erroDiv = document.getElementById('erroForm');
+
+      if (isNaN(preco) || preco <= 0 || isNaN(estoque) || estoque < 1) {
+        e.preventDefault();
+        erroDiv.textContent = 'O preço deve ser maior que zero e a quantidade em estoque deve ser pelo menos 1.';
+        erroDiv.classList.remove('d-none');
+        erroDiv.focus();
+      } else {
+        erroDiv.classList.add('d-none');
+      }
+    });
+  </script>
+  
+  <script>
+$("#formProduto").on("submit", async function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+
+  try {
+    const response = await axios.post("/api/produtos", formData, {
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token"),
+        "Content-Type": "multipart/form-data"
+      }
+    });
+
+    // Sucesso com SweetAlert2
+    await Swal.fire({
+      icon: "success",
+      title: "Produto cadastrado!",
+      text: "Seu produto foi cadastrado com sucesso.",
+      showConfirmButton: true,
+      confirmButtonText: "Ir para o perfil",
+      confirmButtonColor: "#198754",
+      backdrop: true,
+      allowOutsideClick: false
+    });
+
+    // Redireciona após o OK
+    window.location.href = "/home_produtor";
+
+  } catch (error) {
+    console.error("Erro:", error);
+
+    let msg = "Erro inesperado. Tente novamente.";
+
+    if (error.response) {
+      msg = error.response.data?.error || error.response.data || "Falha ao enviar os dados.";
+    } else if (error.request) {
+      msg = "Erro de conexão com o servidor.";
+    } else {
+      msg = "Erro: " + error.message;
+    }
+
+    // ❌ Erro com SweetAlert2
+    Swal.fire({
+      icon: "error",
+      title: "Falha ao cadastrar",
+      text: msg,
+      confirmButtonText: "Ok",
+      confirmButtonColor: "#dc3545"
+    });
+  }
+});
+</script>
+</body>
+</html>

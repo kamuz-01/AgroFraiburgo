@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+	<link rel="stylesheet" href="css/estilos-home_produtor.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+	        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> 
+	<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/> 
+	<link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+	<title>Página inicial - Consumidor</title>
+</head>
+<body>
+
+    <header id="header-menu" role="banner">
+    	<div class="logo">
+                <a href="#" aria-label="Ir para a página inicial" class="log">
+                	<svg class="logo-img" role="img"
+                        aria-label="Logotipo da AgriFamiliar" version="1.0" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 1280.000000 1169.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,1169.000000) scale(0.100000,-0.100000)" fill="#28a645" stroke="none">
+                            <path d="M11975 11683 c-49 -2 -200 -10 -334 -18 -1403 -89 -2667 -379 -3644
+                            -836 -1024 -479 -1749 -1155 -2124 -1981 -175 -387 -274 -779 -314 -1245 -15
+                            -187 -7 -699 16 -888 20 -174 58 -411 91 -575 49 -240 182 -737 183 -685 27
+                            827 102 1402 252 1935 279 988 793 1761 1650 2478 1002 839 2444 1456 4022
+                            1722 203 34 304 48 642 89 53 6 20 8 -140 8 -115 -1 -250 -2 -300 -4z"/>
+                        <path d="M12290 11644 c-642 -96 -1424 -306 -2071 -554 -1266 -487 -2259
+                            -1163 -2992 -2035 -569 -677 -901 -1425 -1051 -2366 -60 -372 -76 -597 -86
+                            -1179 -5 -272 -12 -511 -15 -530 -3 -19 -15 -98 -26 -175 -78 -541 -300 -1346
+                            -607 -2205 -103 -289 -260 -702 -271 -713 -4 -4 -42 81 -84 190 -299 776 -481
+                            1393 -558 1893 -16 104 -20 179 -20 325 5 1001 -182 1706 -611 2309 -196 275
+                            -498 583 -803 820 -121 95 -401 281 -545 363 -514 295 -1155 536 -1794 678
+                            -226 49 -425 84 -505 88 l-54 2 -24 -85 c-165 -601 -212 -1162 -137 -1645 164
+                            -1056 917 -1843 2184 -2280 541 -187 1067 -293 1787 -360 54 -5 72 -11 76 -23
+                            2 -10 50 -159 106 -332 385 -1188 632 -2178 657 -2630 l6 -105 -95 -215 c-52
+                            -118 -118 -268 -147 -332 l-53 -118 18 -42 c40 -91 100 -184 160 -243 145
+                            -145 339 -181 567 -105 95 32 225 96 273 135 27 21 27 22 15 76 -6 29 -14 113
+                            -17 186 -28 673 366 2305 1080 4477 56 170 76 220 92 226 11 5 110 15 220 24
+                            665 55 1430 193 2050 371 1752 504 2922 1379 3451 2582 168 382 267 771 316
+                            1243 19 185 16 722 -5 930 -39 376 -98 709 -192 1075 -78 305 -76 300 -105
+                            302 -14 1 -99 -9 -190 -23z"/>
+            
+                        <path d="M265 8571 c11 -5 67 -14 125 -21 568 -62 1245 -243 1805 -480 787
+                        -334 1461 -855 1868 -1443 370 -534 562 -1199 595 -2062 l8 -190 23 75 c13 41
+                        38 135 56 210 173 702 164 1312 -27 1840 -195 539 -609 1004 -1192 1340 -576
+                        331 -1345 563 -2226 670 -239 29 -490 49 -690 55 -96 3 -218 7 -270 10 -57 2
+                        -87 1 -75 -4z"/>
+                        </g>
+                    </svg>
+                     <span class="text-logo-preto">Agro<span class="text-logo-verde">Fraiburgo</span></span>
+            	</a>
+            </div>
+        <nav id="nav" role="navigation">
+            <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu"
+                aria-expanded="false">
+                Menu <span id="hamburger"></span>
+            </button>
+
+            <ul id="menu-admin" class="navbar-nav">
+            
+                 <li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/cadastro_produtos">
+						<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" xml:space="preserve" viewBox="0 0 504 504">
+							<path d="M26 2h368v496H26z" style="fill:#f4efef"/>
+							<path d="M26 2h368v68H26z" style="fill:#33a5d2"/>
+							<path d="M440 438h43.6L462 497.2z" style="fill:#7d8b95" transform="rotate(6.015 427.717 189.642)"/>
+							<path d="M455.518-11.865h44v404h-44z" style="fill:#13a289" transform="rotate(6.015)"/>
+							<path d="m497.927 41.34 2.557-24.265c.67-6.365-3.056-9.17-9.818-9.883l-18.697-1.97c-6.762-.713-14.572.878-15.243 7.242L454.17 36.73z" style="fill:#7d8b95"/>
+							<path d="M392 504H24c-2.4 0-4-1.6-4-4V4c0-2.4 1.6-4 4-4h368c2.4 0 4 1.6 4 4v496c0 2.4-1.6 4-4 4m-364-8h360V8H28z"/>
+							<path d="M392 76H24c-2.4 0-4-1.6-4-4V4c0-2.4 1.6-4 4-4h368c2.4 0 4 1.6 4 4v68c0 2.4-1.6 4-4 4M28 68h360V8H28zM350 
+								148H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h280c2.4 0 4 1.6 4 4s-1.6 4-4 4M126 188H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h56c2.4 0 4 
+								1.6 4 4s-1.6 4-4 4M350 188H162c-2.4 0-4-1.6-4-4s1.6-4 4-4h188c2.4 0 4 1.6 4 4s-1.6 4-4 4M350 228h-32c-2.4 0-4-1.6-4-4s1.6-4 4-4h32c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M282 228H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h212c2.4 0 4 1.6 4 4s-1.6 4-4 4M350 268H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h280c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M350 388H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h280c2.4 0 4 1.6 4 4s-1.6 4-4 4M126 308H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h56c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M350 308H162c-2.4 0-4-1.6-4-4s1.6-4 4-4h188c2.4 0 4 1.6 4 4s-1.6 4-4 4M350 348h-32c-2.4 0-4-1.6-4-4s1.6-4 4-4h32c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M282 348H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h212c2.4 0 4 1.6 4 4s-1.6 4-4 4M126 428H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h56c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M350 428H162c-2.4 0-4-1.6-4-4s1.6-4 4-4h188c2.4 0 4 1.6 4 4s-1.6 4-4 4M425.437 
+								500.271c-1.592-.167-3.057-1.528-3.287-3.162l-15.676-61.179c.042-.398-.314-.838-.272-1.235l42.084-399.39c.252-2.386 2.01-3.81 4.397-3.558 
+								2.387.251 3.81 2.01 3.56 4.397L414.283 434.34l12.83 50.02 22.972-46.248 41.958-398.195c.251-2.387 2.01-3.81 4.397-3.56 2.387.252 3.81 2.011 
+								3.559 4.398l-42.042 398.991c-.042.398-.084.796-.524 1.151l-28.082 56.57c-.607 1.946-2.324 2.972-3.915 2.804"
+							/>
+							<path d="m451.069 447.869-39.78-4.192c-2.387-.251-3.81-2.01-3.559-4.397.252-2.387 2.01-3.81 4.397-3.559l39.78 4.192c2.387.251 3.81 2.01 3.56 
+								4.397-.252 2.387-2.011 3.81-4.398 3.559M495.184 48.292c-2.387-.252-3.81-2.01-3.56-4.398l2.851-27.05.252-2.387c-.754-.481-3.14-.733-4.732-.9l-23.47-2.473c-7.558-.797-7.642-.001-7.852 
+								1.988l-2.85 27.05c-.252 2.387-2.01 3.81-4.397 3.559-2.387-.252-3.81-2.01-3.559-4.397l2.85-27.05c1.132-10.741 11.077-9.693 16.646-9.106l23.47 
+								2.473c6.365.67 12.73 1.341 11.598 12.082l-2.85 27.05c-.252 2.387-2.01 3.81-4.397 3.559"
+							/>
+							<path d="m493.404 46.093-39.78-4.192c-2.386-.251-3.81-2.01-3.558-4.397.251-2.386 2.01-3.81 4.397-3.559l39.78 4.192c2.386.252 3.81 2.01 3.558 
+								4.397-.251 2.387-2.01 3.81-4.397 3.56M440.812 430.7l-27.846-2.935c-2.387-.251-3.81-2.01-3.559-4.397s2.01-3.81 4.397-3.559l27.846 2.934c2.387.252 
+								3.81 2.01 3.559 4.398-.252 2.386-2.01 3.81-4.397 3.558"
+							/>
+						</svg>
+						Cadastrar produto
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/lista_produtos">
+						<svg
+						   width="40"
+						   height="40"
+						   viewBox="0 0 225 256"
+						   version="1.1"
+						   id="svg1"
+						   xmlns="http://www.w3.org/2000/svg">
+						   <path
+						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2 Z"
+						     id="path2"
+						     style="fill:#338000" 
+						   />
+						   <path
+						     d="M 211.6,119.2 185.7,51.3 h -0.1 L 199.1,5 188.7,2 162,93.5 l 10.4,3 8.2,-28.3 17.1,44.1 h -25.3 v 6.9 h -25.9 v -0.3 c 0,-6.7 
+							 -4.9,-12.5 -11.6,-12.5 H 93.3 C 93.3,106.4 81.6,74 77.4,67 74.1,61.6 69,58.2 62.3,58.2 52,58.2 44.2,66.7 38.6,79 c -9.3,20.4 
+							 -13.3,45.5 -11,68.6 1.1,9.4 3.4,17.3 8.9,21.8 H 18 V 96.6 H 2.3 V 254 H 18 v -68.9 h 74.6 l -10.4,51.6 c -1.6,7.8 3.5,15.4 
+							 11.3,17 1,0.2 1.9,0.3 2.9,0.3 6.7,0 12.7,-4.7 14.1,-11.6 l 8.8,-43.7 11.2,30.1 c 2.2,5.8 7.7,9.4 13.5,9.4 1.7,0 3.4,-0.3 5,-0.9 
+							 7.5,-2.8 11.2,-11.1 8.5,-18.5 l -24.4,-65.5 c -2.1,-5.6 -7.5,-9.4 -13.5,-9.4 H 81 v -9.1 H 207 V 254 h 15.7 V 119.2 Z"
+						     id="path3"
+						     style="fill:#483e37" 
+						    />
+							<path
+						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2"
+						     id="path1"
+						     style="fill:#483e37" 
+							/>
+							<path
+						     style="fill:#44aa00;stroke-width:0.32"
+						     d="m 172.93984,119.55498 39.74127,-0.33118"
+						     id="path4" /><path
+						     style="fill:#803300;stroke-width:0.32"
+						     d="m 81.20375,119.88616 91.07374,-0.66236 50.00776,0.33118 0.33118,133.7956 H 206.71992 L 207.0511,134.45796 81.20375,134.12678 Z"
+						     id="path5" 
+							/>
+							<path
+						     style="fill:#803300;stroke-width:0.32"
+						     d="m 93.126131,185.79043 0.331178,-13.90945 0.662355,-2.64942 -75.177232,0.66236 -0.662355,-0.66236 -0.662355,-72.52781 
+							 -14.9029742,0.331178 -0.6623545,156.315652 15.5653287,0.33118 0.331177,-67.89133 z"
+						     id="path6" 
+							/>
+						</svg>
+						Administrar Produtos
+					</a>
+				</li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown5" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="icon"> 
+						<!-- Bonequinho --> 
+						<path class="person" d="M16 12.771h-3.091c-.542 0-.82-.188-1.055-.513l-1.244-1.674-2.029 2.199 1.008 1.562c.347.548.373.922.373 
+							1.42v4.235h-1.962v-3.981c-.016-1.1-1.695-2.143-2.313-1.253l-1.176 1.659c-.261.372-.706.498-1.139.498h-3.372v-1.906l2.532-.001c.397 							
+							0 .741-.14.928-.586l1.126-2.75c.196-.41.46-.782.782-1.102l2.625-2.6-.741-.647c-.223-.195-.521-.277-.812-.227l-2.181.381-.342-1.599 
+							2.992-.571c.561-.107 1.042.075 1.461.462l2.882 2.66c.456.414.924 1.136 1.654 2.215.135.199.323.477.766.477h2.328v1.642zm-2.982-5.042c1.02-.195 
+							1.688-1.182 1.493-2.201-.172-.901-.96-1.528-1.845-1.528-1.186 0-2.07 1.078-1.85 2.234.196 1.021 1.181 1.69 2.202 1.495z
+						"/> 
+			<!-- Porta --> 
+			<path class="door" d="M18 2v15l6 5V2h-6z"/> 
+		</svg>  Sair
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown5">
+                        <li class="foto-perfil d-flex justify-content-center"><img th:src="@{|${imagemPerfil}|}" alt="Foto do usuário" width="75" height="75" class="rounded-circle"></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="usuario" href="#"><strong>Olá, </strong><strong th:text="${nome}"></strong></a></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="nivelAcesso" href="#"><strong th:text="${tipoUsuario}"></strong></a></li>                      
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" id="sair" href="/logout">Sair</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <br><br><br><br><br>
+	<h1>Bem-vindo à Home do produtor</h1>
+	<!-- Teste temporário -->
+<p th:text="${nome}">NOME AQUI</p>
+<p th:text="${tipoUsuario}">TIPO AQUI</p>
+<p>
+    <img th:src="@{${imagemPerfil}}" width="100">
+</p>
+<p>
+    <img th:src="@{${imagemCapa}}" width="100">
+</p>
+	
+	<script src="js/MenuResponsivo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

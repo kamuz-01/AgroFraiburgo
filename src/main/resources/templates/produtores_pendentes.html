@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="" >
+	<!-- JQuery -->
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+ 	<!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Font Awesome para ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+	<!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/estilos-home_moderador.css">
+    <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+<title>Lista de produtores pendentes</title>
+</head>
+<body>
+
+   <header id="header-menu" role="banner">
+        <div class="logo">
+                <a href="#" aria-label="Ir para a página inicial" class="log">
+                	<svg class="logo-img" role="img"
+                        aria-label="Logotipo da AgriFamiliar" version="1.0" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 1280.000000 1169.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,1169.000000) scale(0.100000,-0.100000)" fill="#28a645" stroke="none">
+                            <path d="M11975 11683 c-49 -2 -200 -10 -334 -18 -1403 -89 -2667 -379 -3644
+                            -836 -1024 -479 -1749 -1155 -2124 -1981 -175 -387 -274 -779 -314 -1245 -15
+                            -187 -7 -699 16 -888 20 -174 58 -411 91 -575 49 -240 182 -737 183 -685 27
+                            827 102 1402 252 1935 279 988 793 1761 1650 2478 1002 839 2444 1456 4022
+                            1722 203 34 304 48 642 89 53 6 20 8 -140 8 -115 -1 -250 -2 -300 -4z"/>
+                        <path d="M12290 11644 c-642 -96 -1424 -306 -2071 -554 -1266 -487 -2259
+                            -1163 -2992 -2035 -569 -677 -901 -1425 -1051 -2366 -60 -372 -76 -597 -86
+                            -1179 -5 -272 -12 -511 -15 -530 -3 -19 -15 -98 -26 -175 -78 -541 -300 -1346
+                            -607 -2205 -103 -289 -260 -702 -271 -713 -4 -4 -42 81 -84 190 -299 776 -481
+                            1393 -558 1893 -16 104 -20 179 -20 325 5 1001 -182 1706 -611 2309 -196 275
+                            -498 583 -803 820 -121 95 -401 281 -545 363 -514 295 -1155 536 -1794 678
+                            -226 49 -425 84 -505 88 l-54 2 -24 -85 c-165 -601 -212 -1162 -137 -1645 164
+                            -1056 917 -1843 2184 -2280 541 -187 1067 -293 1787 -360 54 -5 72 -11 76 -23
+                            2 -10 50 -159 106 -332 385 -1188 632 -2178 657 -2630 l6 -105 -95 -215 c-52
+                            -118 -118 -268 -147 -332 l-53 -118 18 -42 c40 -91 100 -184 160 -243 145
+                            -145 339 -181 567 -105 95 32 225 96 273 135 27 21 27 22 15 76 -6 29 -14 113
+                            -17 186 -28 673 366 2305 1080 4477 56 170 76 220 92 226 11 5 110 15 220 24
+                            665 55 1430 193 2050 371 1752 504 2922 1379 3451 2582 168 382 267 771 316
+                            1243 19 185 16 722 -5 930 -39 376 -98 709 -192 1075 -78 305 -76 300 -105
+                            302 -14 1 -99 -9 -190 -23z"/>
+            
+                        <path d="M265 8571 c11 -5 67 -14 125 -21 568 -62 1245 -243 1805 -480 787
+                        -334 1461 -855 1868 -1443 370 -534 562 -1199 595 -2062 l8 -190 23 75 c13 41
+                        38 135 56 210 173 702 164 1312 -27 1840 -195 539 -609 1004 -1192 1340 -576
+                        331 -1345 563 -2226 670 -239 29 -490 49 -690 55 -96 3 -218 7 -270 10 -57 2
+                        -87 1 -75 -4z"/>
+                        </g>
+                    </svg>
+                     <span class="text-logo-preto">Agro<span class="text-logo-verde">Fraiburgo</span></span>
+            	</a>
+            </div>
+        <nav id="nav" role="navigation">
+            <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu"
+                aria-expanded="false">
+                Menu <span id="hamburger"></span>
+            </button>
+
+            <ul id="menu-admin" class="navbar-nav">
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-1" href="#" id="alertDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  						<span class="position-relative">
+    						<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 640 640">
+        						<!-- path... -->
+        						<path d="M320 64C302.3 64 288 78.3 288 96L288 99.2C215 114 160 178.6 160 256L160 277.7C160 325.8 143.6 372.5 113.6 410.1L103.8 
+        							422.3C98.7 428.6 96 436.4 96 444.5C96 464.1 111.9 480 131.5 480L508.4 480C528 480 543.9 464.1 543.9 444.5C543.9 436.4 541.2 
+        							428.6 536.1 422.3L526.3 410.1C496.4 372.5 480 325.8 480 277.7L480 256C480 178.6 425 114 352 99.2L352 96C352 78.3 337.7 64 320 
+        							64zM258 528C265.1 555.6 290.2 576 320 576C349.8 576 374.9 555.6 382 528L258 528z"
+        						/>
+    						</svg>
+    						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="alert-count" style="font-size: 0.7rem;">
+        						0
+    						</span>
+  						</span>
+  						<span>Notificações</span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="alertDropdown" id="alert-list">
+    					<li><span class="dropdown-item">Sem novos cadastros</span></li>
+  					</ul>
+				</li>		
+            
+            	<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/cadastro_moderadores">
+            	 		<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+  							<path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+  							<path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/>
+						</svg> 
+						Cadastrar moderador
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/cadastro_feira">
+            	 		<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+						  <!-- Ícone de localização -->
+							  <path d="M12 1c-3.148 0-6 2.553-6 5.702 0 3.148 2.602 6.907 6 12.298 3.398-5.391 6-9.15 6-12.298 0-3.149-2.851-5.702-6-5.702zm0 8c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z"/>
+							  <path d="M20 15h-3.135c-.385.641-.798 1.309-1.232 2h3.131l.5 1h-4.264l-.344.544-.289.456h.558l.858 2h-7.488l.858-2h.479l-.289-.456-.343-.544h-2.042l-1.011-1h2.42c-.435-.691-.848-1.359-1.232-2h-3.135l-4 8h24l-4-8zm-12.794 6h-3.97l1.764-3.528 1.516 1.528h1.549l-.859 2zm8.808-2h3.75l1 2h-3.892l-.858-2z"/>
+							
+							  <!-- Círculo branco maior -->
+							  <circle cx="12" cy="7" r="3.4" fill="#b7d8c3"/>
+							
+							  <!-- Sinal de "+" maior e centralizado -->
+							  <text x="12" y="7.5" text-anchor="middle" dominant-baseline="middle" font-size="6.8" font-weight="bold" fill="black">+</text>
+						</svg>
+						Cadastrar feira
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-1" href="/listagem_feiras">
+            	 		<svg
+						   viewBox="0 0 512 512"
+						   width="40"
+						   height="40"
+						   version="1.1"
+						   id="svg6"
+						   xmlns="http://www.w3.org/2000/svg">						  						
+						  <!-- Contorno da folha -->
+						  <path
+						     d="M 45.708992,16.516469 H 393.22502 c 15.99398,0 28.95968,14.628857 28.95968,32.674469 V 460.88927 c 0,18.0456 -12.9657,32.67447 -28.95968,32.67447 H 45.708992 c -15.993967,0 -28.959673,-14.62887 -28.959673,-32.67447 V 137.03582 49.190938 c 0,-18.045612 12.965706,-32.674469 28.959673,-32.674469 z"
+						     fill="none"
+						     stroke="#000000"
+						     stroke-width="27.685"
+						     stroke-linejoin="round"
+						     stroke-linecap="round"
+						     id="path1" />
+						  <!-- Linhas de texto da folha -->
+						  <rect
+						     x="56.620968"
+						     y="63.037506"
+						     width="320.13458"
+						     height="27.935318"
+						     rx="21.404537"
+						     fill="#000000"
+						     id="rect2"
+						     style="stroke-width:1.54216" />
+						  <rect
+						     x="58.609314"
+						     y="417.73608"
+						     width="315.49811"
+						     height="27.935318"
+						     rx="21.094538"
+						     fill="#000000"
+						     id="rect2-2"
+						     style="stroke-width:1.53095" />
+						  <rect
+						     x="57.296265"
+						     y="110.51747"
+						     width="147.81889"
+						     height="24.623545"
+						     rx="14.432132"
+						     fill="#000000"
+						     id="rect4-5-1"
+						     style="stroke-width:1.45459" />
+						  <rect
+						     x="58.272964"
+						     y="157.37775"
+						     width="100.12937"
+						     height="24.623545"
+						     rx="15.074852"
+						     fill="#000000"
+						     id="rect4-5-1-4"
+						     style="stroke-width:1.19717" />
+						  <!-- Círculo da lupa -->
+						  <ellipse
+						     cx="273.94669"
+						     cy="248.09668"
+						     fill="none"
+						     stroke="#000000"
+						     stroke-width="31.2483"
+						     id="circle5"
+						     rx="109.241"
+						     ry="113.00158" />
+						  <!-- Cabo da lupa -->
+						  <g
+						     transform="matrix(1.8330513,1.8671576,-1.8330513,1.8671576,356.69635,326.26733)"
+						     id="g6">
+						    <rect
+						       x="0"
+						       y="-10"
+						       width="80"
+						       height="20"
+						       rx="10"
+						       ry="10"
+						       fill="#000000"
+						       id="rect6" />
+						  </g>
+						  <path
+						     d="m 273.65771,182.00841 c -28.96094,0 -52.43935,23.40818 -52.43935,52.29128 0,23.34441 34.27307,65.90413 47.40421,81.35138 2.62308,3.13024 7.44718,3.13024 10.07028,0 13.13114,-15.44725 47.40418,-57.99988 47.40418,-81.35138 0,-28.8831 -23.47837,-52.29128 -52.43932,-52.29128 z m 0,67.99351 c -9.41693,0 -17.0442,-7.61386 -17.0442,-16.99835 0,-9.3916 7.63435,-16.99839 17.0442,-16.99839 9.40981,0 17.04419,7.60679 17.04419,16.99839 0,9.38449 -7.63438,16.99835 -17.04419,16.99835 z"
+						     id="path1-0"
+						     style="stroke-width:0.709219" />
+						  <rect
+						     x="59.7141"
+						     y="202.45537"
+						     width="80.258743"
+						     height="24.623545"
+						     rx="13.134804"
+						     fill="#000000"
+						     id="rect4-5-1-4-8"
+						     style="stroke-width:1.07182" />
+						  <rect
+						     x="60.350582"
+						     y="247.72833"
+						     width="76.284615"
+						     height="24.623545"
+						     rx="15.396221"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4"
+						     style="stroke-width:1.04495" />
+						  <rect
+						     x="61"
+						     y="291"
+						     width="84.232872"
+						     height="24.623545"
+						     rx="12.198111"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4-5"
+						     style="stroke-width:1.09804" />
+						  <rect
+						     x="59.764549"
+						     y="333.7128"
+						     width="112.71411"
+						     height="24.623545"
+						     rx="11.004716"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4-7"
+						     style="stroke-width:1.27018" />
+						  <rect
+						     x="60.778782"
+						     y="376.1048"
+						     width="178.94957"
+						     height="24.623545"
+						     rx="17.471539"
+						     fill="#000000"
+						     id="rect4-5-1-4-8-4-7-1"
+						     style="stroke-width:1.60045" />
+						</svg>
+						Consultar feira
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/administrar_usuarios">
+            	 		<svg fill="#000000" width="40px" height="40px" viewBox="0 -64 640 640" xmlns="http://www.w3.org/2000/svg">
+            	 			<path d="M610.5 341.3c2.6-14.1 2.6-28.5 0-42.6l25.8-14.9c3-1.7 4.3-5.2 3.3-8.5-6.7-21.6-18.2-41.2-33.2-57.4-2.3-2.5-6-3.1-9-1.4l-25.8 
+            	 				14.9c-10.9-9.3-23.4-16.5-36.9-21.3v-29.8c0-3.4-2.4-6.4-5.7-7.1-22.3-5-45-4.8-66.2 0-3.3.7-5.7 3.7-5.7 7.1v29.8c-13.5 4.8-26 12-36.9 
+            	 				21.3l-25.8-14.9c-2.9-1.7-6.7-1.1-9 1.4-15 16.2-26.5 35.8-33.2 57.4-1 3.3.4 6.8 3.3 8.5l25.8 14.9c-2.6 14.1-2.6 28.5 0 42.6l-25.8 
+            	 				14.9c-3 1.7-4.3 5.2-3.3 8.5 6.7 21.6 18.2 41.1 33.2 57.4 2.3 2.5 6 3.1 9 1.4l25.8-14.9c10.9 9.3 23.4 16.5 36.9 21.3v29.8c0 3.4 2.4 
+            	 				6.4 5.7 7.1 22.3 5 45 4.8 66.2 0 3.3-.7 5.7-3.7 5.7-7.1v-29.8c13.5-4.8 26-12 36.9-21.3l25.8 14.9c2.9 1.7 6.7 1.1 9-1.4 15-16.2 
+            	 				26.5-35.8 33.2-57.4 1-3.3-.4-6.8-3.3-8.5l-25.8-14.9zM496 368.5c-26.8 0-48.5-21.8-48.5-48.5s21.8-48.5 48.5-48.5 48.5 21.8 48.5 
+            	 				48.5-21.7 48.5-48.5 48.5zM96 224c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm224 32c1.9 0 3.7-.5 5.6-.6 
+            	 				8.3-21.7 20.5-42.1 36.3-59.2 7.4-8 17.9-12.6 28.9-12.6 6.9 0 13.7 1.8 19.6 5.3l7.9 4.6c.8-.5 1.6-.9 2.4-1.4 7-14.6 11.2-30.8 11.2-48 
+            	 				0-61.9-50.1-112-112-112S208 82.1 208 144c0 61.9 50.1 112 112 112zm105.2 194.5c-2.3-1.2-4.6-2.6-6.8-3.9-8.2 4.8-15.3 9.8-27.5 9.8-10.9 
+            	 				0-21.4-4.6-28.9-12.6-18.3-19.8-32.3-43.9-40.2-69.6-10.7-34.5 24.9-49.7 25.8-50.3-.1-2.6-.1-5.2 0-7.8l-7.9-4.6c-3.8-2.2-7-5-9.8-8.1-3.3.2-6.5.6-9.8.6-24.6 
+            	 				0-47.6-6-68.5-16h-8.3C179.6 288 128 339.6 128 403.2V432c0 26.5 21.5 48 48 48h255.4c-3.7-6-6.2-12.8-6.2-20.3v-9.2zM173.1 274.6C161.5 
+            	 				263.1 145.6 256 128 256H64c-35.3 0-64 28.7-64 64v32c0 17.7 14.3 32 32 32h65.9c6.3-47.4 34.9-87.3 75.2-109.4z"/>
+            	 		</svg>
+						Administrar Usuarios
+					</a>
+				</li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown5" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="icon"> 
+						<!-- Bonequinho --> 
+						<path class="person" d="M16 12.771h-3.091c-.542 0-.82-.188-1.055-.513l-1.244-1.674-2.029 2.199 1.008 1.562c.347.548.373.922.373 
+							1.42v4.235h-1.962v-3.981c-.016-1.1-1.695-2.143-2.313-1.253l-1.176 1.659c-.261.372-.706.498-1.139.498h-3.372v-1.906l2.532-.001c.397 							
+							0 .741-.14.928-.586l1.126-2.75c.196-.41.46-.782.782-1.102l2.625-2.6-.741-.647c-.223-.195-.521-.277-.812-.227l-2.181.381-.342-1.599 
+							2.992-.571c.561-.107 1.042.075 1.461.462l2.882 2.66c.456.414.924 1.136 1.654 2.215.135.199.323.477.766.477h2.328v1.642zm-2.982-5.042c1.02-.195 
+							1.688-1.182 1.493-2.201-.172-.901-.96-1.528-1.845-1.528-1.186 0-2.07 1.078-1.85 2.234.196 1.021 1.181 1.69 2.202 1.495z
+						"/> 
+			<!-- Porta --> 
+			<path class="door" d="M18 2v15l6 5V2h-6z"/> 
+		</svg>  Sair
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown5">
+                        <li class="foto-perfil d-flex justify-content-center"><img th:src="@{|${imagemPerfil}|}" alt="Foto do usuário" width="75" height="75" class="rounded-circle"></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="usuario" href="#"><strong>Olá, </strong><strong th:text="${nome}"></strong></a></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="nivelAcesso" href="#"><strong th:text="${tipoUsuario}"></strong></a></li>                      
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" id="sair" href="/logout">Sair</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+	<div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-users-cog me-2"></i>
+                            Lista de produtores pendentes
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <table id="produtoresTable" class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Documento</th>
+                                    <th>CPF</th>
+                                    <th>Doc. Identidade</th>
+                                    <th>Comp. Residência</th>
+                                    <th>Decl. PRONAF</th>
+                                    <th>Cert. Orgânico</th>
+                                    <th>Código Rastreab.</th>
+                                    <th>Inscr. Estadual</th>
+                                    <th>Alvará Sanitário</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Confirmação de Status -->
+    <div class="modal fade" id="statusModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Alteração de Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Deseja alterar o status do produtor <strong id="produtorNome"></strong> para <strong id="novoStatus"></strong>?</p>
+                    <div class="mb-3" id="observacaoDiv" style="display: none;">
+                        <label class="form-label">Observação (opcional):</label>
+                        <textarea class="form-control" id="observacao" rows="3" placeholder="Digite uma observação sobre a decisão..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmarStatus">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script th:inline="none">
+    $(document).ready(function() {
+        let produtorSelecionado = null;
+        let statusSelecionado = null;
+
+        // Inicializar DataTable
+const table = $('#produtoresTable').DataTable({
+    processing: true,
+    serverSide: true, // 🔹 ativa paginação/filtros do DataTables no servidor
+    ajax: {
+        url: '/moderador/produtores/listar',
+        type: 'POST',
+        contentType: "application/json",
+        data: function(d) {
+            return JSON.stringify(d);
+        },
+        dataSrc: "data"
+    },
+    columns: [
+        { data: 'id', width: '50px' },
+        { data: 'idDocumento', width: '90px' },
+        { 
+            data: 'cpf',
+            render: function(data) {
+                return data ? data.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : '';
+            }
+        },
+        {
+            data: 'documentoIdentidade',
+            render: function(data, type, row) {
+                return criarBotaoDownload('documento_identidade', row.id, data);
+            },
+            orderable: false
+        },
+        {
+            data: 'comprovanteResidencia',
+            render: function(data, type, row) {
+                return criarBotaoDownload('comprovante_residencia', row.id, data);
+            },
+            orderable: false
+        },
+        {
+            data: 'declaracaoPronaf',
+            render: function(data, type, row) {
+                return criarBotaoDownload('declaracao_pronaf', row.id, data);
+            },
+            orderable: false
+        },
+        {
+            data: 'certificadoProducaoOrganica',
+            render: function(data, type, row) {
+                return criarBotaoDownload('certificado_producao_organica', row.id, data);
+            },
+            orderable: false
+        },
+        { 
+			data: 'codigoRastreabilidade',
+            render: function(data, type, row) {
+                return criarBotaoDownload('codigo_rastreabilidade', row.id, data);
+            },
+            orderable: false 
+		},
+        { 
+			data: 'numeroInscricaoEstadual',
+            render: function(data, type, row) {
+                return criarBotaoDownload('numero_inscricao_estadual', row.id, data);
+            },
+            orderable: false 
+			
+        },
+        {
+            data: 'alvaraSanitario',
+            render: function(data, type, row) {
+                return criarBotaoDownload('alvara_sanitario', row.id, data);
+            },
+            orderable: false
+        },
+        {
+            data: 'statusConta',
+            render: function(data) {
+                return criarBadgeStatus(data);
+            }
+        },
+        {
+            data: null,
+            render: function(data, type, row) {
+                return criarDropdownStatus(row);
+            },
+            orderable: false,
+            width: '70px'
+        }
+    ],
+    order: [[0, 'desc']],
+    pageLength: 25,
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json'
+    },
+    responsive: true,
+    scrollX: true
+});
+
+        // Função para criar botão de download
+        function criarBotaoDownload(tipoDocumento, produtorId, nomeArquivo) {
+            if (!nomeArquivo) {
+                return '<span class="text-muted"><i class="fas fa-minus"></i> Não enviado</span>';
+            }
+            
+            return `
+                <button class="btn btn-sm btn-outline-primary download-btn" 
+                        data-tipo="${tipoDocumento}" 
+                        data-produtor="${produtorId}"
+                        title="Baixar ${nomeArquivo}">
+                    <i class="fas fa-download me-1"></i>
+                    ${nomeArquivo.length > 20 ? nomeArquivo.substring(0, 20) + '...' : nomeArquivo}
+                </button>
+            `;
+        }
+
+        // Função para criar badge de status
+        function criarBadgeStatus(status) {
+            const statusConfig = {
+                'PENDENTE': { class: 'bg-warning text-dark', icon: 'clock' },
+                'ATIVO': { class: 'bg-success', icon: 'check-circle' },
+                'REJEITADO': { class: 'bg-danger', icon: 'times-circle' },
+                'BLOQUEADO': { class: 'bg-secondary', icon: 'ban' }
+            };
+            
+            const config = statusConfig[status] || { class: 'bg-secondary', icon: 'question' };
+            
+            return `
+                <span class="badge ${config.class}">
+                    <i class="fas fa-${config.icon} me-1"></i>
+                    ${status}
+                </span>
+            `;
+        }
+
+        // Função para criar dropdown de status
+        function criarDropdownStatus(row) {
+            const statusAtual = row.statusConta;
+            const statusOptions = [
+                { value: 'PENDENTE', label: 'Pendente', icon: 'clock', class: 'text-warning' },
+                { value: 'ATIVO', label: 'Ativo', icon: 'check-circle', class: 'text-success' },
+                { value: 'REJEITADO', label: 'Rejeitado', icon: 'times-circle', class: 'text-danger' },
+                { value: 'BLOQUEADO', label: 'Bloqueado', icon: 'ban', class: 'text-secondary' }
+            ];
+
+            let options = statusOptions
+                .filter(opt => opt.value !== statusAtual)
+                .map(opt => `
+                    <li>
+                        <a class="dropdown-item status-option" 
+                           href="#" 
+                           data-status="${opt.value}" 
+                           data-produtor-id="${row.id}"
+                           data-produtor-nome="${row.nome || 'Produtor #' + row.id}">
+                            <i class="fas fa-${opt.icon} me-2 ${opt.class}"></i>
+                            ${opt.label}
+                        </a>
+                    </li>
+                `).join('');
+
+            return `
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                            type="button" 
+                            data-bs-toggle="dropdown">
+                        <i class="fas fa-edit me-1"></i>
+                        Alterar
+                    </button>
+                    <ul class="dropdown-menu">
+                        ${options}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Event handler para downloads
+		$('#produtoresTable').on('click', '.download-btn', async function () {
+		    const tipo = $(this).data('tipo');
+		    const produtorId = $(this).data('produtor');
+		
+		    const downloadUrl = `/api/moderador/produtores/${produtorId}/documento/${tipo}/download`;
+		
+		    try {
+		        const response = await fetch(downloadUrl, {
+		            method: 'GET',
+		            credentials: 'include' // 🔹 garante envio do cookie AF_AUTH
+		        });
+		
+		        if (!response.ok) {
+		            throw new Error(`Erro ${response.status} ao baixar o arquivo`);
+		        }
+		
+		        // extrair nome sugerido no header Content-Disposition
+		        const contentDisposition = response.headers.get("Content-Disposition");
+		        let filename = "documento.pdf";
+		        if (contentDisposition && contentDisposition.includes("filename=")) {
+		            filename = contentDisposition.split("filename=")[1].replace(/"/g, '');
+		        }
+		
+		        // converter para blob e forçar download
+		        const blob = await response.blob();
+		        const url = window.URL.createObjectURL(blob);
+		
+		        const a = document.createElement("a");
+		        a.href = url;
+		        a.download = filename;
+		        document.body.appendChild(a);
+		        a.click();
+		        a.remove();
+		
+		        window.URL.revokeObjectURL(url);
+		    } catch (err) {
+		        mostrarNotificacao("Erro ao baixar documento: " + err.message, "danger");
+		    }
+		});
+
+        // Event handler para alteração de status
+        $('#produtoresTable').on('click', '.status-option', function(e) {
+		    e.preventDefault();
+		            
+		    produtorSelecionado = $(this).data('produtor-id');
+		    statusSelecionado = $(this).data('status');
+		    const produtorNome = $(this).data('produtor-nome');
+		    
+		    $('#produtorNome').text(produtorNome);
+		    $('#novoStatus').text(statusSelecionado);
+		    
+		    if (statusSelecionado === 'REJEITADO' || statusSelecionado === 'BLOQUEADO') {
+		        $('#observacaoDiv').show();
+		    } else {
+		        $('#observacaoDiv').hide();
+		    }
+		    
+		    $('#statusModal').modal('show');
+		});
+
+        // Confirmar alteração de status
+		$('#confirmarStatus').click(function() {
+		    const observacao = $('#observacao').val().trim();
+		
+		    // 🔹 valida obrigatoriedade
+		    if ((statusSelecionado === 'REJEITADO' || statusSelecionado === 'BLOQUEADO') && observacao === "") {
+		        $('#observacao').addClass('is-invalid');
+		        return;
+		    } else {
+		        $('#observacao').removeClass('is-invalid');
+		    }
+		
+		    $.ajax({
+		        url: "/api/moderador/produtores/alterar-status",
+		        method: "POST",
+		        contentType: "application/json",
+		        data: JSON.stringify({
+		            idProdutor: produtorSelecionado,
+		            novoStatus: statusSelecionado,
+		            observacao: observacao
+		        }),
+		        success: function(res) {
+		            Swal.fire({
+		                icon: 'success',
+		                title: 'Sucesso!',
+		                text: res.mensagem,
+		                confirmButtonColor: '#3085d6',
+		                confirmButtonText: 'OK'
+		            }).then(() => {
+		                $('#statusModal').modal('hide');
+		                $('#produtoresTable').DataTable().ajax.reload(null, false);
+		            });
+		        },
+		        error: function(err) {
+		            Swal.fire({
+		                icon: 'error',
+		                title: 'Erro!',
+		                text: err.responseJSON?.erro || "Erro ao atualizar status",
+		                confirmButtonColor: '#d33',
+		                confirmButtonText: 'OK'
+		            });
+		        }
+		    });
+		    
+		 // Quando o modal for fechado, limpa campo e erro visual
+		    $('#statusModal').on('hidden.bs.modal', function () {
+		        $('#observacao').val('').removeClass('is-invalid');
+		        $('#observacaoErro').hide();
+		    });
+		});
+
+        // Remove erro assim que o moderador digita algo
+        $('#observacao').on('input', function() {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass('is-invalid');
+                $('#observacaoErro').hide();
+            }
+        });
+    });
+</script>
+
+<script>
+async function carregarAlertas() {
+  try {
+    const response = await axios.get("/api/moderador/novos-produtores");
+    const data = response.data;
+
+    document.getElementById("alert-count").textContent = data.total;
+
+    const lista = document.getElementById("alert-list");
+    lista.innerHTML = "";
+
+    if (data.total > 0) {
+      data.produtores.forEach(produtor => {
+    	  lista.innerHTML += `
+    		  <li>
+    		  <a class="dropdown-item" href="/produtores_pendentes">
+    		      ${produtor.nome}
+    		    </a>
+    		  </li>
+    		`;
+      });
+    } else {
+      lista.innerHTML = `<li><span class="dropdown-item">Sem novos cadastros</span></li>`;
+    }
+
+  } catch (err) {
+    console.error("Erro ao buscar alertas", err);
+  }
+}
+
+carregarAlertas();
+setInterval(carregarAlertas, 10000); // atualiza a cada 10s
+</script>
+</body>
+</html>

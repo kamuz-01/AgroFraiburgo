@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#388E3C">
+  <title>Cadastrar Produto - Produtor</title>
+  <meta name="theme-color" content="#388E3C">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="css/estilos-cadastro_produtos.css">
+  <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
+  <style>
+    .form-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .product-image-preview {
+      max-width: 200px;
+      max-height: 200px;
+      border: 2px dashed #4CAF50;
+      border-radius: 10px;
+      display: none;
+    }
+    .btn-success {
+      background-color: #388E3C;
+      border-color: #388E3C;
+    }
+    .btn-success:hover {
+      background-color: #2E7D32;
+      border-color: #2E7D32;
+    }
+    .icon{
+   width: 40px;
+   height: 40px;
+}
+
+.icon .person {
+  fill: #4CAF50; /* verde para o boneco */
+}
+
+.icon .door {
+  fill: red; /* azul para a porta */
+}
+
+.col-md-8{
+	margin-bottom: 30px;
+}
+  </style>
+</head>
+<body>
+
+<header id="header-menu" role="banner">
+        <div class="logo">
+            <img src="imagens/logo-clinica.png" alt="Logo API REST"/>
+        </div>
+        <nav id="nav" role="navigation">
+            <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu"
+                aria-expanded="false">
+                Menu <span id="hamburger"></span>
+            </button>
+
+            <ul id="menu-admin" class="navbar-nav">
+            
+                 <li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/cadastro_produtos">
+						<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" xml:space="preserve" viewBox="0 0 504 504">
+							<path d="M26 2h368v496H26z" style="fill:#f4efef"/>
+							<path d="M26 2h368v68H26z" style="fill:#33a5d2"/>
+							<path d="M440 438h43.6L462 497.2z" style="fill:#7d8b95" transform="rotate(6.015 427.717 189.642)"/>
+							<path d="M455.518-11.865h44v404h-44z" style="fill:#13a289" transform="rotate(6.015)"/>
+							<path d="m497.927 41.34 2.557-24.265c.67-6.365-3.056-9.17-9.818-9.883l-18.697-1.97c-6.762-.713-14.572.878-15.243 7.242L454.17 36.73z" style="fill:#7d8b95"/>
+							<path d="M392 504H24c-2.4 0-4-1.6-4-4V4c0-2.4 1.6-4 4-4h368c2.4 0 4 1.6 4 4v496c0 2.4-1.6 4-4 4m-364-8h360V8H28z"/>
+							<path d="M392 76H24c-2.4 0-4-1.6-4-4V4c0-2.4 1.6-4 4-4h368c2.4 0 4 1.6 4 4v68c0 2.4-1.6 4-4 4M28 68h360V8H28zM350 
+								148H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h280c2.4 0 4 1.6 4 4s-1.6 4-4 4M126 188H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h56c2.4 0 4 
+								1.6 4 4s-1.6 4-4 4M350 188H162c-2.4 0-4-1.6-4-4s1.6-4 4-4h188c2.4 0 4 1.6 4 4s-1.6 4-4 4M350 228h-32c-2.4 0-4-1.6-4-4s1.6-4 4-4h32c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M282 228H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h212c2.4 0 4 1.6 4 4s-1.6 4-4 4M350 268H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h280c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M350 388H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h280c2.4 0 4 1.6 4 4s-1.6 4-4 4M126 308H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h56c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M350 308H162c-2.4 0-4-1.6-4-4s1.6-4 4-4h188c2.4 0 4 1.6 4 4s-1.6 4-4 4M350 348h-32c-2.4 0-4-1.6-4-4s1.6-4 4-4h32c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M282 348H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h212c2.4 0 4 1.6 4 4s-1.6 4-4 4M126 428H70c-2.4 0-4-1.6-4-4s1.6-4 4-4h56c2.4 
+								0 4 1.6 4 4s-1.6 4-4 4M350 428H162c-2.4 0-4-1.6-4-4s1.6-4 4-4h188c2.4 0 4 1.6 4 4s-1.6 4-4 4M425.437 
+								500.271c-1.592-.167-3.057-1.528-3.287-3.162l-15.676-61.179c.042-.398-.314-.838-.272-1.235l42.084-399.39c.252-2.386 2.01-3.81 4.397-3.558 
+								2.387.251 3.81 2.01 3.56 4.397L414.283 434.34l12.83 50.02 22.972-46.248 41.958-398.195c.251-2.387 2.01-3.81 4.397-3.56 2.387.252 3.81 2.011 
+								3.559 4.398l-42.042 398.991c-.042.398-.084.796-.524 1.151l-28.082 56.57c-.607 1.946-2.324 2.972-3.915 2.804"
+							/>
+							<path d="m451.069 447.869-39.78-4.192c-2.387-.251-3.81-2.01-3.559-4.397.252-2.387 2.01-3.81 4.397-3.559l39.78 4.192c2.387.251 3.81 2.01 3.56 
+								4.397-.252 2.387-2.011 3.81-4.398 3.559M495.184 48.292c-2.387-.252-3.81-2.01-3.56-4.398l2.851-27.05.252-2.387c-.754-.481-3.14-.733-4.732-.9l-23.47-2.473c-7.558-.797-7.642-.001-7.852 
+								1.988l-2.85 27.05c-.252 2.387-2.01 3.81-4.397 3.559-2.387-.252-3.81-2.01-3.559-4.397l2.85-27.05c1.132-10.741 11.077-9.693 16.646-9.106l23.47 
+								2.473c6.365.67 12.73 1.341 11.598 12.082l-2.85 27.05c-.252 2.387-2.01 3.81-4.397 3.559"
+							/>
+							<path d="m493.404 46.093-39.78-4.192c-2.386-.251-3.81-2.01-3.558-4.397.251-2.386 2.01-3.81 4.397-3.559l39.78 4.192c2.386.252 3.81 2.01 3.558 
+								4.397-.251 2.387-2.01 3.81-4.397 3.56M440.812 430.7l-27.846-2.935c-2.387-.251-3.81-2.01-3.559-4.397s2.01-3.81 4.397-3.559l27.846 2.934c2.387.252 
+								3.81 2.01 3.559 4.398-.252 2.386-2.01 3.81-4.397 3.558"
+							/>
+						</svg>
+						Cadastrar produto
+					</a>
+				</li>
+				
+				<li class="nav-item dropdown">
+            	 	<a class="nav-link d-flex align-items-center gap-2" href="/lista_produtos">
+						<svg
+						   width="40"
+						   height="40"
+						   viewBox="0 0 225 256"
+						   version="1.1"
+						   id="svg1"
+						   xmlns="http://www.w3.org/2000/svg">
+						   <path
+						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2 Z"
+						     id="path2"
+						     style="fill:#338000" 
+						   />
+						   <path
+						     d="M 211.6,119.2 185.7,51.3 h -0.1 L 199.1,5 188.7,2 162,93.5 l 10.4,3 8.2,-28.3 17.1,44.1 h -25.3 v 6.9 h -25.9 v -0.3 c 0,-6.7 
+							 -4.9,-12.5 -11.6,-12.5 H 93.3 C 93.3,106.4 81.6,74 77.4,67 74.1,61.6 69,58.2 62.3,58.2 52,58.2 44.2,66.7 38.6,79 c -9.3,20.4 
+							 -13.3,45.5 -11,68.6 1.1,9.4 3.4,17.3 8.9,21.8 H 18 V 96.6 H 2.3 V 254 H 18 v -68.9 h 74.6 l -10.4,51.6 c -1.6,7.8 3.5,15.4 
+							 11.3,17 1,0.2 1.9,0.3 2.9,0.3 6.7,0 12.7,-4.7 14.1,-11.6 l 8.8,-43.7 11.2,30.1 c 2.2,5.8 7.7,9.4 13.5,9.4 1.7,0 3.4,-0.3 5,-0.9 
+							 7.5,-2.8 11.2,-11.1 8.5,-18.5 l -24.4,-65.5 c -2.1,-5.6 -7.5,-9.4 -13.5,-9.4 H 81 v -9.1 H 207 V 254 h 15.7 V 119.2 Z"
+						     id="path3"
+						     style="fill:#483e37" 
+						    />
+							<path
+						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2"
+						     id="path1"
+						     style="fill:#483e37" 
+							/>
+							<path
+						     style="fill:#44aa00;stroke-width:0.32"
+						     d="m 172.93984,119.55498 39.74127,-0.33118"
+						     id="path4" /><path
+						     style="fill:#803300;stroke-width:0.32"
+						     d="m 81.20375,119.88616 91.07374,-0.66236 50.00776,0.33118 0.33118,133.7956 H 206.71992 L 207.0511,134.45796 81.20375,134.12678 Z"
+						     id="path5" 
+							/>
+							<path
+						     style="fill:#803300;stroke-width:0.32"
+						     d="m 93.126131,185.79043 0.331178,-13.90945 0.662355,-2.64942 -75.177232,0.66236 -0.662355,-0.66236 -0.662355,-72.52781 
+							 -14.9029742,0.331178 -0.6623545,156.315652 15.5653287,0.33118 0.331177,-67.89133 z"
+						     id="path6" 
+							/>
+						</svg>
+						Administrar Produtos
+					</a>
+				</li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown5" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="icon"> 
+						<!-- Bonequinho --> 
+						<path class="person" d="M16 12.771h-3.091c-.542 0-.82-.188-1.055-.513l-1.244-1.674-2.029 2.199 1.008 1.562c.347.548.373.922.373 
+							1.42v4.235h-1.962v-3.981c-.016-1.1-1.695-2.143-2.313-1.253l-1.176 1.659c-.261.372-.706.498-1.139.498h-3.372v-1.906l2.532-.001c.397 							
+							0 .741-.14.928-.586l1.126-2.75c.196-.41.46-.782.782-1.102l2.625-2.6-.741-.647c-.223-.195-.521-.277-.812-.227l-2.181.381-.342-1.599 
+							2.992-.571c.561-.107 1.042.075 1.461.462l2.882 2.66c.456.414.924 1.136 1.654 2.215.135.199.323.477.766.477h2.328v1.642zm-2.982-5.042c1.02-.195 
+							1.688-1.182 1.493-2.201-.172-.901-.96-1.528-1.845-1.528-1.186 0-2.07 1.078-1.85 2.234.196 1.021 1.181 1.69 2.202 1.495z
+						"/> 
+			<!-- Porta --> 
+			<path class="door" d="M18 2v15l6 5V2h-6z"/> 
+		</svg>  Sair
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown5">
+                        <li class="foto-perfil d-flex justify-content-center"><img th:src="@{|${imagemPerfil}|}" alt="Foto do usuário" width="75" height="75" class="rounded-circle"></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="usuario" href="#"><strong>Olá, </strong><strong th:text="${nome}"></strong></a></li>
+                        <li class="d-flex justify-content-center"><a class="dropdown-item" id="nivelAcesso" href="#"><strong th:text="${tipoUsuario}"></strong></a></li>                      
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" id="sair" href="/logout">Sair</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header><br><br><br>
+    
+<main class="container mt-5">
+  <div class="card">
+    <div class="card-header bg-success text-white">
+      <h4><i class="fas fa-list me-2"></i> Meus Produtos</h4>
+    </div>
+    <div class="card-body">
+      <table id="tabelaProdutos" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Imagem</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal de Edição -->
+<div class="modal fade" id="modalEditarProduto" tabindex="-1" aria-labelledby="editarProdutoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="formEditarProduto" class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="editarProdutoLabel"><i class="fas fa-edit me-2"></i>Editar Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editarIdProduto">
+
+		<div class="mb-3">
+          <label for="editarImagem" class="form-label">Imagem</label>
+          <input type="file" id="editarImagem" class="form-control" accept="image/*">
+          <div class="mt-2 position-relative">
+          	<div class="mt-2 image-wrapper">
+				<img id="previewImagem" class="product-image-preview" alt="Pré-visualização do produto selecionado">
+				<button type="button" id="clearImage" class="btn-close position-absolute" style="top: 5px; right: 5px; display: none; z-index: 10;" aria-label="Remover imagem" title="Remover imagem"></button>
+			</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="editarNome" class="form-label">Nome</label>
+          <input type="text" id="editarNome" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="editarDescricao" class="form-label">Descrição</label>
+          <textarea id="editarDescricao" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="editarPreco" class="form-label">Preço</label>
+            <input type="number" step="0.01" id="editarPreco" class="form-control" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editarEstoque" class="form-label">Estoque</label>
+            <input type="number" step="0.01" id="editarEstoque" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="editarStatus" class="form-label">Status</label>
+          <select id="editarStatus" class="form-select" required>
+            <option value="COM_ESTOQUE">Disponível</option>
+            <option value="SEM_ESTOQUE">Indisponível</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Dependências -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).ready(function () {
+  const tabela = $('#tabelaProdutos').DataTable({
+    ajax: {
+      url: '/api/produtos/me',
+      dataSrc: '',
+      xhrFields: { withCredentials: true }
+    },
+    columns: [
+      { data: 'idProduto', width: '6%', className: 'text-center align-middle' },
+      {
+        data: 'imagemProduto',
+        className: 'text-center align-middle',
+        render: data => `<img src="${data}" width="75" height="60" class="rounded">`
+      },
+      { data: 'nomeProduto' },
+      { data: 'descricao' },
+      { data: 'preco', className: 'text-center align-middle', render: data => `R$ ${parseFloat(data).toFixed(2)}` },
+      { data: 'quantidadeEstoque', className: 'text-center align-middle' },
+      { data: 'statusProduto', className: 'text-center align-middle' },
+      {
+        data: 'idProduto',
+        className: 'text-center align-middle',
+        render: id => `
+          <button class="btn btn-sm btn-primary editar" data-id="${id}">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-danger excluir" data-id="${id}">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        `
+      }
+    ],
+     language: {
+    	 url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+     }
+  });
+
+  // === EXCLUIR PRODUTO ===
+  $('#tabelaProdutos').on('click', '.excluir', async function () {
+    const id = $(this).data('id');
+    const confirm = await Swal.fire({
+      title: "Deseja realmente excluir?",
+      text: "Esta ação não pode ser desfeita!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#dc3545"
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+    	await axios.delete(`/api/produtos/${id}`, {
+    		withCredentials: true
+    	});
+        Swal.fire("Excluído!", "O produto foi removido com sucesso.", "success");
+        tabela.ajax.reload();
+      } catch (error) {
+        Swal.fire("Erro", "Não foi possível excluir o produto.", "error");
+      }
+    }
+  });
+
+  // === EDITAR PRODUTO ===
+  let modalEditar = new bootstrap.Modal(document.getElementById('modalEditarProduto'));
+
+  $('#tabelaProdutos').on('click', '.editar', function () {
+	  const id = $(this).data('id');
+	  const produto = tabela.data().toArray().find(p => p.idProduto === id);
+	  if (!produto) return;
+
+	  // Preenche os campos do modal
+	  $('#editarIdProduto').val(produto.idProduto);
+	  $('#editarNome').val(produto.nomeProduto);
+	  $('#editarDescricao').val(produto.descricao);
+	  $('#editarPreco').val(produto.preco);
+	  $('#editarEstoque').val(produto.quantidadeEstoque);
+	  $('#editarStatus').val(produto.statusProduto);
+
+	  // Mostra imagem existente no preview (não no input file!)
+	  if (produto.imagemProduto) {
+	    $('#previewImagem').attr('src', produto.imagemProduto).show();
+	    $('#clearImage').show();
+	  } else {
+	    $('#previewImagem').attr('src', '').hide();
+	    $('#clearImage').hide();
+	  }
+
+	  // Limpa o campo de upload (caso o usuário queira trocar)
+	  $('#editarImagem').val('');
+
+	  modalEditar.show();
+	});
+
+  // === LIMPAR IMAGEM ===
+  //$('#clearImage').on('click', function () {
+	//$('#editarImagem').val('');
+	//$('#previewImagem').attr('src', '').hide();
+	//$('#clearImage').hide();
+  //});
+
+  // === SALVAR ALTERAÇÕES ===
+  $('#formEditarProduto').on('submit', async function (e) {
+    e.preventDefault();
+    const id = $('#editarIdProduto').val();
+
+    const formData = new FormData();
+    formData.append('nome_produto', $('#editarNome').val());
+    formData.append('descricao', $('#editarDescricao').val());
+    formData.append('preco', parseFloat($('#editarPreco').val()));
+    formData.append('unidade_medida', 'kg'); // ajuste se tiver campo específico
+    formData.append('quantidade_estoque', parseFloat($('#editarEstoque').val()));
+    formData.append('status_produto', $('#editarStatus').val());
+
+    const imagem = $('#editarImagem')[0].files[0];
+    if (imagem) {
+      formData.append('imagem_produto', imagem);
+    }
+
+    try {
+      await axios.put(`/api/produtos/${id}`, formData, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      Swal.fire("Sucesso", "Produto atualizado com sucesso!", "success");
+      modalEditar.hide();
+      tabela.ajax.reload();
+
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Erro", "Não foi possível atualizar o produto.", "error");
+    }
+  });
+  
+  $('#editarImagem').on('change', function() {
+	  const file = this.files[0];
+	  if (file) {
+	    const reader = new FileReader();
+	    reader.onload = e => {
+	      $('#previewImagem').attr('src', e.target.result).show();
+	      $('#clearImage').show();
+	    };
+	    reader.readAsDataURL(file);
+	  }
+	});
+
+	// Botão de limpar imagem
+	$('#clearImage').on('click', function() {
+	  $('#editarImagem').val('');
+	  $('#previewImagem').attr('src', '').hide();
+	  $(this).hide();
+	});
+});
+</script>
+
+</body>
+</html>
