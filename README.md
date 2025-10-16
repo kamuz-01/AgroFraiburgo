@@ -104,6 +104,6 @@ Karli De Jesus Munoz Manzano
 
 ---
 
-*Desenvolvido com ❤️ para a agricultura familiar de Fraiburgo
+*Desenvolvido com ❤️ para a agricultura familiar de Fraiburgo*
 
-*Todos os direitos reservados © 2025
+*Todos os direitos reservados © 2025*
