@@ -1,7 +1,6 @@
 package org.main.models;
 
 import org.main.enums.StatusFeira;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
