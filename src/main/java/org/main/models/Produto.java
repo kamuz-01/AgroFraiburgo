@@ -1,9 +1,7 @@
 package org.main.models;
 
 import java.time.LocalDateTime;
-
 import org.main.enums.StatusProduto;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
