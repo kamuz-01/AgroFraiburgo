@@ -102,9 +102,9 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 ## Contato
 
-Karli De Jesus Munoz Manzano
+**🧑🏽‍💻 Karli De Jesus Munoz Manzano**
 
-📧 mailto:karli.manzano@estudantes.ifc.edu.br
+📧 **Email**: karli.manzano@estudantes.ifc.edu.br
 
 ---
 
