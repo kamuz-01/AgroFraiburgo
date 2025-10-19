@@ -1,5 +1,29 @@
 @charset "UTF-8";
 
+:root {
+    --primary-green: #10b981;
+    --light-green: #d1fae5;
+    --dark-green: #047857;
+    --light-gray: #f8fafc;
+    --medium-gray: #64748b;
+    --gray-900: #212529;
+    --label-color: #666666;
+    --dark-gray: #334155;
+    --white: #ffffff;
+    --error-red: #ef4444;
+    --focus-blue: #3b82f6;
+    --border-radius: 8px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+	--font-family: "Sofia Sans", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+	font-family: var(--font-family);
+}
+
 #header-menu {
     box-sizing: border-box;
     height: 80px;
@@ -174,4 +198,99 @@ a:hover {
         transform: rotate(-135deg);
         top: -7px;
     }
+}
+
+.form-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }   
+    .product-image-preview {
+	  max-width: 100%;
+	  max-height: 200px;
+	  width: 100%;
+	  height: auto;
+	  border: 2px dashed #4CAF50;
+	  border-radius: 10px;
+	  display: none;
+	}
+    .btn-success {
+      background-color: #388E3C;
+      border-color: #388E3C;
+    }
+    .btn-success:hover {
+      background-color: #2E7D32;
+      border-color: #2E7D32;
+    }
+	.image-wrapper {
+	  position: relative;
+	  display: inline-block;
+	  max-width: 200px;
+	}
+
+	.btn-secondary{
+		background-color: #6c757d !important;
+		color: #fff !important;
+	}
+
+	.btn-close:hover{
+		background-color: red;
+	}
+.icon{
+   width: 40px;
+   height: 40px;
+}
+
+.icon .person {
+  fill: #4CAF50; /* verde para o boneco */
+}
+
+.icon .door {
+  fill: red; /* azul para a porta */
+}
+
+.col-md-8{
+	margin-bottom: 30px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-img {
+    width: 32px;
+    height: 32px;
+}
+
+.text-logo-preto {
+    color: var(--gray-900);
+    font-weight: bold;
+    font-size: 1.8rem;
+}
+
+.text-logo-branco {
+    color: var(--gray-300);
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.text-logo-verde {
+    color: var(--primary-green);
+}
+
+.log{
+	text-decoration: none;
+}
+
+.log:hover{
+	background-color: transparent !important;
+}
+
+.logo a {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* espaço entre ícone e texto */
 }

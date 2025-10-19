@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+ .form-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .product-image-preview {
+      max-width: 200px;
+      max-height: 200px;
+      border: 2px dashed #4CAF50;
+      border-radius: 10px;
+      display: none;
+    }
+    .btn-success {
+      background-color: #388E3C;
+      border-color: #388E3C;
+    }
+    .btn-success:hover {
+      background-color: #2E7D32;
+      border-color: #2E7D32;
+    }
+    .icon{
+   width: 40px;
+   height: 40px;
+}
+
+.icon .person {
+  fill: #4CAF50; /* verde para o boneco */
+}
+
+.icon .door {
+  fill: red; /* azul para a porta */
+}
+
+.col-md-8{
+	margin-bottom: 30px;
+}
