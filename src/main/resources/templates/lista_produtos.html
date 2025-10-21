@@ -288,10 +288,10 @@ $(document).ready(function () {
         data: 'idProduto',
         className: 'text-center align-middle',
         render: id => `
-          <button class="btn btn-sm btn-primary editar" data-id="${id}">
+          <button class="btn btn-sm btn-primary editar" data-id="${id}" data-bs-toggle="tooltip" title="Editar produto">
             <i class="fas fa-edit"></i>
           </button>
-          <button class="btn btn-sm btn-danger excluir" data-id="${id}">
+          <button class="btn btn-sm btn-danger excluir" data-id="${id}" data-bs-toggle="tooltip" title="Excluir produto">
             <i class="fas fa-trash-alt"></i>
           </button>
         `
@@ -300,6 +300,24 @@ $(document).ready(function () {
      language: {
     	 url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
      }
+  });
+
+  // Inicializa tooltips do Bootstrap (inclusive em conteúdo dinâmico)
+  const inicializarTooltips = () => {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    tooltipTriggerList.map(el => new bootstrap.Tooltip(el, {
+      placement: 'top',
+      delay: { show: 150, hide: 100 },
+      customClass: 'tooltip-dark'
+    }))
+  };
+
+  // Ativa após o carregamento inicial
+  inicializarTooltips();
+
+  // Reativa tooltips após recarregar a tabela
+  $('#tabelaProdutos').on('draw.dt', function () {
+    inicializarTooltips();
   });
 
   // === EXCLUIR PRODUTO ===
