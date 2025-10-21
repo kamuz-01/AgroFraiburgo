@@ -304,12 +304,16 @@ $(document).ready(function () {
 
   // Inicializa tooltips do Bootstrap (inclusive em conteúdo dinâmico)
   const inicializarTooltips = () => {
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(el => new bootstrap.Tooltip(el, {
-      placement: 'top',
-      delay: { show: 150, hide: 100 },
-      customClass: 'tooltip-dark'
-    }))
+      placement: 'top', // posição preferencial
+      trigger: 'hover', // ativa ao passar o mouse
+      boundary: 'window', // evita corte em modais/tabelas
+      fallbackPlacements: ['bottom', 'right', 'left'], // se não couber em cima
+      delay: { show: 200, hide: 100 }, // delay leve para elegância
+      customClass: 'tooltip-elegante', // classe customizada no CSS abaixo
+      animation: true // ativa animação padrão do Bootstrap
+    }));
   };
 
   // Ativa após o carregamento inicial

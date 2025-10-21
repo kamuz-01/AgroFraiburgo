@@ -42,11 +42,29 @@
 	margin-bottom: 30px;
 }
 
-.tooltip-dark .tooltip-inner {
-  background-color: #343a40;
+/* ===== Tooltip elegante e moderno ===== */
+.tooltip-elegante .tooltip-inner {
+  background-color: #212529; /* fundo escuro */
   color: #fff;
   font-weight: 500;
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
 }
-.tooltip-dark .tooltip-arrow::before {
-  border-top-color: #343a40 !important;
+
+.tooltip-elegante .tooltip-arrow::before {
+  border-top-color: #212529 !important;
+}
+
+/* Efeito de fade mais suave */
+.tooltip.fade.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tooltip.fade {
+  opacity: 0;
+  transform: scale(0.95);
 }
