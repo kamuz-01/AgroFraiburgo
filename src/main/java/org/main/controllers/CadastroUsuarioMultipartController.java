@@ -41,7 +41,7 @@ public class CadastroUsuarioMultipartController {
                 // Salva produtor já com documentos + imagens
                 usuario = usuarioService.cadastrarProdutor(dto, documentos);
                 return ResponseEntity.ok(Map.of(
-                    "message", "Produtor cadastrado com sucesso! Seus documentos serão avaliados.",
+                    "message", "Produtor cadastrado com sucesso! Seu cadastro está pendente de aprovação e seus documentos serão avaliados.",
                     "id", usuario.getIdUsuario(),
                     "isProdutor", true
                 ));
