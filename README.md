@@ -37,7 +37,7 @@
 - SpringBoot 3.x ou superior
 - Maven 3.x
 - IDE compatível (recomendado VS Code ou Spring Tool Suite)
-- Ambiente de banco de dados MySQL configurado, sendo necessário ter uma das seguintes ferramentas de gerenciamento e execução do MySQL:
+- **Ambiente de banco de dados MySQL configurado, sendo necessário ter uma das seguintes ferramentas de gerenciamento e execução do MySQL**:
 - MySQL Workbench
 - XAMPP
 - WAMP ou
