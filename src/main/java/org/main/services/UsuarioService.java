@@ -28,6 +28,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailBoasVindasService emailBoasVindasService;
     
     @Autowired
     private DocumentosProdutorRepository documentosProdutorRepository;
@@ -37,9 +38,10 @@ public class UsuarioService {
     private static final Path DEFAULTS_DIR = BASE_DIR.resolve("defaults");
     private static final Path DOCS_DIR = Paths.get(System.getProperty("user.dir"), "documentos-produtores");
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailBoasVindasService emailBoasVindasService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailBoasVindasService = emailBoasVindasService;
 
         try {
             inicializarDiretorios();
@@ -97,6 +99,9 @@ public class UsuarioService {
 
         // Configurar imagens
         configurarImagens(salvo, dto);
+        
+        // 	Enviar email de boas vindas ao consdumidor cadastrado
+        emailBoasVindasService.enviarEmailBoasVindas(salvo);
 
         return usuarioRepository.save(salvo);
     }
@@ -197,6 +202,9 @@ public class UsuarioService {
         }
 
         documentosProdutorRepository.save(doc);
+        
+        //	Envia o email de boas-vindas ao produtor cadastrado
+        emailBoasVindasService.enviarEmailBoasVindas(salvo);
 
         // Atualiza usuário com imagens e retorna
         return usuarioRepository.save(salvo);
@@ -328,8 +336,13 @@ public class UsuarioService {
                         u.setImagemPerfil("/imagens-usuarios/defaults/imagem-perfil/perfil.png");
                         u.setImagemCapa("/imagens-usuarios/defaults/imagem-capa/capa.webp");
                     }
+                    
+                    u = usuarioRepository.saveAndFlush(u);
 
-                    return usuarioRepository.saveAndFlush(u);
+                 // Envia e-mail de boas-vindas após cadastro via OAuth2
+                 emailBoasVindasService.enviarEmailBoasVindas(u);
+
+                 return u;
                 });
     }
     
