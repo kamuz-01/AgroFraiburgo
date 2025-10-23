@@ -426,7 +426,7 @@ public class EmailBoasVindasService {
                         line-height: 1.6;
                     }
                     .welcome-box {
-                        background-color: #b3dbf2ff;
+                        background-color: #cfe6f4ff;
                         border-left: 4px solid #3F51B5;
                         padding: 20px;
                         margin: 20px 0;
