@@ -236,6 +236,9 @@ public class UsuarioService {
         // Configurar imagens como consumidor
         configurarImagens(salvo, dto);
 
+        // Envio de email de boas vindas ao moderador
+        emailBoasVindasService.enviarEmailBoasVindas(salvo);
+
         return usuarioRepository.save(salvo);
     }
 
