@@ -496,7 +496,7 @@
       document.getElementById("removePerfil").style.display = "none";
 
       document.getElementById("imagemCapa").value = "";
-      document.getElementById("previewCapa").src = "/imagens-usuarios/defaults/capa.png";
+      document.getElementById("previewCapa").src = "/imagens-usuarios/defaults/capa.webp";
       document.getElementById("removeCapa").style.display = "none";
     }
 
@@ -527,7 +527,11 @@
           title: "Conta criada!",
           text: response.data?.message || "Moderador cadastrado com sucesso!",
           confirmButtonText: "Ok"
-        });
+        }).then((result) => {
+    	    if (result.isConfirmed) {
+    	        window.location.href = '/login';
+    	    }
+    	});
 
         form.reset();
         resetUploads();
@@ -584,7 +588,7 @@
       const input = document.getElementById("imagemCapa");
       input.value = "";
       const preview = document.getElementById("previewCapa");
-      document.getElementById("previewCapa").src = "/imagens-usuarios/defaults/capa.png";
+      document.getElementById("previewCapa").src = "/imagens-usuarios/defaults/capa.webp";
       preview.style.display = "block";
 	  document.querySelector("#dropCapa i").style.display = "inline-block";
       this.style.display = "none";
