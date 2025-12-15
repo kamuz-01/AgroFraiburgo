@@ -301,7 +301,7 @@ public class UsuarioService {
                     u.setOauthProvider(provider);
                     u.setOauthId(oauthId);
                     u.setTipoUsuario(TipoUsuario.CONSUMIDOR);
-                    u.setNome(provider + "_" + oauthId);
+                    u.setNome(nome != null ? nome : provider + "_" + oauthId);
                     try {
                         u = usuarioRepository.save(u);
                         Path baseUsuario = BASE_DIR.resolve(String.valueOf(u.getIdUsuario()));
