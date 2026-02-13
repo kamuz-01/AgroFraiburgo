@@ -368,16 +368,17 @@ p.frase-topo {
 
 .login-side {
   flex: 1;
+  height: 100vh;
   background: linear-gradient(135deg, var(--light-green), #ecfdf5);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 70px;
 }
 
 .login-container {
   background: white;
   padding: 35px 30px;
+  margin-bottom: 77px;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   width: 100%;
@@ -616,6 +617,7 @@ p.frase-topo {
     .login-container {
         padding: 24px 12px;
         margin: 15px;
+        margin-bottom: 140px;
     }
 
     .header h1 {
