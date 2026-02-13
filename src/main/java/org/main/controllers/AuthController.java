@@ -135,7 +135,7 @@ public class AuthController {
 
         // Monta a URL corretamente e faz encode das chaves { } para não virar template do Spring
         URI uri = UriComponentsBuilder
-                .fromHttpUrl("https://graph.facebook.com/me")
+                .fromUriString("https://graph.facebook.com/me")
                 .queryParam("fields", "id,name,email,picture.width(400).height(400){url,width,height}")
                 .queryParam("access_token", accessToken)
                 .build()
