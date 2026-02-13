@@ -3,7 +3,6 @@ package org.main.controllers;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.main.DTOs.LoginRequest;
-import org.main.DTOs.LoginResponse;
 import org.main.enums.StatusConta;
 import org.main.models.Usuario;
 import org.main.services.JwtService;
@@ -105,7 +104,11 @@ public class AuthController {
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        return ResponseEntity.ok(new LoginResponse(jwt, "Login realizado com sucesso!", tipoUsuario));
+        return ResponseEntity.ok(Map.of(
+                "token", jwt,
+                "message", "Login realizado com sucesso!",
+                "tipoUsuario", tipoUsuario
+        ));
     }
 
     // --------------------------
