@@ -22,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
@@ -122,22 +124,57 @@ public class AuthController {
     }
 
     // --------------------------
-    // Login com Facebook (mantido)
+    // Login com Facebook
     // --------------------------
     @PostMapping("/facebook")
     public ResponseEntity<?> loginComFacebook(@RequestBody Map<String, String> body) {
         String accessToken = body.get("accessToken");
-        if (accessToken == null) return ResponseEntity.badRequest().build();
+        if (accessToken == null || accessToken.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "accessToken ausente"));
+        }
 
-        String url = "https://graph.facebook.com/me?fields=id,name,email,picture&access_token=" + accessToken;
+        // Monta a URL corretamente e faz encode das chaves { } para não virar template do Spring
+        URI uri = UriComponentsBuilder
+                .fromHttpUrl("https://graph.facebook.com/me")
+                .queryParam("fields", "id,name,email,picture.width(400).height(400){url,width,height}")
+                .queryParam("access_token", accessToken)
+                .build()
+                .encode() // <-- essencial: transforma { } em %7B %7D
+                .toUri();
+
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<Map<String, Object>>() {}
-        );
-        Map<String, Object> profile = response.getBody();
+        ResponseEntity<Map<String, Object>> fbResponse;
+
+        try {
+            fbResponse = restTemplate.exchange(
+                    uri,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
+        } catch (Exception e) {
+            // Falha ao chamar Facebook (token inválido, rede, etc.)
+            return ResponseEntity.status(401).body(Map.of("error", "Falha ao validar token do Facebook"));
+        }
+
+        Map<String, Object> profile = fbResponse.getBody();
+
+        // Extrai url da foto e coloca num campo "fotoPerfil" (seu JwtService já entende isso)
+        if (profile != null) {
+            Object pictureObj = profile.get("picture");
+            if (pictureObj instanceof Map<?, ?> pictureMap) {
+                Object dataObj = pictureMap.get("data");
+                if (dataObj instanceof Map<?, ?> dataMap) {
+                    Object urlObj = dataMap.get("url");
+                    if (urlObj instanceof String fotoUrl && !fotoUrl.isBlank()) {
+                        profile.put("fotoPerfil", fotoUrl);
+                    }
+                    // (opcional) se quiser logar tamanho retornado:
+                    // profile.put("fotoWidth", dataMap.get("width"));
+                    // profile.put("fotoHeight", dataMap.get("height"));
+                }
+            }
+        }
 
         if (profile != null && profile.containsKey("id")) {
             Usuario u = usuarioService.processOAuthPostLogin("facebook", profile);
@@ -158,6 +195,6 @@ public class AuthController {
                     .build();
         }
 
-        return ResponseEntity.status(401).build();
+        return ResponseEntity.status(401).body(Map.of("error", "Resposta inválida do Facebook"));
     }
 }
