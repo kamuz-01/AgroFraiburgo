@@ -29,11 +29,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `avaliacoes` (
   `id_avaliacao` int NOT NULL,
-  `id_consumidor` int DEFAULT NULL,
-  `id_produtor` int DEFAULT NULL,
-  `nota` int NOT NULL,
+  `id_consumidor` int NOT NULL,
+  `id_produtor` int NOT NULL,
+  `nota` tinyint unsigned NOT NULL,
   `comentario` text COLLATE utf8mb4_general_ci,
-  `data_avaliacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `data_avaliacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT `chk_avaliacoes_nota` CHECK (`nota` BETWEEN 1 AND 5)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -297,7 +298,9 @@ DELIMITER ;
 ALTER TABLE `avaliacoes`
   ADD PRIMARY KEY (`id_avaliacao`),
   ADD KEY `id_consumidor` (`id_consumidor`),
-  ADD KEY `idx_avaliacoes_produtor` (`id_produtor`);
+  ADD KEY `idx_avaliacoes_produtor` (`id_produtor`),
+  ADD KEY `idx_avaliacoes_produtor_data` (`id_produtor`,`data_avaliacao`),
+  ADD UNIQUE KEY `ux_avaliacao_unica` (`id_consumidor`,`id_produtor`);
 
 --
 -- Índices de tabela `consumidores`
@@ -390,8 +393,8 @@ ALTER TABLE `usuarios`
 -- Restrições para tabelas `avaliacoes`
 --
 ALTER TABLE `avaliacoes`
-  ADD CONSTRAINT `avaliacoes_ibfk_1` FOREIGN KEY (`id_consumidor`) REFERENCES `consumidores` (`id_consumidor`) ON DELETE SET NULL,
-  ADD CONSTRAINT `avaliacoes_ibfk_2` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE SET NULL;
+  ADD CONSTRAINT `avaliacoes_ibfk_1` FOREIGN KEY (`id_consumidor`) REFERENCES `consumidores` (`id_consumidor`) ON DELETE CASCADE,
+  ADD CONSTRAINT `avaliacoes_ibfk_2` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `consumidores`
