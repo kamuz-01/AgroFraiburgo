@@ -539,6 +539,23 @@
             isolation: isolate;
         }
 
+        .product-visual.has-photo::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10, 30, 18, 0.55), rgba(10, 30, 18, 0.18));
+            z-index: -2;
+        }
+
+        .product-photo {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -3;
+        }
+
         .product-visual::after {
             content: '';
             position: absolute;
@@ -678,6 +695,18 @@
             font-size: 1rem;
             background: linear-gradient(135deg, #1f7a42, #3fa35d);
             box-shadow: 0 10px 18px rgba(31, 122, 66, 0.25);
+        }
+
+        .avatar.photo {
+            position: relative;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .avatar.photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .producer-name {
@@ -1017,7 +1046,13 @@
             <div class="product-grid">
                 <article class="product-card" th:each="produto, iter : ${produtosDestaque}">
                     <div class="product-visual"
-                         th:classappend="${iter.index % 4 == 0} ? ' visual-fruit' : (${iter.index % 4 == 1} ? ' visual-dairy' : (${iter.index % 4 == 2} ? ' visual-honey' : ' visual-vegetable'))">
+                         th:classappend="(${iter.index % 4 == 0} ? ' visual-fruit' : (${iter.index % 4 == 1} ? ' visual-dairy' : (${iter.index % 4 == 2} ? ' visual-honey' : ' visual-vegetable'))) + (${produto.imagemProduto != null and !produto.imagemProduto.isBlank()} ? ' has-photo' : '')">
+
+                        <img class="product-photo"
+                             th:if="${produto.imagemProduto != null and !produto.imagemProduto.isBlank()}"
+                             th:src="@{|${produto.imagemProduto}|}"
+                             th:alt="${produto.nome}" />
+
                         <span class="availability">
                             <i class="fas fa-circle-check"></i>
                             <span th:text="${produto.disponivel() ? 'Disponível hoje' : 'Indisponível'}">Disponível hoje</span>
@@ -1061,7 +1096,14 @@
             <div class="producer-grid">
                 <article class="producer-card" th:each="p, iter : ${produtoresDestaque}">
                     <div class="producer-top">
+                        <div class="avatar photo"
+                             th:if="${p.temImagem()}"
+                             th:style="${iter.index % 3 == 1} ? 'background: linear-gradient(135deg, #b45309, #f59e0b);' : (${iter.index % 3 == 2} ? 'background: linear-gradient(135deg, #7c3aed, #22c55e);' : '')">
+                            <img th:src="@{|${p.imagemPerfil}|}" th:alt="${p.nomeCompleto()}" loading="lazy" />
+                        </div>
+
                         <div class="avatar"
+                             th:unless="${p.temImagem()}"
                              th:style="${iter.index % 3 == 1} ? 'background: linear-gradient(135deg, #b45309, #f59e0b);' : (${iter.index % 3 == 2} ? 'background: linear-gradient(135deg, #7c3aed, #22c55e);' : '')"
                              th:text="${p.iniciais}">AA</div>
                         <div>
