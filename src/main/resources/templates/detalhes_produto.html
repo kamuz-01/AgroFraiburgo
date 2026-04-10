@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Produto - Alface Crespa</title>
+    <title th:text="'Detalhes do Produto - ' + (produto.nomeProduto ?: 'Produto')">Detalhes do Produto</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -328,16 +328,17 @@
 <body>
 
     <div class="container">
-        <a href="#" class="back-link">
+        <a th:href="@{/inicio_usuarios}" class="back-link">
             <i class="fas fa-arrow-left"></i> Voltar aos produtos
         </a>
 
         <section class="product-section">
             <div class="product-image-container">
                 <span class="badge-status">
-                    <i class="fas fa-check-circle"></i> Disponível
+                    <i class="fas" th:classappend="${produto.statusProduto.name() == 'SEM_ESTOQUE'} ? ' fa-times-circle' : ' fa-check-circle'"></i>
+                    <span th:text="${produto.statusProduto.name() == 'SEM_ESTOQUE' ? 'Indisponível' : 'Disponível'}">Disponível</span>
                 </span>
-                <img src="https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=1000&auto=format&fit=crop" alt="Alface Crespa Fresca">
+                <img th:src="${produto.imagemProduto}" th:alt="${produto.nomeProduto}">
             </div>
 
             <div class="product-info">
@@ -349,17 +350,19 @@
                     </div>
                 </div>
 
-                <h1>Alface Crespa</h1>
-                <p class="short-desc">Alface fresca, cultivada em sistema hidropônico</p>
-                <div class="price">R$ 3,50/unidade</div>
+                <h1 th:text="${produto.nomeProduto}">Produto</h1>
+                <p class="short-desc" th:text="${produto.descricao}">Descrição</p>
+                <div class="price" th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 2)} + '/' + ${produto.unidadeMedida}">R$ 0,00</div>
 
                 <div class="details-box">
                     <h4>Detalhes do Produto</h4>
                     <div class="detail-item">
-                        <i class="fas fa-map-marker-alt"></i> São Paulo, SP
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${(produtor.cidade ?: 'Fraiburgo') + ', ' + (produtor.estado ?: 'SC')}">Fraiburgo, SC</span>
                     </div>
                     <div class="detail-item">
-                        <i class="far fa-calendar-alt"></i> Colheita: 19/01/2024
+                        <i class="far fa-calendar-alt"></i>
+                        <span th:text="'Colheita: ' + ${produto.dataCriacao != null ? produto.dataCriacao.toLocalDate() : ''}">Colheita</span>
                     </div>
                     
                     <div class="certs-container">
@@ -375,26 +378,40 @@
             <h2 class="section-title">Informações do Produtor</h2>
             
             <div class="producer-profile">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="João Silva" class="avatar">
+                <img th:src="${produtor.imagemPerfil}" th:alt="${((produtor.nome ?: '') + ' ' + (produtor.sobrenome ?: '')).trim()}" class="avatar">
                 <div class="producer-meta">
-                    <h3>João Silva</h3>
-                    <div class="producer-location">São Paulo, SP</div>
-                    <div class="rating"><i class="fas fa-star"></i> 4.8 <span>(23 avaliações)</span></div>
+                    <h3 th:text="${((produtor.nome ?: '') + ' ' + (produtor.sobrenome ?: '')).trim()}">Produtor</h3>
+                    <div class="producer-location" th:text="${(produtor.cidade ?: 'Fraiburgo') + ', ' + (produtor.estado ?: 'SC')}">Fraiburgo, SC</div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <span th:text="${#numbers.formatDecimal((mediaAvaliacao ?: 0.0), 1, 1)}">0.0</span>
+                        <span th:text="'(' + ${totalAvaliacoes} + ' usuários avaliaram)'"></span>
+                    </div>
                 </div>
             </div>
 
-            <p class="producer-bio">Produtor de hortaliças orgânicas há 15 anos</p>
+            <p class="producer-bio">
+                Produtor(a) da agricultura familiar em <span th:text="${produtor.cidade ?: 'Fraiburgo'}">Fraiburgo</span>.
+            </p>
 
             <div class="btn-group">
-                <button class="btn btn-primary">
+                <a class="btn btn-primary" th:if="${produtor.telefone != null and !produtor.telefone.isBlank()}" th:href="'tel:' + ${produtor.telefone}">
                     <i class="fas fa-phone-alt"></i> Ligar agora
-                </button>
-                <button class="btn btn-outline">
+                </a>
+                <span class="btn btn-primary" th:unless="${produtor.telefone != null and !produtor.telefone.isBlank()}" style="pointer-events:none;opacity:.7;">
+                    <i class="fas fa-phone-alt"></i> Ligar agora
+                </span>
+
+                <a class="btn btn-outline" th:if="${produtor.email != null and !produtor.email.isBlank()}" th:href="'mailto:' + ${produtor.email}">
                     <i class="far fa-envelope"></i> Enviar e-mail
-                </button>
-                <button class="btn btn-outline">
+                </a>
+                <span class="btn btn-outline" th:unless="${produtor.email != null and !produtor.email.isBlank()}" style="pointer-events:none;opacity:.7;">
+                    <i class="far fa-envelope"></i> Enviar e-mail
+                </span>
+
+                <a class="btn btn-outline" th:href="'/produtores/' + ${produtor.idUsuario}">
                     <i class="far fa-user"></i> Ver perfil
-                </button>
+                </a>
             </div>
         </section>
 
@@ -404,16 +421,24 @@
             </div>
             <h2 class="section-title" style="margin-bottom: 10px;">Interessado neste produto?</h2>
             <p class="cta-text">
-                Entre em contato diretamente com João Silva para mais informações, preços e disponibilidade.
+                Entre em contato diretamente com <span th:text="${((produtor.nome ?: '') + ' ' + (produtor.sobrenome ?: '')).trim()}">o produtor</span> para mais informações, preços e disponibilidade.
             </p>
 
             <div class="cta-buttons">
-                <button class="btn btn-primary">
-                    <i class="fas fa-phone-alt"></i> (11) 99999-1234
-                </button>
-                <button class="btn btn-outline">
+                <a class="btn btn-primary" th:if="${produtor.telefone != null and !produtor.telefone.isBlank()}" th:href="'tel:' + ${produtor.telefone}">
+                    <i class="fas fa-phone-alt"></i>
+                    <span th:text="${produtor.telefone}">Telefone</span>
+                </a>
+                <span class="btn btn-primary" th:unless="${produtor.telefone != null and !produtor.telefone.isBlank()}" style="pointer-events:none;opacity:.7;">
+                    <i class="fas fa-phone-alt"></i> Telefone indisponível
+                </span>
+
+                <a class="btn btn-outline" th:if="${produtor.email != null and !produtor.email.isBlank()}" th:href="'mailto:' + ${produtor.email}">
                     <i class="far fa-envelope"></i> Enviar e-mail
-                </button>
+                </a>
+                <span class="btn btn-outline" th:unless="${produtor.email != null and !produtor.email.isBlank()}" style="pointer-events:none;opacity:.7;">
+                    <i class="far fa-envelope"></i> E-mail indisponível
+                </span>
             </div>
         </section>
 

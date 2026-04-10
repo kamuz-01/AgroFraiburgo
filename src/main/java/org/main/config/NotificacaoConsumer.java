@@ -4,13 +4,15 @@ import org.main.DTOs.NotificacaoModerador;
 import org.main.services.EmailService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class NotificacaoConsumer {
 
     private final EmailService emailService;
+
+    public NotificacaoConsumer(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @RabbitListener(queues = "fila_notificacoes")
     public void receberMensagem(NotificacaoModerador notificacao) {

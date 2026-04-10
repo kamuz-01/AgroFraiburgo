@@ -908,11 +908,11 @@
 
                     <div class="hero-metrics">
                         <div class="metric">
-                            <span class="metric-value">82</span>
+                            <span class="metric-value" th:text="${totalProdutoresAtivos}">0</span>
                             <span class="metric-label">produtores ativos na região</span>
                         </div>
                         <div class="metric">
-                            <span class="metric-value">120+</span>
+                            <span class="metric-value" th:text="${totalProdutos}">0</span>
                             <span class="metric-label">produtos cadastrados e atualizados</span>
                         </div>
                         <div class="metric">
@@ -1013,89 +1013,33 @@
             </div>
 
             <div class="product-grid">
-                <article class="product-card">
-                    <div class="product-visual visual-fruit">
-                        <span class="availability"><i class="fas fa-circle-check"></i> Disponível hoje</span>
-                        <span class="product-badge"><i class="fas fa-location-dot"></i> Fraiburgo</span>
+                <article class="product-card" th:each="produto, iter : ${produtosDestaque}">
+                    <div class="product-visual"
+                         th:classappend="${iter.index % 4 == 0} ? ' visual-fruit' : (${iter.index % 4 == 1} ? ' visual-dairy' : (${iter.index % 4 == 2} ? ' visual-honey' : ' visual-vegetable'))">
+                        <span class="availability">
+                            <i class="fas fa-circle-check"></i>
+                            <span th:text="${produto.disponivel() ? 'Disponível hoje' : 'Indisponível'}">Disponível hoje</span>
+                        </span>
+                        <span class="product-badge">
+                            <i class="fas fa-location-dot"></i>
+                            <span th:text="${produto.produtor != null ? (produto.produtor.cidade ?: 'Fraiburgo') : 'Fraiburgo'}">Fraiburgo</span>
+                        </span>
                     </div>
                     <div class="product-body">
-                        <h3 class="product-name">Morango orgânico</h3>
-                        <p class="product-desc">Lote fresco, colhido recentemente e ideal para consumo imediato.</p>
+                        <h3 class="product-name" th:text="${produto.nome}">Produto</h3>
+                        <p class="product-desc" th:text="${produto.descricaoCurta()}">Descrição</p>
                         <div class="product-meta-line">
                             <div class="product-meta">
-                                <span><i class="fas fa-star"></i> 4,9 de avaliação</span>
-                                <span>Produção familiar</span>
+                                <span>
+                                    <i class="fas fa-star"></i>
+                                    <span th:text="${#numbers.formatDecimal(produto.mediaAvaliacaoNormalizada(), 1, 1)} + ' de avaliação'">0,0 de avaliação</span>
+                                </span>
+                                <span>Agricultura familiar</span>
                             </div>
-                            <div class="price">R$ 12,00/kg</div>
+                            <div class="price" th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 2)} + '/' + ${produto.unidadeMedida}">R$ 0,00</div>
                         </div>
                         <div class="hero-actions" style="margin-top: 16px;">
-                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
-                            <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="product-card">
-                    <div class="product-visual visual-dairy">
-                        <span class="availability"><i class="fas fa-circle-check"></i> Em estoque</span>
-                        <span class="product-badge"><i class="fas fa-certificate"></i> Artesanal</span>
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-name">Queijo colonial</h3>
-                        <p class="product-desc">Perfil tradicional, produzido em pequena escala com sabor marcante.</p>
-                        <div class="product-meta-line">
-                            <div class="product-meta">
-                                <span><i class="fas fa-star"></i> 5,0 de avaliação</span>
-                                <span>Origem local</span>
-                            </div>
-                            <div class="price">R$ 25,00/un</div>
-                        </div>
-                        <div class="hero-actions" style="margin-top: 16px;">
-                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
-                            <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="product-card">
-                    <div class="product-visual visual-honey">
-                        <span class="availability"><i class="fas fa-circle-check"></i> Produção recente</span>
-                        <span class="product-badge"><i class="fas fa-wind"></i> Natural</span>
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-name">Mel silvestre</h3>
-                        <p class="product-desc">Doçura equilibrada, com origem controlada e sabor da serra catarinense.</p>
-                        <div class="product-meta-line">
-                            <div class="product-meta">
-                                <span><i class="fas fa-star"></i> 4,8 de avaliação</span>
-                                <span>Pequenos produtores</span>
-                            </div>
-                            <div class="price">R$ 18,00</div>
-                        </div>
-                        <div class="hero-actions" style="margin-top: 16px;">
-                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
-                            <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="product-card">
-                    <div class="product-visual visual-vegetable">
-                        <span class="availability"><i class="fas fa-circle-check"></i> Colheita do dia</span>
-                        <span class="product-badge"><i class="fas fa-leaf"></i> Hortaliças</span>
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-name">Alface crespa</h3>
-                        <p class="product-desc">Folhas frescas e crocantes, ideais para acompanhar a rotina da semana.</p>
-                        <div class="product-meta-line">
-                            <div class="product-meta">
-                                <span><i class="fas fa-star"></i> 4,9 de avaliação</span>
-                                <span>Produção hidropônica</span>
-                            </div>
-                            <div class="price">R$ 3,50/un</div>
-                        </div>
-                        <div class="hero-actions" style="margin-top: 16px;">
-                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
+                            <a class="mini-btn primary" th:href="'/produto/' + ${produto.id}"><i class="far fa-eye"></i> Ver detalhes</a>
                             <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
                         </div>
                     </div>
@@ -1113,52 +1057,23 @@
             </div>
 
             <div class="producer-grid">
-                <article class="producer-card">
+                <article class="producer-card" th:each="p, iter : ${produtoresDestaque}">
                     <div class="producer-top">
-                        <div class="avatar">JS</div>
+                        <div class="avatar"
+                             th:style="${iter.index % 3 == 1} ? 'background: linear-gradient(135deg, #b45309, #f59e0b);' : (${iter.index % 3 == 2} ? 'background: linear-gradient(135deg, #7c3aed, #22c55e);' : '')"
+                             th:text="${p.iniciais}">AA</div>
                         <div>
-                            <h3 class="producer-name">João Silva</h3>
-                            <div class="producer-meta"><i class="fas fa-location-dot"></i> Fraiburgo, SC</div>
+                            <h3 class="producer-name" th:text="${p.nomeCompleto()}">Produtor</h3>
+                            <div class="producer-meta"><i class="fas fa-location-dot"></i> <span th:text="${p.localizacao()}">Fraiburgo, SC</span></div>
                         </div>
                     </div>
-                    <p class="producer-meta">Produção de hortaliças frescas e manejo cuidadoso para abastecimento semanal.</p>
+                    <p class="producer-meta">Produção familiar com foco em qualidade e proximidade na região.</p>
                     <div class="producer-tags">
-                        <span class="tag"><i class="fas fa-star"></i> 4,8</span>
-                        <span class="tag"><i class="fas fa-seedling"></i> Hortaliças</span>
+                        <span class="tag"><i class="fas fa-star"></i> <span th:text="${#numbers.formatDecimal(p.mediaAvaliacaoNormalizada(), 1, 1)}">0,0</span></span>
+                        <span class="tag"><i class="fas fa-users"></i> <span th:text="${p.totalAvaliacoes} + ' usuários'">0 usuários</span></span>
+                        <span class="tag"><i class="fas fa-seedling"></i> Agricultura familiar</span>
                     </div>
-                    <a href="/produtores" class="producer-link"><i class="far fa-eye"></i> Ver perfil</a>
-                </article>
-
-                <article class="producer-card">
-                    <div class="producer-top">
-                        <div class="avatar" style="background: linear-gradient(135deg, #b45309, #f59e0b);">MS</div>
-                        <div>
-                            <h3 class="producer-name">Maria Santos</h3>
-                            <div class="producer-meta"><i class="fas fa-location-dot"></i> Fraiburgo, SC</div>
-                        </div>
-                    </div>
-                    <p class="producer-meta">Especialista em frutas e processamento artesanal com identidade local.</p>
-                    <div class="producer-tags">
-                        <span class="tag"><i class="fas fa-star"></i> 5,0</span>
-                        <span class="tag"><i class="fas fa-apple-whole"></i> Frutas</span>
-                    </div>
-                    <a href="/produtores" class="producer-link"><i class="far fa-eye"></i> Ver perfil</a>
-                </article>
-
-                <article class="producer-card">
-                    <div class="producer-top">
-                        <div class="avatar" style="background: linear-gradient(135deg, #7c3aed, #22c55e);">AC</div>
-                        <div>
-                            <h3 class="producer-name">Ana Costa</h3>
-                            <div class="producer-meta"><i class="fas fa-location-dot"></i> Fraiburgo, SC</div>
-                        </div>
-                    </div>
-                    <p class="producer-meta">Linha de laticínios e derivados pensada para quem valoriza produção artesanal.</p>
-                    <div class="producer-tags">
-                        <span class="tag"><i class="fas fa-star"></i> 4,9</span>
-                        <span class="tag"><i class="fas fa-cheese"></i> Laticínios</span>
-                    </div>
-                    <a href="/produtores" class="producer-link"><i class="far fa-eye"></i> Ver perfil</a>
+                    <a class="producer-link" th:href="'/produtores/' + ${p.id}"><i class="far fa-eye"></i> Ver perfil</a>
                 </article>
             </div>
         </section>

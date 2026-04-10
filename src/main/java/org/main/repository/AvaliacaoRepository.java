@@ -1,5 +1,6 @@
 package org.main.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.main.models.Avaliacao;
@@ -11,7 +12,12 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
 
     Optional<Avaliacao> findByIdConsumidorAndIdProdutor(Integer idConsumidor, Integer idProdutor);
 
+    List<Avaliacao> findTop10ByIdProdutorOrderByDataAvaliacaoDesc(Integer idProdutor);
+
     long countByIdProdutor(Integer idProdutor);
+
+    @Query("select count(distinct a.idConsumidor) from Avaliacao a where a.idProdutor = :idProdutor")
+    long contarConsumidoresDistintosPorProdutor(@Param("idProdutor") Integer idProdutor);
 
     @Query("select avg(a.nota) from Avaliacao a where a.idProdutor = :idProdutor")
     Double buscarMediaPorProdutor(@Param("idProdutor") Integer idProdutor);

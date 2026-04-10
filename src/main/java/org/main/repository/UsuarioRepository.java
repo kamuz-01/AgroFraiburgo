@@ -20,6 +20,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByNomeLogin(String nomeLogin);
 
     List<Usuario> findByTipoUsuarioAndStatusConta(TipoUsuario tipo, StatusConta status);
+
+    long countByTipoUsuarioAndStatusConta(TipoUsuario tipo, StatusConta status);
     
     boolean existsByNomeLogin(String nomeLogin);
     

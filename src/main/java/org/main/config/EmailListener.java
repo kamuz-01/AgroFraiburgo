@@ -1,8 +1,6 @@
 package org.main.config;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.main.DTOs.EmailMensagens;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,11 +10,14 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class EmailListener {
 
     private final JavaMailSender mailSender;
+
+    public EmailListener(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     @RabbitListener(queues = RabbitConfig.EMAIL_QUEUE)
     public void processEmail(EmailMensagens msg) {

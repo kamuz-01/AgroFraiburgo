@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil do Produtor - João Silva</title>
+    <title th:text="'Perfil do Produtor - ' + ((produtor.nome ?: '') + ' ' + (produtor.sobrenome ?: '')).trim()">Perfil do Produtor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -212,25 +212,28 @@
 <body>
 
     <div class="container">
-        <a href="#" class="back-link">
+        <a href="/produtores" class="back-link">
             <i class="fas fa-arrow-left"></i> Voltar aos produtores
         </a>
 
         <section class="profile-card-fb">
             
-            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop" alt="Capa da Fazenda" class="cover-image">
+            <img th:src="${produtor.imagemCapa}" alt="Capa do produtor" class="cover-image">
             
             <div class="fb-header-container">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="João Silva" class="fb-avatar">
+                <img th:src="${produtor.imagemPerfil}" th:alt="${((produtor.nome ?: '') + ' ' + (produtor.sobrenome ?: '')).trim()}" class="fb-avatar">
                 
                 <div class="fb-profile-info">
-                    <h1>João Silva</h1>
+                    <h1 th:text="${((produtor.nome ?: '') + ' ' + (produtor.sobrenome ?: '')).trim()}">Nome do produtor</h1>
                     <div class="location">
-                        <i class="fas fa-map-marker-alt"></i> São Paulo, SP
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${(produtor.cidade ?: 'Fraiburgo') + ', ' + (produtor.estado ?: 'SC')}">Fraiburgo, SC</span>
                     </div>
-					<div class="rating">
-                    <i class="fas fa-star"></i> 4.8 <span>(23 avaliações)</span>
-                </div>
+				<div class="rating">
+					<i class="fas fa-star"></i>
+					<span th:text="${#numbers.formatDecimal((mediaAvaliacao ?: 0.0), 1, 1)}">0.0</span>
+                    <span th:text="'(' + ${totalAvaliacoes} + ' usuários avaliaram)'"></span>
+				</div>
                     <span class="badge-producer">Produtor Familiar</span>
                 </div>
             </div>
@@ -239,91 +242,119 @@
 
                 <h3 class="section-label" style="margin-top: 0;">Sobre</h3>
                 <p class="about-text">
-                    Produtor de hortaliças orgânicas há 15 anos, focado na qualidade e entrega direta para o consumidor final. Nossa fazenda preza pela sustentabilidade.
+                    Produtor(a) da agricultura familiar em <span th:text="${produtor.cidade ?: 'Fraiburgo'}">Fraiburgo</span>. Confira os produtos cadastrados e entre em contato diretamente.
                 </p>
 
                 <div class="stats-container">
                     <div class="stat-item">
-                        <span class="stat-number">3</span>
+                        <span class="stat-number" th:text="${totalProdutos}">0</span>
                         <span class="stat-desc">Produtos</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">2</span>
+                        <span class="stat-number" th:text="${produtosDisponiveis}">0</span>
                         <span class="stat-desc">Disponíveis</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">15</span>
-                        <span class="stat-desc">Anos de Exp.</span>
+                        <span class="stat-number" th:text="${totalAvaliacoes}">0</span>
+                        <span class="stat-desc">Usuários avaliaram</span>
                     </div>
                 </div>
 
                 <div class="contact-actions">
-                    <button class="btn btn-primary">
+                    <a class="btn btn-primary" th:if="${produtor.telefone != null and !produtor.telefone.isBlank()}" th:href="'tel:' + ${produtor.telefone}">
                         <i class="fas fa-phone-alt"></i> Ligar
-                    </button>
-                    <button class="btn btn-outline">
+                    </a>
+                    <span class="btn btn-primary" th:unless="${produtor.telefone != null and !produtor.telefone.isBlank()}" style="pointer-events:none;opacity:.7;">
+                        <i class="fas fa-phone-alt"></i> Ligar
+                    </span>
+
+                    <a class="btn btn-outline" th:if="${produtor.email != null and !produtor.email.isBlank()}" th:href="'mailto:' + ${produtor.email}">
                         <i class="far fa-envelope"></i> E-mail
-                    </button>
+                    </a>
+                    <span class="btn btn-outline" th:unless="${produtor.email != null and !produtor.email.isBlank()}" style="pointer-events:none;opacity:.7;">
+                        <i class="far fa-envelope"></i> E-mail
+                    </span>
                 </div>
+            </div>
+        </section>
+
+        <section class="profile-card-fb" style="padding: 24px;">
+            <h3 class="section-label" style="margin-top: 0;">Avaliações</h3>
+
+            <div th:if="${#authorization.expression('hasRole(''CONSUMIDOR'')')}">
+                <form th:action="@{'/produtores/' + ${produtor.idUsuario} + '/avaliar'}" method="post" style="display:grid;gap:12px;">
+                    <label class="section-label" style="margin: 0;">Sua nota (1 a 5)</label>
+                    <select name="nota" required style="padding: 10px 12px;border:1px solid var(--border-color);border-radius:10px;">
+                        <option value="5">5 - Excelente</option>
+                        <option value="4">4 - Muito bom</option>
+                        <option value="3">3 - Bom</option>
+                        <option value="2">2 - Regular</option>
+                        <option value="1">1 - Ruim</option>
+                    </select>
+
+                    <label class="section-label" style="margin: 0;">Comentário (opcional)</label>
+                    <textarea name="comentario" rows="3" placeholder="Conte como foi sua experiência (opcional)"
+                              style="padding: 10px 12px;border:1px solid var(--border-color);border-radius:10px;resize:vertical;"></textarea>
+
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-star"></i> Enviar avaliação</button>
+                        <a class="btn btn-outline" th:href="@{'/produtores/' + ${produtor.idUsuario}}"><i class="fas fa-rotate-right"></i> Atualizar</a>
+                    </div>
+                </form>
+            </div>
+
+            <div th:unless="${#authorization.expression('hasRole(''CONSUMIDOR'')')}">
+                <p class="about-text" style="margin: 0;">Faça login como consumidor para avaliar este produtor.</p>
+            </div>
+
+            <div style="height: 18px;"></div>
+
+            <div th:if="${avaliacoesRecentes != null and !avaliacoesRecentes.isEmpty()}" style="display:grid;gap:14px;">
+                <div th:each="a : ${avaliacoesRecentes}" style="border:1px solid var(--border-color);border-radius:12px;padding:14px;">
+                    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+                        <div class="rating" style="margin:0;">
+                            <i class="fas fa-star"></i>
+                            <span th:text="${a.nota}">5</span>
+                        </div>
+                        <div style="color: var(--text-gray);font-size: 0.9rem;" th:text="${a.dataAvaliacao != null ? a.dataAvaliacao.toLocalDate() : ''}"></div>
+                    </div>
+                    <p class="about-text" style="margin: 10px 0 0 0;" th:text="${a.comentario != null ? a.comentario : 'Sem comentário'}">Sem comentário</p>
+                </div>
+            </div>
+
+            <div th:unless="${avaliacoesRecentes != null and !avaliacoesRecentes.isEmpty()}">
+                <p class="about-text" style="margin: 0;">Ainda não há avaliações para este produtor.</p>
             </div>
         </section>
 
 
         <div class="products-title-area">
-            <h3><i class="fas fa-box-open"></i> Produtos de João Silva</h3>
-            <p class="products-subtitle">3 produtos disponíveis</p>
+            <h3>
+                <i class="fas fa-box-open"></i>
+                <span th:text="'Produtos de ' + ((produtor.nome ?: '') + ' ' + (produtor.sobrenome ?: '')).trim()">Produtos</span>
+            </h3>
+            <p class="products-subtitle" th:text="${totalProdutos} + ' produtos cadastrados'">0 produtos cadastrados</p>
         </div>
 
         <div class="products-grid">
-            <article class="product-card">
+            <article class="product-card" th:each="produto : ${produtos}">
                 <div class="prod-img-box">
-                    <span class="status-badge"><i class="fas fa-check-circle"></i> Disponível</span>
-                    <img src="https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=500&auto=format&fit=crop" alt="Alface">
-                </div>
-                <div class="prod-content">
-                    <h4 class="prod-title">Alface Crespa</h4>
-                    <p class="prod-desc">Alface fresca, cultivada em sistema hidropônico</p>
-                    <div class="prod-footer">
-                        <span class="prod-price">R$ 3,50/unidade</span>
-                        <button class="btn-view"><i class="far fa-eye"></i> Ver</button>
-                    </div>
-                </div>
-            </article>
-			
-			<article class="product-card">
-                <div class="prod-img-box">
-                    <span class="status-badge">
-                        <i class="fas fa-check-circle"></i> Disponível
+                    <span class="status-badge" th:classappend="${produto.statusProduto.name() == 'SEM_ESTOQUE'} ? ' unavailable' : ''">
+                        <i class="fas" th:classappend="${produto.statusProduto.name() == 'SEM_ESTOQUE'} ? ' fa-times-circle' : ' fa-check-circle'"></i>
+                        <span th:text="${produto.statusProduto.name() == 'SEM_ESTOQUE' ? 'Indisponível' : 'Disponível'}">Disponível</span>
                     </span>
-                    <img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=500&auto=format&fit=crop" alt="Banana">
+                    <img th:src="${produto.imagemProduto}" th:alt="${produto.nomeProduto}">
                 </div>
                 <div class="prod-content">
-                    <h4 class="prod-title">Banana Nanica</h4>
-                    <p class="prod-desc">Bananas maduras e saborosas, direto do pé</p>
+                    <h4 class="prod-title" th:text="${produto.nomeProduto}">Produto</h4>
+                    <p class="prod-desc" th:text="${produto.descricao}">Descrição</p>
                     <div class="prod-footer">
-                        <span class="prod-price">R$ 6,00/kg</span>
-                        <button class="btn-view"><i class="far fa-eye"></i> Ver</button>
+                        <span class="prod-price" th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 2)} + '/' + ${produto.unidadeMedida}">R$ 0,00</span>
+                        <a class="btn-view" th:href="'/produto/' + ${produto.idProduto}"><i class="far fa-eye"></i> Ver</a>
                     </div>
                 </div>
             </article>
-
-            <article class="product-card">
-                <div class="prod-img-box">
-                    <span class="status-badge unavailable">
-                        <i class="fas fa-times-circle"></i> Indisponível
-                    </span>
-                    <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=500&auto=format&fit=crop" alt="Cenoura">
-                </div>
-                <div class="prod-content">
-                    <h4 class="prod-title">Cenoura Baby</h4>
-                    <p class="prod-desc">Cenouras pequenas e doces, ideais para saladas</p>
-                    <div class="prod-footer">
-                        <span class="prod-price">R$ 7,00/kg</span>
-                        <button class="btn-view"><i class="far fa-eye"></i> Ver</button>
-                    </div>
-                </div>
-            </article>
-            </div>
+        </div>
     </div>
 
 </body>

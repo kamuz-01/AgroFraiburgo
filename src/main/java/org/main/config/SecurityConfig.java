@@ -49,17 +49,26 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(jwtRefreshFilter, JwtAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
+                // Avaliações
+                .requestMatchers(HttpMethod.POST, "/produtores/*/avaliar").hasRole("CONSUMIDOR")
+                .requestMatchers(HttpMethod.POST, "/api/avaliacoes/**").hasRole("CONSUMIDOR")
+                .requestMatchers(HttpMethod.GET, "/api/avaliacoes/**").permitAll()
                 // Recursos públicos
                 .requestMatchers(
                     "/",
                     "/pagina_inicial.html",
                     "/pagina_inicial",
+                    "/inicio_usuarios",
+                    "/inicio_usuarios.html",
                     "/criar_conta.html",
                     "/login.html",
                     "/login",
                     "/criar_conta",
                     "/upload_documentos",
                     "/produtos",
+                    "/produto/**",
+                    "/produtores",
+                    "/produtores/**",
                     "/sobre",
                     "/upload_documentos.html",
                     "/produtos.html",

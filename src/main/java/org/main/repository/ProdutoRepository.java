@@ -10,6 +10,8 @@ import java.util.Optional;
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
+    List<Produto> findTop4ByOrderByDataCriacaoDesc();
+
     List<Produto> findByProdutorIdProdutor(Integer idProdutor);
 
     List<Produto> findAllByProdutor_IdProdutor(Integer idProdutor);
