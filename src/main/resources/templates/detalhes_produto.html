@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto - Alface Crespa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-green: #1ba94c;
+            --primary-hover: #158c3f;
+            --light-green-bg: #f0fdf4;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-body: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* --- Link de Voltar --- */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* --- Layout Grid Principal (Produto) --- */
+        .product-section {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr; /* Imagem maior que texto */
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Imagem do Produto */
+        .product-image-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 400px; /* Altura fixa para manter proporção */
+        }
+
+        .product-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #22c55e; /* Verde status */
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Detalhes do Produto (Coluna Direita) */
+        .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .category-tag {
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .action-icons button {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            color: var(--text-gray);
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+        .action-icons button:hover {
+            background-color: #f9fafb;
+            color: var(--primary-green);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .short-desc {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .price {
+            font-size: 1.75rem;
+            color: var(--primary-green);
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        /* Caixa de Detalhes Técnicos */
+        .details-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .details-box h4 {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        .certs-container {
+            margin-top: 15px;
+        }
+        .certs-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        .tag {
+            display: inline-block;
+            background-color: #f3f4f6;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            color: var(--text-gray);
+        }
+
+        /* --- Seção Informações do Produtor --- */
+        .section-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .producer-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .producer-meta h3 {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+        
+        .producer-location {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .rating {
+            color: #fbbf24;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+        .rating span { color: var(--text-gray); font-weight: 400; }
+
+        .producer-bio {
+            color: var(--text-gray);
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        /* Botões Gerais */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.2s;
+            flex: 1; /* Botões ocupam largura igual */
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+
+        .btn-outline {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+        .btn-outline:hover { background-color: #f9fafb; border-color: #d1d5db; }
+
+        /* --- Seção CTA (Interessado?) --- */
+        .cta-section {
+            background-color: var(--light-green-bg);
+            border: 1px solid #dcfce7;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .cta-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+        }
+
+        .cta-text {
+            max-width: 600px;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .product-section {
+                grid-template-columns: 1fr;
+            }
+            .product-image-container {
+                height: 250px;
+            }
+            .btn-group, .cta-buttons {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="#" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar aos produtos
+        </a>
+
+        <section class="product-section">
+            <div class="product-image-container">
+                <span class="badge-status">
+                    <i class="fas fa-check-circle"></i> Disponível
+                </span>
+                <img src="https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=1000&auto=format&fit=crop" alt="Alface Crespa Fresca">
+            </div>
+
+            <div class="product-info">
+                <div class="top-row">
+                    <span class="category-tag">Hortaliças</span>
+                    <div class="action-icons">
+                        <button><i class="far fa-heart"></i></button>
+                        <button><i class="fas fa-share-alt"></i></button>
+                    </div>
+                </div>
+
+                <h1>Alface Crespa</h1>
+                <p class="short-desc">Alface fresca, cultivada em sistema hidropônico</p>
+                <div class="price">R$ 3,50/unidade</div>
+
+                <div class="details-box">
+                    <h4>Detalhes do Produto</h4>
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i> São Paulo, SP
+                    </div>
+                    <div class="detail-item">
+                        <i class="far fa-calendar-alt"></i> Colheita: 19/01/2024
+                    </div>
+                    
+                    <div class="certs-container">
+                        <span class="certs-label">Certificações:</span>
+                        <span class="tag">Hidropônico</span>
+                        <span class="tag">Agricultura Familiar</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2 class="section-title">Informações do Produtor</h2>
+            
+            <div class="producer-profile">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="João Silva" class="avatar">
+                <div class="producer-meta">
+                    <h3>João Silva</h3>
+                    <div class="producer-location">São Paulo, SP</div>
+                    <div class="rating"><i class="fas fa-star"></i> 4.8 <span>(23 avaliações)</span></div>
+                </div>
+            </div>
+
+            <p class="producer-bio">Produtor de hortaliças orgânicas há 15 anos</p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary">
+                    <i class="fas fa-phone-alt"></i> Ligar agora
+                </button>
+                <button class="btn btn-outline">
+                    <i class="far fa-envelope"></i> Enviar e-mail
+                </button>
+                <button class="btn btn-outline">
+                    <i class="far fa-user"></i> Ver perfil
+                </button>
+            </div>
+        </section>
+
+        <section class="section-card cta-section">
+            <div class="cta-icon">
+                <i class="far fa-comment-dots"></i>
+            </div>
+            <h2 class="section-title" style="margin-bottom: 10px;">Interessado neste produto?</h2>
+            <p class="cta-text">
+                Entre em contato diretamente com João Silva para mais informações, preços e disponibilidade.
+            </p>
+
+            <div class="cta-buttons">
+                <button class="btn btn-primary">
+                    <i class="fas fa-phone-alt"></i> (11) 99999-1234
+                </button>
+                <button class="btn btn-outline">
+                    <i class="far fa-envelope"></i> Enviar e-mail
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

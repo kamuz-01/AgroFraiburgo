@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroFraiburgo - Início</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f3f7f1;
+            --surface: rgba(255, 255, 255, 0.82);
+            --surface-strong: #ffffff;
+            --text: #17311f;
+            --muted: #5c6f60;
+            --border: rgba(23, 49, 31, 0.08);
+            --primary: #1f7a42;
+            --primary-dark: #175f33;
+            --primary-soft: #e4f4ea;
+            --accent: #f2a93b;
+            --shadow-lg: 0 24px 60px rgba(18, 40, 26, 0.12);
+            --shadow-md: 0 14px 30px rgba(18, 40, 26, 0.08);
+            --radius-xl: 30px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(31, 122, 66, 0.14), transparent 28%),
+                radial-gradient(circle at top right, rgba(242, 169, 59, 0.12), transparent 24%),
+                linear-gradient(180deg, #f8fbf6 0%, #eef4ec 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            inset: auto;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            filter: blur(22px);
+            opacity: 0.45;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::before {
+            top: -120px;
+            left: -120px;
+            background: rgba(31, 122, 66, 0.16);
+        }
+
+        body::after {
+            right: -130px;
+            bottom: 10%;
+            background: rgba(242, 169, 59, 0.14);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        .container {
+            width: min(1200px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .main-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(18px);
+            background: rgba(247, 250, 245, 0.78);
+            border-bottom: 1px solid rgba(23, 49, 31, 0.08);
+        }
+
+        .header-grid {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), #2f9a57);
+            box-shadow: 0 12px 26px rgba(31, 122, 66, 0.28);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.08rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .brand-subtitle {
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px 8px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            box-shadow: 0 10px 26px rgba(18, 40, 26, 0.06);
+        }
+
+        .search-bar i {
+            color: var(--muted);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
+            min-width: 0;
+        }
+
+        .search-bar button {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+            box-shadow: 0 12px 22px rgba(31, 122, 66, 0.24);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            box-shadow: 0 10px 22px rgba(18, 40, 26, 0.05);
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .action-item.primary {
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+            color: #fff;
+        }
+
+        .action-item:hover,
+        .btn:hover,
+        .mini-btn:hover,
+        .category-chip:hover,
+        .producer-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-section {
+            padding: 28px 0 8px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.45fr 0.8fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .hero-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 34px;
+            padding: 34px;
+            min-height: 430px;
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, 0.15), transparent 22%),
+                linear-gradient(135deg, #1b6a3b 0%, #2f8d52 54%, #187245 100%);
+            color: #fff;
+            box-shadow: var(--shadow-lg);
+            isolation: isolate;
+        }
+
+        .hero-card::before,
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(10px);
+            opacity: 0.2;
+        }
+
+        .hero-card::before {
+            width: 220px;
+            height: 220px;
+            background: rgba(255, 255, 255, 0.8);
+            top: -70px;
+            right: -50px;
+        }
+
+        .hero-card::after {
+            width: 280px;
+            height: 280px;
+            background: rgba(242, 169, 59, 0.55);
+            left: -120px;
+            bottom: -150px;
+        }
+
+        .eyebrow {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-title {
+            position: relative;
+            z-index: 1;
+            margin-top: 18px;
+            max-width: 11ch;
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2.4rem, 5vw, 4.6rem);
+            line-height: 0.98;
+            letter-spacing: -0.05em;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 1;
+            max-width: 58ch;
+            margin-top: 18px;
+            font-size: 1.02rem;
+            line-height: 1.72;
+            color: rgba(255, 255, 255, 0.86);
+        }
+
+        .hero-actions {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 800;
+            border: 1px solid transparent;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: var(--primary-dark);
+            box-shadow: 0 16px 26px rgba(0, 0, 0, 0.16);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .hero-metrics {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .metric {
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+        }
+
+        .metric-value {
+            display: block;
+            font-family: 'Sora', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .metric-label {
+            display: block;
+            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+
+        .hero-side {
+            display: grid;
+            gap: 14px;
+        }
+
+        .side-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            padding: 22px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(16px);
+        }
+
+        .side-card h2,
+        .section-title,
+        .step-title,
+        .producer-name,
+        .product-name {
+            font-family: 'Sora', sans-serif;
+            letter-spacing: -0.03em;
+        }
+
+        .side-card h2 {
+            font-size: 1.08rem;
+            margin-bottom: 8px;
+        }
+
+        .side-card p,
+        .section-subtitle,
+        .producer-meta,
+        .step-text,
+        .product-desc {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .side-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .side-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(31, 122, 66, 0.06);
+        }
+
+        .side-item i {
+            margin-top: 2px;
+            color: var(--primary);
+        }
+
+        .side-item strong {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--text);
+        }
+
+        .side-item span {
+            font-size: 0.93rem;
+            color: var(--muted);
+        }
+
+        .section-shell {
+            margin-top: 18px;
+            padding: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(16px);
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-size: 1.45rem;
+        }
+
+        .section-subtitle {
+            margin-top: 8px;
+            max-width: 62ch;
+        }
+
+        .section-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .category-chip {
+            min-height: 94px;
+            padding: 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text);
+            background: linear-gradient(180deg, #fff, #f5faf2);
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .category-chip i {
+            font-size: 1.18rem;
+            color: var(--primary);
+        }
+
+        .category-chip strong {
+            font-size: 0.95rem;
+            line-height: 1.35;
+        }
+
+        .category-chip span {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .category-chip:hover,
+        .producer-card:hover,
+        .product-card:hover,
+        .step-card:hover {
+            box-shadow: 0 18px 32px rgba(18, 40, 26, 0.1);
+            border-color: rgba(31, 122, 66, 0.16);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .product-card {
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 10px 28px rgba(18, 40, 26, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .product-visual {
+            position: relative;
+            min-height: 170px;
+            padding: 18px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            isolation: isolate;
+        }
+
+        .product-visual::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            right: -40px;
+            top: -40px;
+            background: rgba(255, 255, 255, 0.14);
+            z-index: -1;
+        }
+
+        .visual-fruit {
+            background: linear-gradient(135deg, #e36a2e, #f0a63c);
+        }
+
+        .visual-dairy {
+            background: linear-gradient(135deg, #0f766e, #22c55e);
+        }
+
+        .visual-honey {
+            background: linear-gradient(135deg, #8b5cf6, #f59e0b);
+        }
+
+        .visual-vegetable {
+            background: linear-gradient(135deg, #1f7a42, #56b46e);
+        }
+
+        .availability {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .product-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .product-body {
+            padding: 18px;
+        }
+
+        .product-name {
+            font-size: 1.02rem;
+            margin-bottom: 6px;
+        }
+
+        .product-meta-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 14px;
+            align-items: end;
+        }
+
+        .product-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .price {
+            font-family: 'Sora', sans-serif;
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .mini-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            background: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            color: var(--text);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .mini-btn.primary {
+            background: linear-gradient(135deg, var(--primary), #2c8b4e);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .producer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .producer-card {
+            padding: 20px;
+            background: linear-gradient(180deg, #fff, #fbfdf9);
+            border-radius: 24px;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            box-shadow: 0 10px 28px rgba(18, 40, 26, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .producer-top {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .avatar {
+            width: 62px;
+            height: 62px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1f7a42, #3fa35d);
+            box-shadow: 0 10px 18px rgba(31, 122, 66, 0.25);
+        }
+
+        .producer-name {
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .producer-meta {
+            font-size: 0.9rem;
+        }
+
+        .producer-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0 18px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: var(--primary-soft);
+            color: var(--primary-dark);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .producer-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: #fff;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            text-decoration: none;
+            font-weight: 800;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .step-card {
+            padding: 20px;
+            border-radius: 22px;
+            background: #fff;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            box-shadow: 0 10px 24px rgba(18, 40, 26, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .step-number {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #2c8b4e);
+            margin-bottom: 16px;
+        }
+
+        .step-title {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            padding: 24px 0 36px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 0.92rem;
+        }
+
+        .footer strong {
+            color: var(--text);
+        }
+
+        .animate-in {
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .delay-1 { animation-delay: 0.08s; }
+        .delay-2 { animation-delay: 0.16s; }
+        .delay-3 { animation-delay: 0.24s; }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1080px) {
+            .header-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .product-grid,
+            .producer-grid,
+            .steps-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            .container {
+                width: min(1200px, calc(100% - 20px));
+            }
+
+            .header-actions,
+            .hero-actions {
+                width: 100%;
+            }
+
+            .header-actions {
+                flex-wrap: wrap;
+            }
+
+            .action-item {
+                flex: 1 1 140px;
+                justify-content: center;
+            }
+
+            .hero-card,
+            .section-shell {
+                padding: 20px;
+                border-radius: 24px;
+            }
+
+            .hero-title {
+                max-width: 100%;
+            }
+
+            .hero-metrics,
+            .category-grid,
+            .product-grid,
+            .producer-grid,
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-bar {
+                padding-left: 12px;
+            }
+
+            .search-bar input {
+                font-size: 0.96rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-grid">
+            <a href="/" class="brand" aria-label="AgroFraiburgo">
+                <span class="brand-mark"><i class="fas fa-seedling"></i></span>
+                <span class="brand-text">
+                    <span class="brand-title">AgroFraiburgo</span>
+                    <span class="brand-subtitle">Informação e valorização da agricultura familiar</span>
+                </span>
+            </a>
+
+            <div class="search-bar" role="search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar produtos, categorias ou produtores em Fraiburgo">
+                <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="header-actions">
+                <a href="/produtores" class="action-item">
+                    <i class="fas fa-users"></i>
+                    <span>Produtores</span>
+                </a>
+                <a href="/favoritos" class="action-item">
+                    <i class="far fa-bookmark"></i>
+                    <span>Salvos</span>
+                </a>
+                <a href="/perfil" class="action-item primary">
+                    <i class="far fa-user"></i>
+                    <span>Meu perfil</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section container">
+            <div class="hero-grid">
+                <article class="hero-card animate-in">
+                    <span class="eyebrow"><i class="fas fa-leaf"></i> Acesso rápido aos produtos da terra</span>
+                    <h1 class="hero-title">Bem-vindo à vitrine digital da agricultura familiar fraiburguense</h1>
+                    <p class="hero-text">
+                        Aqui você encontra produtos frescos, perfis de produtores e informações confiáveis sobre o que está sendo cultivado e produzido em Fraiburgo. A experiência foi pensada para ser clara, acolhedora e moderna, sem perder a identidade do campo.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="/produtos" class="btn btn-primary"><i class="fas fa-bag-shopping"></i> Explorar produtos</a>
+                        <a href="/produtores" class="btn btn-secondary"><i class="fas fa-user-group"></i> Ver produtores</a>
+                    </div>
+
+                    <div class="hero-metrics">
+                        <div class="metric">
+                            <span class="metric-value">82</span>
+                            <span class="metric-label">produtores ativos na região</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">120+</span>
+                            <span class="metric-label">produtos cadastrados e atualizados</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">100%</span>
+                            <span class="metric-label">foco em produção local e familiar</span>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="hero-side">
+                    <div class="side-card animate-in delay-1">
+                        <h2>Hoje em destaque</h2>
+                        <p>Seleções pensadas para quem quer acompanhar a produção, descobrir novidades e se conectar com quem produz em Fraiburgo.</p>
+
+                        <div class="side-list">
+                            <div class="side-item">
+                                <i class="fas fa-apple-whole"></i>
+                                <div>
+                                    <strong>Frutas da estação</strong>
+                                    <span>Oferta de morangos, maçãs e opções sazonais.</span>
+                                </div>
+                            </div>
+                            <div class="side-item">
+                                <i class="fas fa-cheese"></i>
+                                <div>
+                                    <strong>Artesanais locais</strong>
+                                    <span>Queijos, geleias e conservas com origem conhecida.</span>
+                                </div>
+                            </div>
+                            <div class="side-item">
+                                <i class="fas fa-map-location-dot"></i>
+                                <div>
+                                    <strong>Produtores próximos</strong>
+                                    <span>Informações organizadas para facilitar a escolha.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="side-card animate-in delay-2">
+                        <h2>Por que usar o app</h2>
+                        <p>Uma experiência pensada para fortalecer a economia local e aproximar quem produz de quem consome.</p>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-shell container animate-in delay-1">
+            <div class="section-heading">
+                <div>
+                    <h2 class="section-title">Categorias em destaque</h2>
+                    <p class="section-subtitle">Atalhos visuais para navegar rápido entre os principais grupos de produtos da agricultura familiar de Fraiburgo.</p>
+                </div>
+                <a href="/produtos" class="section-link">Ver catálogo <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="category-grid">
+                <a href="#" class="category-chip">
+                    <i class="fas fa-apple-whole"></i>
+                    <strong>Frutas</strong>
+                    <span>Frescas e sazonais</span>
+                </a>
+                <a href="#" class="category-chip">
+                    <i class="fas fa-seedling"></i>
+                    <strong>Hortaliças</strong>
+                    <span>Colhidas com cuidado</span>
+                </a>
+                <a href="#" class="category-chip">
+                    <i class="fas fa-cheese"></i>
+                    <strong>Laticínios</strong>
+                    <span>Artesanais e locais</span>
+                </a>
+                <a href="#" class="category-chip">
+                    <i class="fas fa-egg"></i>
+                    <strong>Ovos e aves</strong>
+                    <span>Produção de proximidade</span>
+                </a>
+                <a href="#" class="category-chip">
+                    <i class="fas fa-mug-hot"></i>
+                    <strong>Mel e geleias</strong>
+                    <span>Sabores da região</span>
+                </a>
+                <a href="#" class="category-chip">
+                    <i class="fas fa-bread-slice"></i>
+                    <strong>Panificados</strong>
+                    <span>Receitas caseiras</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="section-shell container animate-in delay-2">
+            <div class="section-heading">
+                <div>
+                    <h2 class="section-title">Produtos em destaque</h2>
+                    <p class="section-subtitle">Uma seleção de itens com visual mais limpo e foco em informação: origem, disponibilidade e valor.</p>
+                </div>
+                <a href="/produtos" class="section-link">Ver mais produtos <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="product-grid">
+                <article class="product-card">
+                    <div class="product-visual visual-fruit">
+                        <span class="availability"><i class="fas fa-circle-check"></i> Disponível hoje</span>
+                        <span class="product-badge"><i class="fas fa-location-dot"></i> Fraiburgo</span>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name">Morango orgânico</h3>
+                        <p class="product-desc">Lote fresco, colhido recentemente e ideal para consumo imediato.</p>
+                        <div class="product-meta-line">
+                            <div class="product-meta">
+                                <span><i class="fas fa-star"></i> 4,9 de avaliação</span>
+                                <span>Produção familiar</span>
+                            </div>
+                            <div class="price">R$ 12,00/kg</div>
+                        </div>
+                        <div class="hero-actions" style="margin-top: 16px;">
+                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
+                            <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <div class="product-visual visual-dairy">
+                        <span class="availability"><i class="fas fa-circle-check"></i> Em estoque</span>
+                        <span class="product-badge"><i class="fas fa-certificate"></i> Artesanal</span>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name">Queijo colonial</h3>
+                        <p class="product-desc">Perfil tradicional, produzido em pequena escala com sabor marcante.</p>
+                        <div class="product-meta-line">
+                            <div class="product-meta">
+                                <span><i class="fas fa-star"></i> 5,0 de avaliação</span>
+                                <span>Origem local</span>
+                            </div>
+                            <div class="price">R$ 25,00/un</div>
+                        </div>
+                        <div class="hero-actions" style="margin-top: 16px;">
+                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
+                            <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <div class="product-visual visual-honey">
+                        <span class="availability"><i class="fas fa-circle-check"></i> Produção recente</span>
+                        <span class="product-badge"><i class="fas fa-wind"></i> Natural</span>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name">Mel silvestre</h3>
+                        <p class="product-desc">Doçura equilibrada, com origem controlada e sabor da serra catarinense.</p>
+                        <div class="product-meta-line">
+                            <div class="product-meta">
+                                <span><i class="fas fa-star"></i> 4,8 de avaliação</span>
+                                <span>Pequenos produtores</span>
+                            </div>
+                            <div class="price">R$ 18,00</div>
+                        </div>
+                        <div class="hero-actions" style="margin-top: 16px;">
+                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
+                            <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <div class="product-visual visual-vegetable">
+                        <span class="availability"><i class="fas fa-circle-check"></i> Colheita do dia</span>
+                        <span class="product-badge"><i class="fas fa-leaf"></i> Hortaliças</span>
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name">Alface crespa</h3>
+                        <p class="product-desc">Folhas frescas e crocantes, ideais para acompanhar a rotina da semana.</p>
+                        <div class="product-meta-line">
+                            <div class="product-meta">
+                                <span><i class="fas fa-star"></i> 4,9 de avaliação</span>
+                                <span>Produção hidropônica</span>
+                            </div>
+                            <div class="price">R$ 3,50/un</div>
+                        </div>
+                        <div class="hero-actions" style="margin-top: 16px;">
+                            <a href="/produtos" class="mini-btn primary"><i class="far fa-eye"></i> Ver detalhes</a>
+                            <a href="#" class="mini-btn"><i class="far fa-bookmark"></i> Salvar</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-shell container animate-in delay-3">
+            <div class="section-heading">
+                <div>
+                    <h2 class="section-title">Produtores em evidência</h2>
+                    <p class="section-subtitle">Perfis com origem, especialidade e acesso rápido para fortalecer a relação entre produtor e usuário.</p>
+                </div>
+                <a href="/produtores" class="section-link">Ver todos <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="producer-grid">
+                <article class="producer-card">
+                    <div class="producer-top">
+                        <div class="avatar">JS</div>
+                        <div>
+                            <h3 class="producer-name">João Silva</h3>
+                            <div class="producer-meta"><i class="fas fa-location-dot"></i> Fraiburgo, SC</div>
+                        </div>
+                    </div>
+                    <p class="producer-meta">Produção de hortaliças frescas e manejo cuidadoso para abastecimento semanal.</p>
+                    <div class="producer-tags">
+                        <span class="tag"><i class="fas fa-star"></i> 4,8</span>
+                        <span class="tag"><i class="fas fa-seedling"></i> Hortaliças</span>
+                    </div>
+                    <a href="/produtores" class="producer-link"><i class="far fa-eye"></i> Ver perfil</a>
+                </article>
+
+                <article class="producer-card">
+                    <div class="producer-top">
+                        <div class="avatar" style="background: linear-gradient(135deg, #b45309, #f59e0b);">MS</div>
+                        <div>
+                            <h3 class="producer-name">Maria Santos</h3>
+                            <div class="producer-meta"><i class="fas fa-location-dot"></i> Fraiburgo, SC</div>
+                        </div>
+                    </div>
+                    <p class="producer-meta">Especialista em frutas e processamento artesanal com identidade local.</p>
+                    <div class="producer-tags">
+                        <span class="tag"><i class="fas fa-star"></i> 5,0</span>
+                        <span class="tag"><i class="fas fa-apple-whole"></i> Frutas</span>
+                    </div>
+                    <a href="/produtores" class="producer-link"><i class="far fa-eye"></i> Ver perfil</a>
+                </article>
+
+                <article class="producer-card">
+                    <div class="producer-top">
+                        <div class="avatar" style="background: linear-gradient(135deg, #7c3aed, #22c55e);">AC</div>
+                        <div>
+                            <h3 class="producer-name">Ana Costa</h3>
+                            <div class="producer-meta"><i class="fas fa-location-dot"></i> Fraiburgo, SC</div>
+                        </div>
+                    </div>
+                    <p class="producer-meta">Linha de laticínios e derivados pensada para quem valoriza produção artesanal.</p>
+                    <div class="producer-tags">
+                        <span class="tag"><i class="fas fa-star"></i> 4,9</span>
+                        <span class="tag"><i class="fas fa-cheese"></i> Laticínios</span>
+                    </div>
+                    <a href="/produtores" class="producer-link"><i class="far fa-eye"></i> Ver perfil</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-shell container animate-in delay-3">
+            <div class="section-heading">
+                <div>
+                    <h2 class="section-title">Como funciona</h2>
+                    <p class="section-subtitle">Três passos simples para consultar o conteúdo, comparar opções e apoiar quem produz em Fraiburgo.</p>
+                </div>
+            </div>
+
+            <div class="steps-grid">
+                <article class="step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Busque o que você quer ver</h3>
+                    <p class="step-text">Use a busca ou as categorias para encontrar produtos, produtores e especialidades com rapidez.</p>
+                </article>
+
+                <article class="step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Compare informações</h3>
+                    <p class="step-text">Consulte origem, disponibilidade e perfil do produtor em um layout limpo e fácil de entender.</p>
+                </article>
+
+                <article class="step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Apoie a produção local</h3>
+                    <p class="step-text">Salve, acompanhe e escolha produtos da agricultura familiar com mais confiança e proximidade.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <strong>AgroFraiburgo</strong> conecta usuários e produtores com foco na agricultura familiar de Fraiburgo, SC.
+        </div>
+    </footer>
+</body>
+</html>

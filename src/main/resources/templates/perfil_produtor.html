@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Produtor - João Silva</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-green: #1ba94c;
+            --primary-hover: #158c3f;
+            --secondary-green: #dcfce7;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-body: #f9fafb;
+            --star-color: #fbbf24;
+            --card-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 850px; /* Um pouco mais largo para a capa */
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.8; }
+
+        /* --- CARD PRINCIPAL COM CAPA --- */
+        .profile-card-fb {
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+            overflow: hidden; /* Essencial para a capa arredondar */
+        }
+
+        /* 1. Imagem de Capa */
+        .cover-image {
+            width: 100%;
+            height: 220px; /* Altura fixa para a capa */
+            object-fit: cover;
+            background-color: #e5e7eb; /* Cor de fundo caso a imagem falhe */
+            display: block;
+        }
+
+        /* 2. Container do Avatar e Info (A mágica acontece aqui) */
+        .fb-header-container {
+            position: relative;
+            padding: 0 30px; /* Espaçamento lateral */
+            display: flex;
+            align-items: flex-end; /* Alinha os itens por baixo */
+			 margin-top: -75px; 
+        }
+
+        /* Avatar Sobreposto */
+        .fb-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #fff; /* Borda branca grossa para destacar da capa */
+            margin-top: 0; /* Sobe metade da altura para sobrepor a capa */
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Informações ao lado do avatar */
+        .fb-profile-info {
+            padding-left: 25px; /* Espaço entre avatar e texto */
+            padding-top: 15px; /* Espaço superior para alinhar com a base do avatar */
+            padding-bottom: 15px;
+            flex: 1;
+			transform: translateY(70px);
+        }
+
+        .fb-profile-info h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        /* --- Restante do Conteúdo do Card (com padding interno) --- */
+        .profile-content-padded {
+            padding: 10px 30px 30px 30px;
+			margin-top: 50px;
+        }
+
+        .location, .rating {
+            display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 0.95rem;
+        }
+        .location { color: var(--text-gray); }
+        .rating { color: var(--star-color); font-weight: 600; }
+        .rating span { color: var(--text-gray); font-weight: 400; }
+
+        .badge-producer {
+            display: inline-block;
+            background-color: var(--secondary-green);
+            color: #166534;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* Seções internas (Sobre, Stats) */
+        .section-label {
+            font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; color: #111; margin-top: 20px;
+        }
+        .about-text { color: var(--text-gray); line-height: 1.5; }
+
+        .stats-container {
+            display: flex; justify-content: space-around; margin: 25px 0;
+            padding: 20px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
+        }
+        .stat-number { display: block; font-size: 2rem; font-weight: 700; color: var(--primary-green); }
+        .stat-desc { color: var(--text-gray); }
+
+        /* Botões */
+        .contact-actions { display: flex; gap: 12px; margin-top: 20px;}
+        .btn { flex: 1; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; border: none; font-size: 1rem;}
+        .btn-primary { background-color: var(--primary-green); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-outline { background-color: white; border: 2px solid var(--border-color); color: var(--text-dark); }
+        .btn-outline:hover { background-color: #f3f4f6; border-color: #d1d5db; }
+
+
+        /* --- Seção de Produtos (Grid igual ao anterior) --- */
+        .products-title-area { text-align: center; margin-bottom: 24px; margin-top: 40px;}
+        .products-title-area h3 { font-size: 1.1rem; font-weight: 700; color: #111; }
+        .products-subtitle { color: var(--text-gray); font-size: 0.9rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+        .product-card { background: white; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+        .prod-img-box { position: relative; height: 160px; }
+        .prod-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .status-badge { position: absolute; top: 10px; right: 10px; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; color: white; background-color: var(--primary-green); display: flex; align-items: center; gap: 4px; }
+        .status-badge.unavailable { background-color: #6b7280; }
+        .prod-content { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+        .prod-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+        .prod-desc { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 12px; flex: 1; }
+        .prod-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .prod-price { color: var(--primary-green); font-weight: 700; font-size: 0.95rem; }
+        .btn-view { border: 1px solid var(--border-color); background: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+        /* Responsividade estilo Facebook */
+        @media (max-width: 680px) {
+            .cover-image { height: 150px; } /* Capa menor no mobile */
+            .fb-header-container {
+                flex-direction: column; /* Empilha avatar e texto */
+                align-items: center; /* Centraliza tudo */
+                text-align: center;
+                margin-top: -75px; /* Sobe o container todo */
+            }
+            .fb-avatar {
+                margin-top: 13px; /* Remove a margem negativa individual */
+                width: 120px; height: 120px; /* Avatar menor */
+            }
+            .fb-profile-info {
+                padding-left: 0; /* Remove recuo lateral */
+                padding-top: 10px;
+            }
+            .location, .rating { justify-content: center; }
+            .contact-actions { flex-direction: column; }
+            .products-grid { grid-template-columns: 1fr; }
+        }
+		
+		@media (max-width: 680px) {
+
+    .fb-profile-info {
+        transform: translateY(0); /* REMOVE o empurrão */
+        padding-top: 12px;
+    }
+
+    .profile-content-padded {
+        margin-top: 5px; /* Aproxima do header */
+    }
+
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="#" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar aos produtores
+        </a>
+
+        <section class="profile-card-fb">
+            
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop" alt="Capa da Fazenda" class="cover-image">
+            
+            <div class="fb-header-container">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="João Silva" class="fb-avatar">
+                
+                <div class="fb-profile-info">
+                    <h1>João Silva</h1>
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i> São Paulo, SP
+                    </div>
+					<div class="rating">
+                    <i class="fas fa-star"></i> 4.8 <span>(23 avaliações)</span>
+                </div>
+                    <span class="badge-producer">Produtor Familiar</span>
+                </div>
+            </div>
+
+            <div class="profile-content-padded">
+
+                <h3 class="section-label" style="margin-top: 0;">Sobre</h3>
+                <p class="about-text">
+                    Produtor de hortaliças orgânicas há 15 anos, focado na qualidade e entrega direta para o consumidor final. Nossa fazenda preza pela sustentabilidade.
+                </p>
+
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number">3</span>
+                        <span class="stat-desc">Produtos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">2</span>
+                        <span class="stat-desc">Disponíveis</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">15</span>
+                        <span class="stat-desc">Anos de Exp.</span>
+                    </div>
+                </div>
+
+                <div class="contact-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-phone-alt"></i> Ligar
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="far fa-envelope"></i> E-mail
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <div class="products-title-area">
+            <h3><i class="fas fa-box-open"></i> Produtos de João Silva</h3>
+            <p class="products-subtitle">3 produtos disponíveis</p>
+        </div>
+
+        <div class="products-grid">
+            <article class="product-card">
+                <div class="prod-img-box">
+                    <span class="status-badge"><i class="fas fa-check-circle"></i> Disponível</span>
+                    <img src="https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=500&auto=format&fit=crop" alt="Alface">
+                </div>
+                <div class="prod-content">
+                    <h4 class="prod-title">Alface Crespa</h4>
+                    <p class="prod-desc">Alface fresca, cultivada em sistema hidropônico</p>
+                    <div class="prod-footer">
+                        <span class="prod-price">R$ 3,50/unidade</span>
+                        <button class="btn-view"><i class="far fa-eye"></i> Ver</button>
+                    </div>
+                </div>
+            </article>
+			
+			<article class="product-card">
+                <div class="prod-img-box">
+                    <span class="status-badge">
+                        <i class="fas fa-check-circle"></i> Disponível
+                    </span>
+                    <img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=500&auto=format&fit=crop" alt="Banana">
+                </div>
+                <div class="prod-content">
+                    <h4 class="prod-title">Banana Nanica</h4>
+                    <p class="prod-desc">Bananas maduras e saborosas, direto do pé</p>
+                    <div class="prod-footer">
+                        <span class="prod-price">R$ 6,00/kg</span>
+                        <button class="btn-view"><i class="far fa-eye"></i> Ver</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="prod-img-box">
+                    <span class="status-badge unavailable">
+                        <i class="fas fa-times-circle"></i> Indisponível
+                    </span>
+                    <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=500&auto=format&fit=crop" alt="Cenoura">
+                </div>
+                <div class="prod-content">
+                    <h4 class="prod-title">Cenoura Baby</h4>
+                    <p class="prod-desc">Cenouras pequenas e doces, ideais para saladas</p>
+                    <div class="prod-footer">
+                        <span class="prod-price">R$ 7,00/kg</span>
+                        <button class="btn-view"><i class="far fa-eye"></i> Ver</button>
+                    </div>
+                </div>
+            </article>
+            </div>
+    </div>
+
+</body>
+</html>

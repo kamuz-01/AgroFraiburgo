@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtores da Agricultura Familiar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-green: #1ba94c; /* Verde principal do botão */
+            --primary-hover: #158c3f;
+            --bg-light: #f8f9fa;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+            --badge-bg: #dcfce7;
+            --badge-text: #166534;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: var(--text-dark);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Header --- */
+        header {
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+
+        /* --- Barra de Busca --- */
+        .search-container {
+            display: flex;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: var(--text-gray);
+        }
+
+        .search-input-wrapper i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        .btn-search {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-search:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- Contagem --- */
+        .results-count {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- Grid de Cards --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        /* --- Card Individual --- */
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .location {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+
+        .rating {
+            font-size: 0.9rem;
+            color: #fbbf24; /* Cor da estrela */
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .rating span {
+            color: var(--text-gray);
+            font-weight: 400;
+        }
+
+        .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .description {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            min-height: 44px; /* Para alinhar alturas */
+        }
+
+        /* --- Botões do Card --- */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .btn-outline {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .btn-full {
+            width: 100%;
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-full:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- Botão Carregar Mais --- */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-load-more {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #1a202c;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-load-more:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Responsividade Mobile */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Produtores da Agricultura Familiar</h1>
+            <p>Conheça os produtores locais e entre em contato diretamente com eles</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar produtores por nome, cidade ou especialidade...">
+            </div>
+            <button class="btn-search">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+        </div>
+
+        <div class="results-count">
+            <i class="fas fa-user-friends"></i> 2 produtores encontrados
+        </div>
+
+        <div class="grid">
+            
+            <div class="card">
+                <div class="card-header">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="João Silva" class="avatar">
+                    <div class="user-info">
+                        <h3>João Silva</h3>
+                        <div class="location">
+                            <i class="fas fa-map-marker-alt"></i> São Paulo, SP
+                        </div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 4.8 <span>(23 avaliações)</span>
+                        </div>
+                    </div>
+                    <span class="badge">Produtor</span>
+                </div>
+                
+                <p class="description">Produtor de hortaliças orgânicas há 15 anos</p>
+                
+                <div class="action-buttons">
+                    <button class="btn-outline"><i class="fas fa-phone-alt"></i> Ligar</button>
+                    <button class="btn-outline"><i class="far fa-envelope"></i> E-mail</button>
+                </div>
+                <button class="btn-full"><i class="far fa-eye"></i> Ver Perfil Completo</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="avatar-placeholder">MS</div>
+                    <div class="user-info">
+                        <h3>Maria Santos</h3>
+                        <div class="location">
+                            <i class="fas fa-map-marker-alt"></i> Campinas, SP
+                        </div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 4.8 <span>(23 avaliações)</span>
+                        </div>
+                    </div>
+                    <span class="badge">Produtor</span>
+                </div>
+                
+                <p class="description">Especialista em frutas tropicais e agricultura sustentável</p>
+                
+                <div class="action-buttons">
+                    <button class="btn-outline"><i class="fas fa-phone-alt"></i> Ligar</button>
+                    <button class="btn-outline"><i class="far fa-envelope"></i> E-mail</button>
+                </div>
+                <button class="btn-full"><i class="far fa-eye"></i> Ver Perfil Completo</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="João Silva" class="avatar">
+                    <div class="user-info">
+                        <h3>João Silva</h3>
+                        <div class="location">
+                            <i class="fas fa-map-marker-alt"></i> São Paulo, SP
+                        </div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 4.8 <span>(23 avaliações)</span>
+                        </div>
+                    </div>
+                    <span class="badge">Produtor</span>
+                </div>
+                
+                <p class="description">Produtor de hortaliças orgânicas há 15 anos</p>
+                
+                <div class="action-buttons">
+                    <button class="btn-outline"><i class="fas fa-phone-alt"></i> Ligar</button>
+                    <button class="btn-outline"><i class="far fa-envelope"></i> E-mail</button>
+                </div>
+                <button class="btn-full"><i class="far fa-eye"></i> Ver Perfil Completo</button>
+            </div>
+
+        </div>
+
+        <div class="load-more-container">
+            <button class="btn-load-more">Carregar mais produtores</button>
+        </div>
+    </div>
+
+</body>
+</html>
