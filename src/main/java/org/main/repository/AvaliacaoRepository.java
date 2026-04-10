@@ -7,8 +7,15 @@ import org.main.models.Avaliacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Pageable;
 
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
+
+    interface ProdutorRatingResumo {
+        Integer getIdProdutor();
+        Double getMedia();
+        Long getTotalUsuarios();
+    }
 
     Optional<Avaliacao> findByIdConsumidorAndIdProdutor(Integer idConsumidor, Integer idProdutor);
 
@@ -21,4 +28,8 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
 
     @Query("select avg(a.nota) from Avaliacao a where a.idProdutor = :idProdutor")
     Double buscarMediaPorProdutor(@Param("idProdutor") Integer idProdutor);
+
+    @Query("select a.idProdutor as idProdutor, avg(a.nota) as media, count(distinct a.idConsumidor) as totalUsuarios " +
+           "from Avaliacao a group by a.idProdutor order by avg(a.nota) desc, count(distinct a.idConsumidor) desc")
+    List<ProdutorRatingResumo> listarTopProdutores(Pageable pageable);
 }

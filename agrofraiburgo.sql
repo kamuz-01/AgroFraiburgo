@@ -261,6 +261,22 @@ CREATE TRIGGER `trg_after_insert_usuario_produtor` AFTER INSERT ON `usuarios` FO
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+--
+-- Estrutura para tabela `favoritos_produtos`
+-- (relações de favoritos entre usuário (consumidor/moderador) e produto)
+--
+
+CREATE TABLE `favoritos_produtos` (
+  `id_usuario` int NOT NULL,
+  `id_produto` int NOT NULL,
+  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_usuario`, `id_produto`),
+  KEY `idx_favoritos_produtos_id_produto` (`id_produto`),
+  CONSTRAINT `fk_favoritos_produtos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  CONSTRAINT `fk_favoritos_produtos_produto` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 DELIMITER $$
 CREATE TRIGGER `trg_usuarios_bi` BEFORE INSERT ON `usuarios` FOR EACH ROW BEGIN
   IF NOT (

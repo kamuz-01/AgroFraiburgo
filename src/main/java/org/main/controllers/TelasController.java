@@ -17,6 +17,7 @@ import org.main.repository.AvaliacaoRepository;
 import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.JwtService;
+import org.main.services.RecomendacaoService;
 import org.main.services.UsuarioService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,17 +32,20 @@ public class TelasController {
 	private final AvaliacaoRepository avaliacaoRepository;
 	private final JwtService jwtService;
 	private final UsuarioService usuarioService;
+	private final RecomendacaoService recomendacaoService;
 	
 	public TelasController(UsuarioService usuarioService,
 	                       UsuarioRepository usuarioRepository,
 	                       ProdutoRepository produtoRepository,
 	                       AvaliacaoRepository avaliacaoRepository,
-	                       JwtService jwtService) {
+	                       JwtService jwtService,
+	                       RecomendacaoService recomendacaoService) {
 	    this.usuarioService = usuarioService;
 	    this.usuarioRepository = usuarioRepository;
 	    this.produtoRepository = produtoRepository;
 	    this.avaliacaoRepository = avaliacaoRepository;
 	    this.jwtService = jwtService;
+	    this.recomendacaoService = recomendacaoService;
 	}
 
 	@GetMapping("/")
@@ -122,7 +126,7 @@ public class TelasController {
 	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
 	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
 	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-	        addInicioUsuariosModel(model);
+	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
 	        return "home_produtor";
 
@@ -174,7 +178,7 @@ public class TelasController {
 	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
 	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
 	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-	        addInicioUsuariosModel(model);
+	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
 	        return "home_consumidor";
 
@@ -225,7 +229,7 @@ public class TelasController {
 	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
 	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
 	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-	        addInicioUsuariosModel(model);
+	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
 	        return "home_moderador";
 
@@ -240,7 +244,7 @@ public class TelasController {
         return "redirect:/login?logout=true";
     }
 
-	private void addInicioUsuariosModel(Model model) {
+	private void addInicioUsuariosModel(Model model, Integer idUsuario, TipoUsuario tipoUsuario) {
 		long totalProdutoresAtivos = usuarioRepository.countByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
 		long totalProdutos = produtoRepository.count();
 
@@ -254,6 +258,11 @@ public class TelasController {
 		model.addAttribute("totalProdutos", totalProdutos);
 		model.addAttribute("produtosDestaque", toProdutoCards(produtosDestaque));
 		model.addAttribute("produtoresDestaque", toProdutorCards(produtoresDestaque));
+
+		if (idUsuario != null && (tipoUsuario == TipoUsuario.CONSUMIDOR || tipoUsuario == TipoUsuario.MODERADOR)) {
+			List<Produto> recomendados = recomendacaoService.recomendarParaUsuario(idUsuario, 4);
+			model.addAttribute("produtosRecomendados", toProdutoCards(recomendados));
+		}
 	}
 
 	private List<ProdutoCard> toProdutoCards(List<Produto> produtos) {

@@ -53,6 +53,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/produtores/*/avaliar").hasRole("CONSUMIDOR")
                 .requestMatchers(HttpMethod.POST, "/api/avaliacoes/**").hasRole("CONSUMIDOR")
                 .requestMatchers(HttpMethod.GET, "/api/avaliacoes/**").permitAll()
+                // Favoritos (consumidor e moderador)
+                .requestMatchers(HttpMethod.POST, "/api/favoritos/**").hasAnyRole("CONSUMIDOR", "MODERADOR")
                 // Recursos públicos
                 .requestMatchers(
                     "/",

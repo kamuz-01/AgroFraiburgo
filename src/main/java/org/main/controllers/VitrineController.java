@@ -10,11 +10,15 @@ import org.main.enums.TipoUsuario;
 import org.main.models.Avaliacao;
 import org.main.models.Produto;
 import org.main.models.Usuario;
+import org.main.models.UsuarioLogado;
+import org.main.neo4j.Neo4jInteracaoService;
 import org.main.repository.AvaliacaoRepository;
 import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.AvaliacaoService;
+import org.main.services.RecomendacaoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,19 +35,25 @@ public class VitrineController {
     private final ProdutoRepository produtoRepository;
     private final AvaliacaoRepository avaliacaoRepository;
     private final AvaliacaoService avaliacaoService;
+    private final RecomendacaoService recomendacaoService;
+    private final Neo4jInteracaoService neo4jInteracaoService;
 
     public VitrineController(UsuarioRepository usuarioRepository,
                              ProdutoRepository produtoRepository,
                              AvaliacaoRepository avaliacaoRepository,
-                             AvaliacaoService avaliacaoService) {
+                             AvaliacaoService avaliacaoService,
+                             RecomendacaoService recomendacaoService,
+                             Neo4jInteracaoService neo4jInteracaoService) {
         this.usuarioRepository = usuarioRepository;
         this.produtoRepository = produtoRepository;
         this.avaliacaoRepository = avaliacaoRepository;
         this.avaliacaoService = avaliacaoService;
+        this.recomendacaoService = recomendacaoService;
+        this.neo4jInteracaoService = neo4jInteracaoService;
     }
 
     @GetMapping("/inicio_usuarios")
-    public String inicioUsuarios(Model model) {
+    public String inicioUsuarios(Model model, Authentication authentication) {
         long totalProdutoresAtivos = usuarioRepository.countByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
         long totalProdutos = produtoRepository.count();
 
@@ -57,6 +67,12 @@ public class VitrineController {
         model.addAttribute("totalProdutos", totalProdutos);
         model.addAttribute("produtosDestaque", toProdutoCards(produtosDestaque));
         model.addAttribute("produtoresDestaque", toProdutorCards(produtoresDestaque));
+
+        Integer idUsuario = currentUserId(authentication);
+        if (idUsuario != null && isConsumidorOuModerador(authentication)) {
+            List<Produto> recomendados = recomendacaoService.recomendarParaUsuario(idUsuario, 4);
+            model.addAttribute("produtosRecomendados", toProdutoCards(recomendados));
+        }
 
         return "inicio_usuarios";
     }
@@ -118,9 +134,14 @@ public class VitrineController {
     }
 
     @GetMapping("/produto/{id}")
-    public String detalhesProduto(@PathVariable Integer id, Model model) {
+    public String detalhesProduto(@PathVariable Integer id, Model model, Authentication authentication) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
+
+        Integer idUsuario = currentUserId(authentication);
+        if (idUsuario != null && isConsumidorOuModerador(authentication)) {
+            neo4jInteracaoService.registrarVisualizacao(idUsuario, produto.getIdProduto());
+        }
 
         Integer idProdutor = produto.getProdutor() != null ? produto.getProdutor().getIdProdutor() : null;
         if (idProdutor == null) {
@@ -139,6 +160,34 @@ public class VitrineController {
         model.addAttribute("mediaAvaliacao", media);
 
         return "detalhes_produto";
+    }
+
+    private boolean isConsumidorOuModerador(Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) return false;
+        for (GrantedAuthority a : auth.getAuthorities()) {
+            if (a == null) continue;
+            String role = a.getAuthority();
+            if ("ROLE_CONSUMIDOR".equals(role) || "ROLE_MODERADOR".equals(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Integer currentUserId(Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) return null;
+
+        Object principal = auth.getPrincipal();
+        if (principal instanceof UsuarioLogado u) {
+            return u.getId();
+        }
+
+        // fallback legado
+        try {
+            return Integer.valueOf(auth.getName());
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     private List<ProdutoCard> toProdutoCards(List<Produto> produtos) {

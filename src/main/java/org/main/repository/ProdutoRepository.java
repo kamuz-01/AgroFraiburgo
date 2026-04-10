@@ -12,6 +12,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
     List<Produto> findTop4ByOrderByDataCriacaoDesc();
 
+    List<Produto> findTop4ByProdutor_IdProdutorOrderByDataCriacaoDesc(Integer idProdutor);
+
     List<Produto> findByProdutorIdProdutor(Integer idProdutor);
 
     List<Produto> findAllByProdutor_IdProdutor(Integer idProdutor);
