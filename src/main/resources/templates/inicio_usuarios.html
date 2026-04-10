@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgroFraiburgo - Início</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <th:block th:fragment="inicioStyles">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
         :root {
             --bg: #f3f7f1;
             --surface: rgba(255, 255, 255, 0.82);
@@ -855,7 +856,8 @@
                 font-size: 0.96rem;
             }
         }
-    </style>
+        </style>
+    </th:block>
 </head>
 <body>
     <header class="main-header">
@@ -891,8 +893,9 @@
         </div>
     </header>
 
-    <main>
-        <section class="hero-section container">
+    <th:block th:fragment="inicioBody">
+        <main>
+            <section class="hero-section container">
             <div class="hero-grid">
                 <article class="hero-card animate-in">
                     <span class="eyebrow"><i class="fas fa-leaf"></i> Acesso rápido aos produtos da terra</span>
@@ -902,7 +905,6 @@
                     </p>
 
                     <div class="hero-actions">
-                        <a href="/produtos" class="btn btn-primary"><i class="fas fa-bag-shopping"></i> Explorar produtos</a>
                         <a href="/produtores" class="btn btn-secondary"><i class="fas fa-user-group"></i> Ver produtores</a>
                     </div>
 
@@ -958,9 +960,9 @@
                     </div>
                 </aside>
             </div>
-        </section>
+            </section>
 
-        <section class="section-shell container animate-in delay-1">
+            <section class="section-shell container animate-in delay-1">
             <div class="section-heading">
                 <div>
                     <h2 class="section-title">Categorias em destaque</h2>
@@ -1001,9 +1003,9 @@
                     <span>Receitas caseiras</span>
                 </a>
             </div>
-        </section>
+            </section>
 
-        <section class="section-shell container animate-in delay-2">
+            <section class="section-shell container animate-in delay-2">
             <div class="section-heading">
                 <div>
                     <h2 class="section-title">Produtos em destaque</h2>
@@ -1045,9 +1047,9 @@
                     </div>
                 </article>
             </div>
-        </section>
+            </section>
 
-        <section class="section-shell container animate-in delay-3">
+            <section class="section-shell container animate-in delay-3">
             <div class="section-heading">
                 <div>
                     <h2 class="section-title">Produtores em evidência</h2>
@@ -1076,9 +1078,9 @@
                     <a class="producer-link" th:href="'/produtores/' + ${p.id}"><i class="far fa-eye"></i> Ver perfil</a>
                 </article>
             </div>
-        </section>
+            </section>
 
-        <section class="section-shell container animate-in delay-3">
+            <section class="section-shell container animate-in delay-3">
             <div class="section-heading">
                 <div>
                     <h2 class="section-title">Como funciona</h2>
@@ -1105,13 +1107,14 @@
                     <p class="step-text">Salve, acompanhe e escolha produtos da agricultura familiar com mais confiança e proximidade.</p>
                 </article>
             </div>
-        </section>
-    </main>
+            </section>
+        </main>
 
-    <footer class="footer">
-        <div class="container">
-            <strong>AgroFraiburgo</strong> conecta usuários e produtores com foco na agricultura familiar de Fraiburgo, SC.
-        </div>
-    </footer>
+        <footer class="footer">
+            <div class="container">
+                <strong>AgroFraiburgo</strong> conecta usuários e produtores com foco na agricultura familiar de Fraiburgo, SC.
+            </div>
+        </footer>
+    </th:block>
 </body>
 </html>

@@ -9,7 +9,8 @@
 	        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">  
 	<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
 	<link rel="icon" href="imagens/favicon.png" type="image/x-icon"> 
-	<title>Página inicial - Consumidor</title>
+	<title>Página inicial - Moderador</title>
+	<th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
 </head>
 <body>
 
@@ -288,6 +289,8 @@
             </ul>
         </nav>
     </header>
+
+	<th:block th:replace="~{inicio_usuarios :: inicioBody}"></th:block>
     <br><br><br><br><br>
 	<h1>Bem-vindo à Home moderador</h1>
 	
