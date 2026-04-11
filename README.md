@@ -151,6 +151,8 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 ---
 
-Desenvolvido com ❤️ para a agricultura familiar de Fraiburgo
+<div align="center">
+  Desenvolvido com ❤️ para a agricultura familiar de Fraiburgo
 
-Todos os direitos reservados © 2025
+  <strong><em>Todos os direitos reservados © 2026</em></strong>
+</div>
