@@ -66,6 +66,14 @@ Defina:
 - `NEO4J_URI=bolt://localhost:7687`
 - `NEO4J_USERNAME=neo4j`
 - `NEO4J_PASSWORD=...`
+- `NEO4J_DATABASE=<nome-do-db>` (ex.: `1293a192` no Neo4j Desktop)
+
+Se aparecer no console do app algo como **`ServiceUnavailableException: Unable to connect to localhost:7687 (Connection refused)`**:
+- o Neo4j Desktop provavelmente está **parado** (Start) ou o Bolt está em **outra porta**.
+- no Desktop, abra o DBMS do projeto e confira em **Connection details** / **Settings** qual é a porta do **Bolt**.
+- ajuste o `NEO4J_URI` para a porta correta (ex.: `bolt://localhost:7688`).
+
+Se depois de conectar aparecer erro de **database não encontrado**, o nome do database geralmente é `neo4j` (Community Edition). Nesse caso, teste com `NEO4J_DATABASE=neo4j`.
 
 Obs.: o projeto já carrega automaticamente o arquivo `.env` na raiz (via `dotenv-java` no `main()`), então basta manter essas chaves no `.env`.
 

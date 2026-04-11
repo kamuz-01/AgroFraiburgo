@@ -37,7 +37,7 @@ public class Neo4jInteracaoService {
                     .bind(idProduto).to("productId")
                     .run();
         } catch (Exception ex) {
-            log.warn("Neo4j: falha ao registrar VIEWED user={} product={}: {}", idUsuario, idProduto, ex.getMessage());
+            log.warn("Neo4j: falha ao registrar VIEWED user={} product={}.", idUsuario, idProduto, ex);
         }
     }
 
@@ -68,8 +68,8 @@ public class Neo4jInteracaoService {
                         .run();
             }
         } catch (Exception ex) {
-            log.warn("Neo4j: falha ao atualizar FAVORITED user={} product={} favoritado={}: {}",
-                    idUsuario, idProduto, favoritado, ex.getMessage());
+            log.warn("Neo4j: falha ao atualizar FAVORITED user={} product={} favoritado={}.",
+                    idUsuario, idProduto, favoritado, ex);
         }
     }
 
@@ -100,8 +100,8 @@ public class Neo4jInteracaoService {
                         .run();
             }
         } catch (Exception ex) {
-            log.warn("Neo4j: falha ao atualizar FAVORITED_PRODUCER user={} producer={} favoritado={}: {}",
-                    idUsuario, idProdutor, favoritado, ex.getMessage());
+            log.warn("Neo4j: falha ao atualizar FAVORITED_PRODUCER user={} producer={} favoritado={}.",
+                    idUsuario, idProdutor, favoritado, ex);
         }
     }
 }
