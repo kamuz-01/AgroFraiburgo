@@ -63,10 +63,14 @@ Se `favorited` vier 0:
 
 Defina:
 - `NEO4J_ENABLED=true`
-- `NEO4J_URI=bolt://localhost:7687`
+- `NEO4J_URI=bolt://localhost:7687` (Neo4j Desktop/local)
+	- Para Neo4j Aura (cloud), use o URI seguro que o console do Aura fornece, por exemplo:
+		- `NEO4J_URI=neo4j+s://<id>.databases.neo4j.io`
 - `NEO4J_USERNAME=neo4j`
 - `NEO4J_PASSWORD=...`
-- `NEO4J_DATABASE=<nome-do-db>` (ex.: `1293a192` no Neo4j Desktop)
+- `NEO4J_DATABASE=<nome-do-db>`
+	- Neo4j Aura: normalmente `neo4j`
+	- Neo4j Desktop: pode ser um nome customizado (ex.: `1293a192`)
 
 Se aparecer no console do app algo como **`ServiceUnavailableException: Unable to connect to localhost:7687 (Connection refused)`**:
 - o Neo4j Desktop provavelmente está **parado** (Start) ou o Bolt está em **outra porta**.
