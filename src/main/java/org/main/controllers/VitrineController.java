@@ -19,6 +19,7 @@ import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.AvaliacaoService;
 import org.main.services.RecomendacaoService;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.Authentication;
@@ -116,7 +117,14 @@ public class VitrineController {
 
         Integer idUsuario = currentUserId(authentication);
         if (idUsuario != null && isConsumidorOuModerador(authentication)) {
-            boolean favoritado = favoritoProdutorRepository.existsById(new FavoritoProdutorId(idUsuario, id));
+            boolean favoritado = false;
+            try {
+                favoritado = favoritoProdutorRepository.existsById(new FavoritoProdutorId(idUsuario, id));
+            } catch (DataAccessException ex) {
+                // Quando o schema ainda não foi migrado (ex.: tabela não existe),
+                // não derruba a página: apenas considera como não favoritado.
+                favoritado = false;
+            }
             model.addAttribute("produtorFavoritado", favoritado);
         }
 

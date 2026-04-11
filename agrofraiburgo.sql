@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 10/10/2025 às 15:08
--- Versão do servidor: 8.4.6
+-- Tempo de geração: 11/04/2026 às 02:51
+-- Versão do servidor: 8.4.7
 -- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -31,11 +31,17 @@ CREATE TABLE `avaliacoes` (
   `id_avaliacao` int NOT NULL,
   `id_consumidor` int NOT NULL,
   `id_produtor` int NOT NULL,
-  `nota` tinyint unsigned NOT NULL,
-  `comentario` text COLLATE utf8mb4_general_ci,
-  `data_avaliacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT `chk_avaliacoes_nota` CHECK (`nota` BETWEEN 1 AND 5)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `nota` tinyint UNSIGNED NOT NULL,
+  `comentario` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `data_avaliacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ;
+
+--
+-- Despejando dados para a tabela `avaliacoes`
+--
+
+INSERT INTO `avaliacoes` (`id_avaliacao`, `id_consumidor`, `id_produtor`, `nota`, `comentario`, `data_avaliacao`) VALUES
+(1, 6, 23, 5, 'Excelente Produtor. Ele vende produtos frescos e de boa qualidade. super recomendo.', '2026-04-10 21:11:02');
 
 -- --------------------------------------------------------
 
@@ -68,13 +74,13 @@ INSERT INTO `consumidores` (`id_consumidor`) VALUES
 CREATE TABLE `documentos_produtor` (
   `id_documento` int NOT NULL,
   `id_produtor` int NOT NULL,
-  `documento_identidade` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `comprovante_residencia` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `declaracao_pronaf` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `certificado_producao_organica` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `codigo_rastreabilidade` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `numero_inscricao_estadual` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `alvara_sanitario` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `documento_identidade` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `comprovante_residencia` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `declaracao_pronaf` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `certificado_producao_organica` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `codigo_rastreabilidade` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `numero_inscricao_estadual` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `alvara_sanitario` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `data_envio` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -96,9 +102,9 @@ CREATE TABLE `feira` (
   `id_feira` int NOT NULL,
   `id_moderador` int NOT NULL,
   `nome_local` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `logradouro` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `logradouro` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `numero` int NOT NULL,
-  `bairro` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `bairro` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `complemento` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `status_feira` enum('EM_ANDAMENTO','SUSPENSA','ENCERRADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -156,16 +162,16 @@ INSERT INTO `produtores` (`id_produtor`, `avaliacoes_recebidas`) VALUES
 CREATE TABLE `produtos` (
   `id_produto` int NOT NULL,
   `id_produtor` int NOT NULL,
-  `nome_produto` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `descricao` text COLLATE utf8mb4_general_ci,
+  `nome_produto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `descricao` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `preco` decimal(10,2) NOT NULL,
-  `unidade_medida` varchar(50) COLLATE utf8mb4_general_ci DEFAULT 'kg',
+  `unidade_medida` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'kg',
   `quantidade_estoque` decimal(10,2) NOT NULL,
-  `status_produto` enum('COM_ESTOQUE','SEM_ESTOQUE') COLLATE utf8mb4_general_ci DEFAULT 'COM_ESTOQUE',
-  `imagem_produto` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `status_produto` enum('COM_ESTOQUE','SEM_ESTOQUE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'COM_ESTOQUE',
+  `imagem_produto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `data_criacao` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_atualizacao` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `produtos`
@@ -197,25 +203,25 @@ DELIMITER ;
 
 CREATE TABLE `usuarios` (
   `id_usuario` int NOT NULL,
-  `nome_usuario` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sobrenome_usuario` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cpf_usuario` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nome_usuario` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sobrenome_usuario` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cpf_usuario` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `data_nascimento` date DEFAULT NULL,
-  `sexo` varchar(17) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `telefone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `email` varchar(160) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nome_login` varchar(60) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `senha` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tipo_usuario` enum('CONSUMIDOR','PRODUTOR','MODERADOR') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'CONSUMIDOR',
-  `oauth_provider` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `oauth_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sexo` varchar(17) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `telefone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nome_login` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `senha` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tipo_usuario` enum('CONSUMIDOR','PRODUTOR','MODERADOR') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'CONSUMIDOR',
+  `oauth_provider` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `oauth_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `status_conta` enum('ATIVO','PENDENTE','REJEITADO','BLOQUEADO') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ATIVO',
-  `imagem_perfil` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '/imagens-usuarios/defaults/perfil.png',
+  `status_conta` enum('ATIVO','PENDENTE','REJEITADO','BLOQUEADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ATIVO',
+  `imagem_perfil` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '/imagens-usuarios/defaults/perfil.png',
   `imagem_capa` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '/imagens-usuarios/defaults/capa.webp',
-  `cidade` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `cidade` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `estado` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -261,38 +267,6 @@ CREATE TRIGGER `trg_after_insert_usuario_produtor` AFTER INSERT ON `usuarios` FO
 END
 $$
 DELIMITER ;
-
--- --------------------------------------------------------
---
--- Estrutura para tabela `favoritos_produtos`
--- (relações de favoritos entre usuário (consumidor/moderador) e produto)
---
-
-CREATE TABLE `favoritos_produtos` (
-  `id_usuario` int NOT NULL,
-  `id_produto` int NOT NULL,
-  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_usuario`, `id_produto`),
-  KEY `idx_favoritos_produtos_id_produto` (`id_produto`),
-  CONSTRAINT `fk_favoritos_produtos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
-  CONSTRAINT `fk_favoritos_produtos_produto` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
---
--- Estrutura para tabela `favoritos_produtores`
--- (relações de favoritos entre usuário (consumidor/moderador) e produtor)
---
-
-CREATE TABLE `favoritos_produtores` (
-  `id_usuario` int NOT NULL,
-  `id_produtor` int NOT NULL,
-  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_usuario`, `id_produtor`),
-  KEY `idx_favoritos_produtores_id_produtor` (`id_produtor`),
-  CONSTRAINT `fk_favoritos_produtores_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
-  CONSTRAINT `fk_favoritos_produtores_produtor` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 DELIMITER $$
 CREATE TRIGGER `trg_usuarios_bi` BEFORE INSERT ON `usuarios` FOR EACH ROW BEGIN
   IF NOT (
@@ -329,10 +303,10 @@ DELIMITER ;
 --
 ALTER TABLE `avaliacoes`
   ADD PRIMARY KEY (`id_avaliacao`),
+  ADD UNIQUE KEY `ux_avaliacao_unica` (`id_consumidor`,`id_produtor`),
   ADD KEY `id_consumidor` (`id_consumidor`),
   ADD KEY `idx_avaliacoes_produtor` (`id_produtor`),
-  ADD KEY `idx_avaliacoes_produtor_data` (`id_produtor`,`data_avaliacao`),
-  ADD UNIQUE KEY `ux_avaliacao_unica` (`id_consumidor`,`id_produtor`);
+  ADD KEY `idx_avaliacoes_produtor_data` (`id_produtor`,`data_avaliacao`);
 
 --
 -- Índices de tabela `consumidores`
@@ -409,7 +383,7 @@ ALTER TABLE `feira`
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id_produto` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_produto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
