@@ -10,16 +10,49 @@
 
 ## Funcionalidades Principais
 
-- 📄 Revisão da documentação dos produtores
-- 👤 Gestão de usuários
-- 🔒 Sistema de autenticação seguro
-- 📱 Interface responsiva e amigável
+- 📄 Revisão/moderação da documentação dos produtores
+- 👤 Gestão e moderação de usuários
+- 🔒 Sistema de autenticação (login e OAuth2)
+- 🧑‍🌾 Perfis de produtores e catálogo de produtos
+- ⭐ Avaliação de produtores
+- 🔖 Favoritar produtor ("Salvar produtor")
+- 🧠 Recomendações personalizadas (híbridas) com grafo no Neo4j
+- 📱 Interface responsiva
+
+## Novidades (Abr/2026)
+
+### Recomendações por grafos (Neo4j)
+
+Foi adicionada uma camada de **recomendação híbrida** usando Neo4j como grafo de interações. O app tenta montar recomendações personalizadas via Neo4j e, se o Neo4j estiver desabilitado/indisponível, aplica fallbacks (ex.: melhores produtores avaliados e/ou produtos recentes).
+
+Sinais/relacionamentos no grafo (exemplos):
+
+- `(:User)-[:FAVORITED]->(:Product)`
+- `(:User)-[:VIEWED]->(:Product)`
+- `(:User)-[:FAVORITED_PRODUCER]->(:Producer)` (favoritar produtor / "Salvar produtor")
+- `(:Product)-[:MADE_BY]->(:Producer)`
+
+Documentação detalhada (configuração, export/import, troubleshooting): **`neo4j/README.md`**.
+
+### Favoritar produtor ("Salvar produtor")
+
+Foi introduzida a funcionalidade de **salvar/favoritar produtores** a partir do perfil do produtor.
+
+- Persistência relacional via tabela `favoritos_produtores` (MySQL)
+- Espelhamento do relacionamento no Neo4j (`FAVORITED_PRODUCER`) quando habilitado
+
+### Migrations (Flyway)
+
+O projeto passou a usar **Flyway** para manter o schema do MySQL atualizado (ex.: criação de tabelas novas sem precisar editar o dump manualmente).
 
 ## Tecnologias Utilizadas
 
 - Java Spring Boot
 - Maven
 - Base de Dados MySQL
+- Flyway (migrations)
+- Neo4j (grafo de recomendações)
+- Spring Data Neo4j
 - Spring Security
 - Jbcrypt
 - RabbitMQ
@@ -33,7 +66,7 @@
 
 ## Requisitos
 
-- Java 11 ou superior
+- Java 21 (recomendado; ver propriedade `java.version` no `pom.xml`)
 - SpringBoot 3.x ou superior
 - Maven 3.x
 - IDE compatível (recomendado VS Code ou Spring Tool Suite)
@@ -67,7 +100,16 @@ Crie um arquivo `.env` na raiz do projeto com suas credenciais:
 DB_URL=sua_url_do_banco
 DB_USERNAME=seu_usuario
 DB_PASSWORD=sua_senha
+
+# (Opcional) Neo4j — recomendações por grafo
+# NEO4J_ENABLED=true
+# NEO4J_URI=neo4j+s://<id>.databases.neo4j.io
+# NEO4J_USERNAME=<usuario>
+# NEO4J_PASSWORD=<senha>
+# NEO4J_DATABASE=<database>
 ```
+
+Obs.: o `.env` está no `.gitignore` e não deve ser versionado.
 
 ### 4. Execute o projeto
 
@@ -79,7 +121,7 @@ A aplicação estará disponível em `http://localhost:8080`
 
 ## Estrutura de Diretórios
 
-```
+```text
 AgroFraiburgo/
 ├── src/
 │   ├── main/
@@ -108,13 +150,11 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 ## Contato
 
-**🧑🏽‍💻 Karli De Jesus Munoz Manzano**
-
-📧 **Email**: karli.manzano@estudantes.ifc.edu.br
+- 🧑🏽‍💻 **Karli De Jesus Munoz Manzano**
+- 📧 **Email**: [karli.manzano@estudantes.ifc.edu.br](mailto:karli.manzano@estudantes.ifc.edu.br)
 
 ---
 
-<p align="center">
-  <em>Desenvolvido com ❤️ para a agricultura familiar de Fraiburgo</em><br>
-  <strong><em>Todos os direitos reservados © 2025</em></strong>
-</p>
+Desenvolvido com ❤️ para a agricultura familiar de Fraiburgo
+
+Todos os direitos reservados © 2025

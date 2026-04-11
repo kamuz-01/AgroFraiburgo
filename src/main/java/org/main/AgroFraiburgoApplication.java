@@ -12,8 +12,17 @@ public class AgroFraiburgoApplication {
 
         // Define as propriedades do sistema antes do Spring boot iniciar
         dotenv.entries().forEach(entry -> {
-            if (System.getProperty(entry.getKey()) == null) {
-                System.setProperty(entry.getKey(), entry.getValue());
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            // Para Neo4j, sempre priorize o .env (evita ficar preso em localhost por config antiga).
+            if (key != null && key.startsWith("NEO4J_")) {
+                System.setProperty(key, value);
+                return;
+            }
+
+            if (System.getProperty(key) == null) {
+                System.setProperty(key, value);
             }
         });
 

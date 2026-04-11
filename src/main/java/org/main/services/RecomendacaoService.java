@@ -72,9 +72,15 @@ public class RecomendacaoService {
 
     private List<Integer> recomendarIdsViaNeo4j(Integer idUsuario, int limit) {
         String cypher = """
-                MATCH (u:User {id: $userId})-[:FAVORITED]->(p:Product)
-                MATCH (p)<-[:FAVORITED]-(other:User)-[:FAVORITED]->(rec:Product)
-                WHERE NOT (u)-[:FAVORITED]->(rec)
+                                MATCH (u:User {id: $userId})-[f1]->(p:Product)
+                                WHERE type(f1) = 'FAVORITED'
+
+                                MATCH (p)<-[f2]-(other:User)-[f3]->(rec:Product)
+                                WHERE type(f2) = 'FAVORITED' AND type(f3) = 'FAVORITED'
+                                    AND NOT EXISTS {
+                                        MATCH (u)-[f4]->(rec)
+                                        WHERE type(f4) = 'FAVORITED'
+                                    }
                 RETURN rec.id AS idProduto, count(*) AS score
                 ORDER BY score DESC
                 LIMIT $limit
@@ -90,7 +96,8 @@ public class RecomendacaoService {
 
     private List<Integer> trendingIdsViaNeo4j(int limit) {
         String cypher = """
-                MATCH (:User)-[f:FAVORITED]->(p:Product)
+                MATCH (:User)-[f]->(p:Product)
+                WHERE type(f) = 'FAVORITED'
                 RETURN p.id AS idProduto, count(f) AS score
                 ORDER BY score DESC
                 LIMIT $limit
@@ -105,13 +112,20 @@ public class RecomendacaoService {
 
         private List<Integer> recomendarIdsPorProdutoresFavoritadosViaNeo4j(Integer idUsuario, int limit) {
         String cypher = """
-            MATCH (u:User {id: $userId})-[:FAVORITED_PRODUCER]->(pr:Producer)
-            MATCH (p:Product)-[:MADE_BY]->(pr)
-            WHERE NOT (u)-[:FAVORITED]->(p)
-            RETURN p.id AS idProduto
-            ORDER BY idProduto DESC
-            LIMIT $limit
-            """;
+                                MATCH (u:User {id: $userId})-[fp]->(pr:Producer)
+                                WHERE type(fp) = 'FAVORITED_PRODUCER'
+
+                                MATCH (p:Product)-[mb]->(pr)
+                                WHERE type(mb) = 'MADE_BY'
+                                    AND NOT EXISTS {
+                                        MATCH (u)-[f]->(p)
+                                        WHERE type(f) = 'FAVORITED'
+                                    }
+
+                                RETURN p.id AS idProduto
+                                ORDER BY idProduto DESC
+                                LIMIT $limit
+                                """;
 
         return new ArrayList<>(neo4jClient.query(cypher)
             .bind(idUsuario).to("userId")

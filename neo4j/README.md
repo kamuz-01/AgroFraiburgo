@@ -41,6 +41,11 @@ Validação rápida (Neo4j 5):
 // Confira em qual DB você está (se necessário, selecione o DB do projeto):
 // :use agrofraiburgo
 
+// Dica: tipo de relacionamento é case-sensitive.
+// 'favorited' e 'FAVORITED' são tipos diferentes.
+
+CALL db.info() YIELD name RETURN name;
+
 CALL db.labels();
 CALL db.relationshipTypes();
 
@@ -50,9 +55,27 @@ MATCH (p:Product) RETURN count(p) AS products;
 // Em Neo4j 5, MATCH com :FAVORITED pode dar erro se o tipo não existir ainda.
 // Use este formato para contar sem erro:
 MATCH ()-[r]->() WHERE type(r) = 'FAVORITED' RETURN count(r) AS favorited;
+MATCH ()-[r]->() WHERE type(r) = 'FAVORITED_PRODUCER' RETURN count(r) AS favorited_producer;
+MATCH ()-[r]->() WHERE type(r) = 'MADE_BY' RETURN count(r) AS made_by;
 // E para labels, use este formato para evitar "Label does not exist":
 MATCH (n) WHERE 'User' IN labels(n) RETURN count(n) AS users_safe;
 MATCH (n) WHERE 'Product' IN labels(n) RETURN count(n) AS products_safe;
+```
+
+Se você receber um erro como:
+
+`01N51: Relationship type does not exist ... in database '<db>'`
+
+isso geralmente significa uma destas coisas:
+- você está no **database errado** (rode `CALL db.info()` e use `:use <db>`), ou
+- o tipo existe mas com **outra grafia/capitalização** (ex.: `favorited` ao invés de `FAVORITED`).
+
+Para investigar o que existe de fato no DB atual:
+
+```cypher
+MATCH (a)-[r]->(b)
+RETURN labels(a) AS de, type(r) AS rel, labels(b) AS para, count(*) AS qtd
+ORDER BY qtd DESC;
 ```
 
 Se `favorited` vier 0:
