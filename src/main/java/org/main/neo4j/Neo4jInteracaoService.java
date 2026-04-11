@@ -72,4 +72,36 @@ public class Neo4jInteracaoService {
                     idUsuario, idProduto, favoritado, ex.getMessage());
         }
     }
+
+    public void atualizarFavoritoProdutor(Integer idUsuario, Integer idProdutor, boolean favoritado) {
+        if (!enabled) return;
+        if (idUsuario == null || idProdutor == null) return;
+
+        try {
+            if (favoritado) {
+                String cypher = """
+                        MERGE (u:User {id: $userId})
+                        MERGE (pr:Producer {id: $producerId})
+                        MERGE (u)-[f:FAVORITED_PRODUCER]->(pr)
+                        SET f.at = datetime()
+                        """;
+                neo4jClient.query(cypher)
+                        .bind(idUsuario).to("userId")
+                        .bind(idProdutor).to("producerId")
+                        .run();
+            } else {
+                String cypher = """
+                        MATCH (u:User {id: $userId})-[f:FAVORITED_PRODUCER]->(pr:Producer {id: $producerId})
+                        DELETE f
+                        """;
+                neo4jClient.query(cypher)
+                        .bind(idUsuario).to("userId")
+                        .bind(idProdutor).to("producerId")
+                        .run();
+            }
+        } catch (Exception ex) {
+            log.warn("Neo4j: falha ao atualizar FAVORITED_PRODUCER user={} producer={} favoritado={}: {}",
+                    idUsuario, idProdutor, favoritado, ex.getMessage());
+        }
+    }
 }

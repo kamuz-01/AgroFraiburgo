@@ -46,6 +46,12 @@ public class RecomendacaoService {
                     return carregarProdutosOrdenados(ids);
                 }
 
+                // 1.1) Se ainda não tem favoritos de produto, tenta recomendações pelos produtores favoritados
+                List<Integer> porProdutor = recomendarIdsPorProdutoresFavoritadosViaNeo4j(idUsuario, limit);
+                if (!porProdutor.isEmpty()) {
+                    return carregarProdutosOrdenados(porProdutor);
+                }
+
                 // fallback dentro do Neo4j: trending por favoritos
                 List<Integer> trendingIds = trendingIdsViaNeo4j(limit);
                 if (!trendingIds.isEmpty()) {
@@ -96,6 +102,24 @@ public class RecomendacaoService {
                 .mappedBy((typeSystem, record) -> record.get("idProduto").asInt())
             .all());
     }
+
+        private List<Integer> recomendarIdsPorProdutoresFavoritadosViaNeo4j(Integer idUsuario, int limit) {
+        String cypher = """
+            MATCH (u:User {id: $userId})-[:FAVORITED_PRODUCER]->(pr:Producer)
+            MATCH (p:Product)-[:MADE_BY]->(pr)
+            WHERE NOT (u)-[:FAVORITED]->(p)
+            RETURN p.id AS idProduto
+            ORDER BY idProduto DESC
+            LIMIT $limit
+            """;
+
+        return new ArrayList<>(neo4jClient.query(cypher)
+            .bind(idUsuario).to("userId")
+            .bind(limit).to("limit")
+            .fetchAs(Integer.class)
+            .mappedBy((typeSystem, record) -> record.get("idProduto").asInt())
+            .all());
+        }
 
     private List<Produto> carregarProdutosOrdenados(List<Integer> idsOrdenados) {
         if (idsOrdenados == null || idsOrdenados.isEmpty()) return List.of();

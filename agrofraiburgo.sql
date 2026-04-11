@@ -277,6 +277,22 @@ CREATE TABLE `favoritos_produtos` (
   CONSTRAINT `fk_favoritos_produtos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
   CONSTRAINT `fk_favoritos_produtos_produto` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+--
+-- Estrutura para tabela `favoritos_produtores`
+-- (relações de favoritos entre usuário (consumidor/moderador) e produtor)
+--
+
+CREATE TABLE `favoritos_produtores` (
+  `id_usuario` int NOT NULL,
+  `id_produtor` int NOT NULL,
+  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_usuario`, `id_produtor`),
+  KEY `idx_favoritos_produtores_id_produtor` (`id_produtor`),
+  CONSTRAINT `fk_favoritos_produtores_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  CONSTRAINT `fk_favoritos_produtores_produtor` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 DELIMITER $$
 CREATE TRIGGER `trg_usuarios_bi` BEFORE INSERT ON `usuarios` FOR EACH ROW BEGIN
   IF NOT (

@@ -11,8 +11,10 @@ import org.main.models.Avaliacao;
 import org.main.models.Produto;
 import org.main.models.Usuario;
 import org.main.models.UsuarioLogado;
+import org.main.models.FavoritoProdutorId;
 import org.main.neo4j.Neo4jInteracaoService;
 import org.main.repository.AvaliacaoRepository;
+import org.main.repository.FavoritoProdutorRepository;
 import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.AvaliacaoService;
@@ -37,19 +39,22 @@ public class VitrineController {
     private final AvaliacaoService avaliacaoService;
     private final RecomendacaoService recomendacaoService;
     private final Neo4jInteracaoService neo4jInteracaoService;
+    private final FavoritoProdutorRepository favoritoProdutorRepository;
 
     public VitrineController(UsuarioRepository usuarioRepository,
                              ProdutoRepository produtoRepository,
                              AvaliacaoRepository avaliacaoRepository,
                              AvaliacaoService avaliacaoService,
                              RecomendacaoService recomendacaoService,
-                             Neo4jInteracaoService neo4jInteracaoService) {
+                             Neo4jInteracaoService neo4jInteracaoService,
+                             FavoritoProdutorRepository favoritoProdutorRepository) {
         this.usuarioRepository = usuarioRepository;
         this.produtoRepository = produtoRepository;
         this.avaliacaoRepository = avaliacaoRepository;
         this.avaliacaoService = avaliacaoService;
         this.recomendacaoService = recomendacaoService;
         this.neo4jInteracaoService = neo4jInteracaoService;
+        this.favoritoProdutorRepository = favoritoProdutorRepository;
     }
 
     @GetMapping("/inicio_usuarios")
@@ -86,7 +91,7 @@ public class VitrineController {
     }
 
     @GetMapping("/produtores/{id}")
-    public String perfilProdutor(@PathVariable Integer id, Model model) {
+    public String perfilProdutor(@PathVariable Integer id, Model model, Authentication authentication) {
         Usuario produtor = usuarioRepository.findById(id)
                 .filter(u -> u.getTipoUsuario() == TipoUsuario.PRODUTOR)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produtor não encontrado"));
@@ -108,6 +113,12 @@ public class VitrineController {
 
         List<Avaliacao> avaliacoesRecentes = avaliacaoRepository.findTop10ByIdProdutorOrderByDataAvaliacaoDesc(id);
         model.addAttribute("avaliacoesRecentes", avaliacoesRecentes);
+
+        Integer idUsuario = currentUserId(authentication);
+        if (idUsuario != null && isConsumidorOuModerador(authentication)) {
+            boolean favoritado = favoritoProdutorRepository.existsById(new FavoritoProdutorId(idUsuario, id));
+            model.addAttribute("produtorFavoritado", favoritado);
+        }
 
         return "perfil_produtor";
     }
