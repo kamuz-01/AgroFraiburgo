@@ -196,6 +196,35 @@ $$
 DELIMITER ;
 
 -- --------------------------------------------------------
+--
+-- Estrutura para tabela `favoritos_produtos`
+-- (relações de favoritos entre usuário (consumidor/moderador) e produto)
+--
+-- IMPORTANTE: este dump segue o padrão do phpMyAdmin de criar PKs e FKs mais abaixo
+-- (seções "Índices" e "Restrições"). Por isso NÃO definimos foreign keys inline aqui.
+--
+
+CREATE TABLE `favoritos_produtos` (
+  `id_usuario` int NOT NULL,
+  `id_produto` int NOT NULL,
+  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+--
+-- Estrutura para tabela `favoritos_produtores`
+-- (relações de favoritos entre usuário (consumidor/moderador) e produtor)
+--
+-- IMPORTANTE: FKs serão adicionadas na seção "Restrições".
+--
+
+CREATE TABLE `favoritos_produtores` (
+  `id_usuario` int NOT NULL,
+  `id_produtor` int NOT NULL,
+  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
 
 --
 -- Estrutura para tabela `usuarios`
@@ -329,6 +358,20 @@ ALTER TABLE `feira`
   ADD KEY `fk_feira_moderador` (`id_moderador`);
 
 --
+-- Índices de tabela `favoritos_produtos`
+--
+ALTER TABLE `favoritos_produtos`
+  ADD PRIMARY KEY (`id_usuario`,`id_produto`),
+  ADD KEY `idx_favoritos_produtos_id_produto` (`id_produto`);
+
+--
+-- Índices de tabela `favoritos_produtores`
+--
+ALTER TABLE `favoritos_produtores`
+  ADD PRIMARY KEY (`id_usuario`,`id_produtor`),
+  ADD KEY `idx_favoritos_produtores_id_produtor` (`id_produtor`);
+
+--
 -- Índices de tabela `moderadores`
 --
 ALTER TABLE `moderadores`
@@ -419,6 +462,20 @@ ALTER TABLE `documentos_produtor`
 --
 ALTER TABLE `feira`
   ADD CONSTRAINT `fk_feira_moderador` FOREIGN KEY (`id_moderador`) REFERENCES `moderadores` (`id_moderador`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Restrições para tabelas `favoritos_produtos`
+--
+ALTER TABLE `favoritos_produtos`
+  ADD CONSTRAINT `fk_favoritos_produtos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_favoritos_produtos_produto` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `favoritos_produtores`
+--
+ALTER TABLE `favoritos_produtores`
+  ADD CONSTRAINT `fk_favoritos_produtores_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_favoritos_produtores_produtor` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `moderadores`
