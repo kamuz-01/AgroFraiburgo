@@ -41,16 +41,11 @@ Foi introduzida a funcionalidade de **salvar/favoritar produtores** a partir do 
 - Persistência relacional via tabela `favoritos_produtores` (MySQL)
 - Espelhamento do relacionamento no Neo4j (`FAVORITED_PRODUCER`) quando habilitado
 
-### Migrations (Flyway)
-
-O projeto passou a usar **Flyway** para manter o schema do MySQL atualizado (ex.: criação de tabelas novas sem precisar editar o dump manualmente).
-
 ## Tecnologias Utilizadas
 
 - Java Spring Boot
 - Maven
 - Base de Dados MySQL
-- Flyway (migrations)
 - Neo4j (grafo de recomendações)
 - Spring Data Neo4j
 - Spring Security
@@ -75,6 +70,7 @@ O projeto passou a usar **Flyway** para manter o schema do MySQL atualizado (ex.
 - XAMPP
 - WAMP ou
 - LAMP
+- NEO4J instalado localmente ou uma conta criada no NEO4J Aura.
 - RabbitMQ devidamente instalado e em execução no ambiente local.
 
 ## Instalação
