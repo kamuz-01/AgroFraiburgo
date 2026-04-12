@@ -2,6 +2,7 @@ package org.main.services;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuarioService {
@@ -52,6 +54,79 @@ public class UsuarioService {
     
     public Optional<Usuario> buscarPorNomeLogin(String nomeLogin) {
         return usuarioRepository.findByNomeLogin(nomeLogin);
+    }
+
+    @Transactional
+    public Usuario atualizarPerfilUsuario(Integer idUsuario,
+                                          String nome,
+                                          String sobrenome,
+                                          LocalDate dataNascimento,
+                                          String sexo,
+                                          String telefone,
+                                          String email,
+                                          String cidade,
+                                          String estado,
+                                          MultipartFile imagemPerfil,
+                                          MultipartFile imagemCapa) throws IOException {
+        if (idUsuario == null) {
+            throw new IllegalArgumentException("Usuário inválido");
+        }
+
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        if (email != null && !email.isBlank()) {
+            String emailNormalizado = email.trim();
+            boolean emailEmUso = usuarioRepository.existsByEmailAndIdUsuarioNot(emailNormalizado, idUsuario);
+            if (emailEmUso) {
+                throw new IllegalArgumentException("E-mail já cadastrado por outro usuário.");
+            }
+            usuario.setEmail(emailNormalizado);
+        }
+
+        if (nome != null && !nome.isBlank()) {
+            usuario.setNome(nome.trim());
+        }
+        if (sobrenome != null && !sobrenome.isBlank()) {
+            usuario.setSobrenome(sobrenome.trim());
+        }
+        if (dataNascimento != null) {
+            usuario.setDataNascimento(dataNascimento);
+        }
+        if (sexo != null && !sexo.isBlank()) {
+            usuario.setSexo(sexo.trim());
+        }
+        if (telefone != null && !telefone.isBlank()) {
+            usuario.setTelefone(telefone.trim());
+        }
+        if (cidade != null && !cidade.isBlank()) {
+            usuario.setCidade(cidade.trim());
+        }
+        if (estado != null && !estado.isBlank()) {
+            usuario.setEstado(estado.trim());
+        }
+
+        Path baseUsuario = BASE_DIR.resolve(String.valueOf(idUsuario));
+        Path perfilDir = baseUsuario.resolve("imagem-perfil");
+        Path capaDir = baseUsuario.resolve("imagem-capa");
+        Files.createDirectories(perfilDir);
+        Files.createDirectories(capaDir);
+
+        if (imagemPerfil != null && !imagemPerfil.isEmpty()) {
+            String perfilNome = "perfil_" + System.currentTimeMillis() + obterExtensao(imagemPerfil.getOriginalFilename(), ".png");
+            Path destino = perfilDir.resolve(perfilNome);
+            imagemPerfil.transferTo(destino.toFile());
+            usuario.setImagemPerfil("/imagens-usuarios/" + idUsuario + "/imagem-perfil/" + perfilNome);
+        }
+
+        if (imagemCapa != null && !imagemCapa.isEmpty()) {
+            String capaNome = "capa_" + System.currentTimeMillis() + obterExtensao(imagemCapa.getOriginalFilename(), ".png");
+            Path destino = capaDir.resolve(capaNome);
+            imagemCapa.transferTo(destino.toFile());
+            usuario.setImagemCapa("/imagens-usuarios/" + idUsuario + "/imagem-capa/" + capaNome);
+        }
+
+        return usuarioRepository.save(usuario);
     }
 
     private void inicializarDiretorios() throws IOException {
@@ -378,6 +453,20 @@ public class UsuarioService {
             return (String) attributes.get("id");
         }
         return null;
+    }
+
+    private String obterExtensao(String nomeArquivo, String padrao) {
+        if (nomeArquivo == null || nomeArquivo.isBlank()) {
+            return padrao;
+        }
+
+        int index = nomeArquivo.lastIndexOf('.');
+        if (index < 0 || index == nomeArquivo.length() - 1) {
+            return padrao;
+        }
+
+        String extensao = nomeArquivo.substring(index).trim();
+        return extensao.isBlank() ? padrao : extensao;
     }
     
     public Optional<Usuario> buscarPorOauthProviderAndOauthId(String provider, String oauthId) {

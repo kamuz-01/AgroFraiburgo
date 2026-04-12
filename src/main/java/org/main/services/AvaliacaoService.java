@@ -3,7 +3,6 @@ package org.main.services;
 import java.util.Objects;
 
 import org.main.models.Avaliacao;
-import org.main.models.Produtor;
 import org.main.repository.AvaliacaoRepository;
 import org.main.repository.ProdutorRepository;
 import org.springframework.stereotype.Service;

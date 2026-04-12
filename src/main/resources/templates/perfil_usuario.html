@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu perfil | AgroFraiburgo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/estilos-perfil_usuario.css}">
+</head>
+<body>
+    <main class="profile-page">
+        <section class="profile-hero">
+            <div class="profile-hero__content">
+                <div class="profile-kicker">AgroFraiburgo</div>
+                <h1>Meu perfil</h1>
+                <p>
+                    Revise seus dados cadastrados e mantenha sua conta atualizada.
+                    As informações de acesso ficam protegidas, enquanto os dados de contato podem ser editados.
+                </p>
+                <div class="profile-actions">
+                    <a th:href="@{/}" class="btn btn-light btn-lg"><i class="fa-solid fa-house me-2"></i>Início</a>
+                    <a th:href="@{/logout}" class="btn btn-outline-light btn-lg"><i class="fa-solid fa-right-from-bracket me-2"></i>Sair</a>
+                </div>
+            </div>
+            <div class="profile-hero__panel">
+                <div class="profile-avatar-wrap">
+                    <img th:if="${usuario.imagemPerfil != null}" th:src="${usuario.imagemPerfil}" alt="Imagem de perfil" class="profile-avatar-img">
+                    <div th:if="${usuario.imagemPerfil == null}" class="profile-avatar-fallback" th:text="${#strings.substring(usuario.nome, 0, 1)}">A</div>
+                </div>
+                <div class="profile-hero__meta">
+                    <strong th:text="${usuario.nome + ' ' + (usuario.sobrenome != null ? usuario.sobrenome : '')}">Nome do usuário</strong>
+                    <span th:text="${usuario.tipoUsuario}">TIPO_USUARIO</span>
+                    <span th:text="${usuario.nomeLogin}">login</span>
+                </div>
+                <div class="profile-hero__stats">
+                    <div>
+                        <small>Conta</small>
+                        <strong th:text="${usuario.statusConta}">ATIVO</strong>
+                    </div>
+                    <div>
+                        <small>CPF</small>
+                        <strong th:text="${usuario.cpf}">000.000.000-00</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="profile-grid">
+            <article class="profile-card profile-card--cover">
+                <div class="profile-cover" th:style="${usuario.imagemCapa != null ? 'background-image:url(' + usuario.imagemCapa + ')' : ''}">
+                    <div class="profile-cover__overlay"></div>
+                    <div class="profile-cover__body">
+                        <div class="profile-section-label">Identidade visual</div>
+                        <h2>Imagem de capa e foto pública</h2>
+                        <p>Atualize as imagens que aparecem no seu cartão de usuário e na sua página.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="profile-card profile-card--form">
+                <div class="section-heading">
+                    <div>
+                        <span>Dados cadastrados</span>
+                        <h2>Editar informações</h2>
+                    </div>
+                </div>
+
+                <div th:if="${mensagemSucesso}" class="alert alert-success" th:text="${mensagemSucesso}"></div>
+                <div th:if="${mensagemErro}" class="alert alert-danger" th:text="${mensagemErro}"></div>
+
+                <form th:action="@{/perfil}" method="post" enctype="multipart/form-data" class="profile-form">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nome</label>
+                            <input type="text" name="nome" class="form-control form-control-lg" th:value="${usuario.nome}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sobrenome</label>
+                            <input type="text" name="sobrenome" class="form-control form-control-lg" th:value="${usuario.sobrenome}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">E-mail</label>
+                            <input type="email" name="email" class="form-control form-control-lg" th:value="${usuario.email}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Telefone</label>
+                            <input type="text" name="telefone" class="form-control form-control-lg" th:value="${usuario.telefone}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Nascimento</label>
+                            <input type="date" name="dataNascimento" class="form-control form-control-lg" th:value="${usuario.dataNascimento}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Sexo</label>
+                            <select name="sexo" class="form-select form-select-lg">
+                                <option value="" th:selected="${usuario.sexo == null}">Selecione</option>
+                                <option value="Feminino" th:selected="${usuario.sexo == 'Feminino'}">Feminino</option>
+                                <option value="Masculino" th:selected="${usuario.sexo == 'Masculino'}">Masculino</option>
+                                <option value="Outro" th:selected="${usuario.sexo == 'Outro'}">Outro</option>
+                                <option value="Prefiro não informar" th:selected="${usuario.sexo == 'Prefiro não informar'}">Prefiro não informar</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Tipo de conta</label>
+                            <input type="text" class="form-control form-control-lg" th:value="${usuario.tipoUsuario}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Cidade</label>
+                            <input type="text" name="cidade" class="form-control form-control-lg" th:value="${usuario.cidade}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Estado</label>
+                            <input type="text" name="estado" class="form-control form-control-lg" th:value="${usuario.estado}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Imagem de perfil</label>
+                            <input type="file" name="imagemPerfil" class="form-control form-control-lg" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Imagem de capa</label>
+                            <input type="file" name="imagemCapa" class="form-control form-control-lg" accept="image/*">
+                        </div>
+                        <div class="col-12 d-flex flex-wrap gap-3 mt-2">
+                            <button type="submit" class="btn btn-success btn-lg px-4">Salvar alterações</button>
+                            <a th:href="${homeUrl}" class="btn btn-outline-secondary btn-lg px-4">Voltar para a home</a>
+                        </div>
+                    </div>
+                </form>
+            </article>
+
+            <article class="profile-card profile-card--details">
+                <div class="section-heading">
+                    <div>
+                        <span>Dados de acesso</span>
+                        <h2>Informações protegidas</h2>
+                    </div>
+                </div>
+
+                <div class="detail-list">
+                    <div class="detail-item">
+                        <small>Login</small>
+                        <strong th:text="${usuario.nomeLogin}">login</strong>
+                    </div>
+                    <div class="detail-item">
+                        <small>CPF</small>
+                        <strong th:text="${usuario.cpf}">cpf</strong>
+                    </div>
+                    <div class="detail-item">
+                        <small>Status da conta</small>
+                        <strong th:text="${usuario.statusConta}">ATIVO</strong>
+                    </div>
+                    <div class="detail-item">
+                        <small>Atualizado em</small>
+                        <strong th:text="${usuario.atualizadoEm}">agora</strong>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach((input) => {
+            input.addEventListener('change', () => {
+                input.classList.toggle('has-file', input.files.length > 0);
+            });
+        });
+    </script>
+</body>
+</html>

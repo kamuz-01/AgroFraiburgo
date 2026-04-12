@@ -3,6 +3,7 @@ package org.main.controllers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.time.LocalDate;
 
 import org.main.enums.StatusConta;
 import org.main.enums.StatusProduto;
@@ -23,7 +24,12 @@ import org.main.services.UsuarioService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class TelasController {
@@ -80,6 +86,77 @@ public class TelasController {
 	@GetMapping("/sobre")
 	public String mostrarPaginaSobre() {
 	    return "sobre";
+	}
+
+	@GetMapping("/perfil")
+	public String mostrarPerfilUsuario(Model model, Authentication auth) {
+		Integer idUsuario = currentUserId(auth);
+		if (idUsuario == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
+		}
+
+		Usuario usuario = usuarioRepository.findById(idUsuario)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+		model.addAttribute("usuario", usuario);
+		model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+		return "perfil_usuario";
+	}
+
+	@PostMapping("/perfil")
+	public String atualizarPerfilUsuario(Authentication auth,
+									@RequestParam(required = false) String nome,
+									@RequestParam(required = false) String sobrenome,
+									@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataNascimento,
+									@RequestParam(required = false) String sexo,
+									@RequestParam(required = false) String telefone,
+									@RequestParam(required = false) String email,
+									@RequestParam(required = false) String cidade,
+									@RequestParam(required = false) String estado,
+									@RequestParam(required = false) MultipartFile imagemPerfil,
+									@RequestParam(required = false) MultipartFile imagemCapa,
+									RedirectAttributes redirectAttributes) {
+		Integer idUsuario = currentUserId(auth);
+		if (idUsuario == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
+		}
+
+		try {
+			usuarioService.atualizarPerfilUsuario(idUsuario, nome, sobrenome, dataNascimento, sexo, telefone, email, cidade, estado, imagemPerfil, imagemCapa);
+			redirectAttributes.addFlashAttribute("mensagemSucesso", "Dados atualizados com sucesso.");
+		} catch (IllegalArgumentException ex) {
+			redirectAttributes.addFlashAttribute("mensagemErro", ex.getMessage());
+		} catch (java.io.IOException ex) {
+			redirectAttributes.addFlashAttribute("mensagemErro", "Não foi possível salvar as imagens do perfil.");
+		}
+
+		return "redirect:/perfil";
+	}
+
+	private Integer currentUserId(Authentication auth) {
+		if (auth == null) {
+			return null;
+		}
+
+		if (auth instanceof UsernamePasswordAuthenticationToken) {
+			String principal = auth.getName();
+			if (principal != null && principal.matches("\\d+")) {
+				return Integer.valueOf(principal);
+			}
+
+			return usuarioService.buscarPorNomeLogin(principal)
+					.map(Usuario::getIdUsuario)
+					.orElse(null);
+		}
+
+		if (auth instanceof JwtAuthenticationToken jwtAuth) {
+			String token = jwtAuth.getToken().getTokenValue();
+			Long uidLong = jwtService.extractUserId(token);
+			return uidLong != null ? uidLong.intValue() : null;
+		}
+
+		return null;
 	}
 	
 	@GetMapping("/upload_documentos")
@@ -267,6 +344,16 @@ public class TelasController {
 			List<Produto> recomendados = recomendacaoService.recomendarParaUsuario(idUsuario, 4);
 			model.addAttribute("produtosRecomendados", toProdutoCards(recomendados));
 		}
+	}
+
+	private String homeUrlFor(TipoUsuario tipoUsuario) {
+		if (tipoUsuario == TipoUsuario.PRODUTOR) {
+			return "/home_produtor";
+		}
+		if (tipoUsuario == TipoUsuario.MODERADOR) {
+			return "/home_moderador";
+		}
+		return "/home_consumidor";
 	}
 
 	private List<ProdutoCard> toProdutoCards(List<Produto> produtos) {
