@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir senha | AgroFraiburgo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/estilos-recuperacao_senha.css}">
+</head>
+<body>
+    <main class="reset-shell">
+        <section class="reset-panel reset-panel--hero">
+            <span class="eyebrow">AgroFraiburgo</span>
+            <h1>Definir nova senha</h1>
+            <p>
+                Crie uma nova senha segura para sua conta.
+            </p>
+            <a class="reset-link" th:href="@{/login}">Voltar para o login</a>
+        </section>
+
+        <section class="reset-panel reset-panel--form">
+            <div th:if="${mensagemSucesso}" class="alert alert-success" th:text="${mensagemSucesso}"></div>
+            <div th:if="${mensagemErro}" class="alert alert-danger" th:text="${mensagemErro}"></div>
+
+            <div th:if="${!tokenValido}" class="alert alert-warning">
+                O link de recuperação é inválido ou já expirou. Solicite um novo link no formulário anterior.
+            </div>
+
+            <form th:action="@{/redefinir_senha}" method="post" class="reset-form" th:if="${tokenValido}">
+                <input type="hidden" name="token" th:value="${token}">
+                <label for="novaSenha">Nova senha</label>
+                <input type="password" id="novaSenha" name="novaSenha" minlength="8" required>
+                <label for="confirmarSenha">Confirmar nova senha</label>
+                <input type="password" id="confirmarSenha" name="confirmarSenha" minlength="8" required>
+                <button type="submit" class="btn-primary">Atualizar senha</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

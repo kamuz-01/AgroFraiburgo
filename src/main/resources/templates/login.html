@@ -117,7 +117,7 @@ if ('serviceWorker' in navigator) {
             <label class="remember-me">
               <input type="checkbox" id="rememberMe" name="rememberMe"> Lembrar de mim
             </label>
-            <a href="#" class="forgot-password" onclick="showForgotPassword()">Esqueci minha senha</a>
+            <a href="/recuperar_senha" class="forgot-password">Esqueci minha senha</a>
           </div>
 
           <input type="submit" value="Entrar" class="btn-primary">
@@ -162,7 +162,7 @@ if ('serviceWorker' in navigator) {
     }
 
     function showForgotPassword() {
-      alert("Redirecionando para recuperação de senha...");
+      window.location.href = "/recuperar_senha";
     }
 
     function showSignup() {
@@ -214,6 +214,16 @@ if ('serviceWorker' in navigator) {
             });
           }
         });
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("senhaAtualizada") === "true") {
+          Swal.fire({
+            icon: "success",
+            title: "Senha atualizada",
+            text: "Agora você pode entrar com a nova senha.",
+            confirmButtonText: "Entendi"
+          });
+        }
       });
   </script>
   

@@ -66,6 +66,8 @@ public class SecurityConfig {
                     "/login.html",
                     "/login",
                     "/criar_conta",
+                    "/recuperar_senha",
+                    "/redefinir_senha",
                     "/upload_documentos",
                     "/produtos",
                     "/produto/**",

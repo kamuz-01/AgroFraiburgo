@@ -109,6 +109,7 @@ body {
 .profile-form .btn {
     border-radius: 999px;
     padding-inline: 1.15rem;
+    color: black;
 }
 
 .profile-hero__panel {

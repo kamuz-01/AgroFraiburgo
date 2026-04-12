@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 11/04/2026 às 02:51
+-- Tempo de geração: 13/04/2026 às 01:25
 -- Versão do servidor: 8.4.7
 -- Versão do PHP: 8.2.12
 
@@ -31,17 +31,17 @@ CREATE TABLE `avaliacoes` (
   `id_avaliacao` int NOT NULL,
   `id_consumidor` int NOT NULL,
   `id_produtor` int NOT NULL,
-  `nota` tinyint UNSIGNED NOT NULL,
-  `comentario` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `nota` int NOT NULL,
+  `comentario` varchar(255) DEFAULT NULL,
   `data_avaliacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `avaliacoes`
 --
 
 INSERT INTO `avaliacoes` (`id_avaliacao`, `id_consumidor`, `id_produtor`, `nota`, `comentario`, `data_avaliacao`) VALUES
-(1, 6, 23, 5, 'Excelente Produtor. Ele vende produtos frescos e de boa qualidade. super recomendo.', '2026-04-10 21:11:02');
+(1, 6, 23, 5, 'Excelentes produtos. Recomendo demais!', '2026-04-10 21:11:02');
 
 -- --------------------------------------------------------
 
@@ -74,13 +74,13 @@ INSERT INTO `consumidores` (`id_consumidor`) VALUES
 CREATE TABLE `documentos_produtor` (
   `id_documento` int NOT NULL,
   `id_produtor` int NOT NULL,
-  `documento_identidade` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `documento_identidade` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `comprovante_residencia` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `declaracao_pronaf` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `certificado_producao_organica` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `codigo_rastreabilidade` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `numero_inscricao_estadual` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `alvara_sanitario` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `declaracao_pronaf` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `certificado_producao_organica` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `codigo_rastreabilidade` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `numero_inscricao_estadual` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `alvara_sanitario` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `data_envio` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -91,6 +91,37 @@ CREATE TABLE `documentos_produtor` (
 INSERT INTO `documentos_produtor` (`id_documento`, `id_produtor`, `documento_identidade`, `comprovante_residencia`, `declaracao_pronaf`, `certificado_producao_organica`, `codigo_rastreabilidade`, `numero_inscricao_estadual`, `alvara_sanitario`, `data_envio`) VALUES
 (2, 23, '/documentos-produtores/23/identidade_1757600850706.pdf', '/documentos-produtores/23/residencia_1757600850708.pdf', '/documentos-produtores/23/pronaf_1757600850710.pdf', '/documentos-produtores/23/organico_1757600850713.pdf', '/documentos-produtores/23/rastreabilidade_1757600850715.pdf', '/documentos-produtores/23/inscricao_1757600850717.pdf', '/documentos-produtores/23/alvara_1757600850719.pdf', '2025-09-11 11:27:31'),
 (3, 26, '/documentos-produtores/26/identidade_1759931339226.pdf', '/documentos-produtores/26/residencia_1759931339231.pdf', '/documentos-produtores/26/pronaf_1759931339233.pdf', '/documentos-produtores/26/organico_1759931339236.pdf', '/documentos-produtores/26/rastreabilidade_1759931339239.pdf', '/documentos-produtores/26/inscricao_1759931339241.pdf', '/documentos-produtores/26/alvara_1759931339244.pdf', '2025-10-08 10:48:59');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `favoritos_produtores`
+--
+
+CREATE TABLE `favoritos_produtores` (
+  `id_usuario` int NOT NULL,
+  `id_produtor` int NOT NULL,
+  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `favoritos_produtores`
+--
+
+INSERT INTO `favoritos_produtores` (`id_usuario`, `id_produtor`, `data_favorito`) VALUES
+(6, 23, '2026-04-12 19:38:59');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `favoritos_produtos`
+--
+
+CREATE TABLE `favoritos_produtos` (
+  `id_usuario` int NOT NULL,
+  `id_produto` int NOT NULL,
+  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -115,6 +146,34 @@ CREATE TABLE `feira` (
 
 INSERT INTO `feira` (`id_feira`, `id_moderador`, `nome_local`, `logradouro`, `numero`, `bairro`, `complemento`, `status_feira`) VALUES
 (1, 24, 'Feira do Sabor', 'Rua Marly', 45, 'Centro', 'Outro', 'EM_ANDAMENTO');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `flyway_schema_history`
+--
+
+CREATE TABLE `flyway_schema_history` (
+  `installed_rank` int NOT NULL,
+  `version` varchar(50) DEFAULT NULL,
+  `description` varchar(200) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `script` varchar(1000) NOT NULL,
+  `checksum` int DEFAULT NULL,
+  `installed_by` varchar(100) NOT NULL,
+  `installed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `execution_time` int NOT NULL,
+  `success` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Despejando dados para a tabela `flyway_schema_history`
+--
+
+INSERT INTO `flyway_schema_history` (`installed_rank`, `version`, `description`, `type`, `script`, `checksum`, `installed_by`, `installed_on`, `execution_time`, `success`) VALUES
+(1, '0', '<< Flyway Baseline >>', 'BASELINE', '<< Flyway Baseline >>', NULL, 'root', '2026-04-11 01:30:58', 0, 1),
+(2, '20260410.1', 'create favoritos produtores', 'SQL', 'V20260410.1__create_favoritos_produtores.sql', 112464567, 'root', '2026-04-11 01:30:59', 389, 1),
+(3, '20260412.1', 'create recuperacao senha tokens', 'SQL', 'V20260412.1__create_recuperacao_senha_tokens.sql', 783629996, 'root', '2026-04-12 23:22:46', 756, 1);
 
 -- --------------------------------------------------------
 
@@ -150,8 +209,19 @@ CREATE TABLE `produtores` (
 --
 
 INSERT INTO `produtores` (`id_produtor`, `avaliacoes_recebidas`) VALUES
-(23, 0),
+(23, 1),
 (26, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `produtores_feira`
+--
+
+CREATE TABLE `produtores_feira` (
+  `id_feira` int NOT NULL,
+  `id_produtor` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -163,10 +233,10 @@ CREATE TABLE `produtos` (
   `id_produto` int NOT NULL,
   `id_produtor` int NOT NULL,
   `nome_produto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `descricao` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `preco` decimal(10,2) NOT NULL,
+  `descricao` varchar(255) DEFAULT NULL,
+  `preco` double NOT NULL,
   `unidade_medida` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'kg',
-  `quantidade_estoque` decimal(10,2) NOT NULL,
+  `quantidade_estoque` double NOT NULL,
   `status_produto` enum('COM_ESTOQUE','SEM_ESTOQUE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'COM_ESTOQUE',
   `imagem_produto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `data_criacao` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -178,8 +248,8 @@ CREATE TABLE `produtos` (
 --
 
 INSERT INTO `produtos` (`id_produto`, `id_produtor`, `nome_produto`, `descricao`, `preco`, `unidade_medida`, `quantidade_estoque`, `status_produto`, `imagem_produto`, `data_criacao`, `data_atualizacao`) VALUES
-(3, 23, 'Pêssego', 'Fresco, natural, do seu jeito', 6.00, 'kg', 250.00, 'COM_ESTOQUE', '/imagens-usuarios/23/produtos/1759864944571_nisonco-pr-and-seo-H4QpChoce7I-u.png', '2025-10-07 16:22:25', '2025-10-07 16:22:25'),
-(4, 23, 'Uva de mesa', 'As melhores uvas do mundo', 10.00, 'kg', 250.00, 'COM_ESTOQUE', '/imagens-usuarios/23/produtos/1759869628668_tipos-de-uvas-mais-vendidas-no-v.png', '2025-10-07 17:40:29', '2025-10-07 17:40:29');
+(3, 23, 'Pêssego', 'Fresco, natural, do seu jeito', 6, 'kg', 250, 'COM_ESTOQUE', '/imagens-usuarios/23/produtos/1759864944571_nisonco-pr-and-seo-H4QpChoce7I-u.png', '2025-10-07 16:22:25', '2025-10-07 16:22:25'),
+(4, 23, 'Uva de mesa', 'As melhores uvas do mundo', 10, 'kg', 250, 'COM_ESTOQUE', '/imagens-usuarios/23/produtos/1759869628668_tipos-de-uvas-mais-vendidas-no-v.png', '2025-10-07 17:40:29', '2025-10-07 17:40:29');
 
 --
 -- Acionadores `produtos`
@@ -196,33 +266,19 @@ $$
 DELIMITER ;
 
 -- --------------------------------------------------------
+
 --
--- Estrutura para tabela `favoritos_produtos`
--- (relações de favoritos entre usuário (consumidor/moderador) e produto)
---
--- IMPORTANTE: este dump segue o padrão do phpMyAdmin de criar PKs e FKs mais abaixo
--- (seções "Índices" e "Restrições"). Por isso NÃO definimos foreign keys inline aqui.
+-- Estrutura para tabela `recuperacao_senha_tokens`
 --
 
-CREATE TABLE `favoritos_produtos` (
+CREATE TABLE `recuperacao_senha_tokens` (
+  `id_token` int NOT NULL,
   `id_usuario` int NOT NULL,
-  `id_produto` int NOT NULL,
-  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
---
--- Estrutura para tabela `favoritos_produtores`
--- (relações de favoritos entre usuário (consumidor/moderador) e produtor)
---
--- IMPORTANTE: FKs serão adicionadas na seção "Restrições".
---
-
-CREATE TABLE `favoritos_produtores` (
-  `id_usuario` int NOT NULL,
-  `id_produtor` int NOT NULL,
-  `data_favorito` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `token` varchar(64) NOT NULL,
+  `expira_em` datetime NOT NULL,
+  `usado_em` datetime DEFAULT NULL,
+  `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -232,17 +288,17 @@ CREATE TABLE `favoritos_produtores` (
 
 CREATE TABLE `usuarios` (
   `id_usuario` int NOT NULL,
-  `nome_usuario` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sobrenome_usuario` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cpf_usuario` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nome_usuario` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sobrenome_usuario` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cpf_usuario` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `data_nascimento` date DEFAULT NULL,
-  `sexo` varchar(17) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `telefone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `email` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nome_login` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sexo` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `telefone` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nome_login` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `senha` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `tipo_usuario` enum('CONSUMIDOR','PRODUTOR','MODERADOR') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'CONSUMIDOR',
-  `oauth_provider` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `oauth_provider` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `oauth_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -351,11 +407,11 @@ ALTER TABLE `documentos_produtor`
   ADD KEY `idx_docs_produtor` (`id_produtor`);
 
 --
--- Índices de tabela `feira`
+-- Índices de tabela `favoritos_produtores`
 --
-ALTER TABLE `feira`
-  ADD PRIMARY KEY (`id_feira`),
-  ADD KEY `fk_feira_moderador` (`id_moderador`);
+ALTER TABLE `favoritos_produtores`
+  ADD PRIMARY KEY (`id_usuario`,`id_produtor`),
+  ADD KEY `idx_favoritos_produtores_id_produtor` (`id_produtor`);
 
 --
 -- Índices de tabela `favoritos_produtos`
@@ -365,11 +421,18 @@ ALTER TABLE `favoritos_produtos`
   ADD KEY `idx_favoritos_produtos_id_produto` (`id_produto`);
 
 --
--- Índices de tabela `favoritos_produtores`
+-- Índices de tabela `feira`
 --
-ALTER TABLE `favoritos_produtores`
-  ADD PRIMARY KEY (`id_usuario`,`id_produtor`),
-  ADD KEY `idx_favoritos_produtores_id_produtor` (`id_produtor`);
+ALTER TABLE `feira`
+  ADD PRIMARY KEY (`id_feira`),
+  ADD KEY `fk_feira_moderador` (`id_moderador`);
+
+--
+-- Índices de tabela `flyway_schema_history`
+--
+ALTER TABLE `flyway_schema_history`
+  ADD PRIMARY KEY (`installed_rank`),
+  ADD KEY `flyway_schema_history_s_idx` (`success`);
 
 --
 -- Índices de tabela `moderadores`
@@ -384,11 +447,26 @@ ALTER TABLE `produtores`
   ADD PRIMARY KEY (`id_produtor`);
 
 --
+-- Índices de tabela `produtores_feira`
+--
+ALTER TABLE `produtores_feira`
+  ADD PRIMARY KEY (`id_feira`,`id_produtor`),
+  ADD KEY `FKtnplpyq8he761l1oq21ajrkha` (`id_produtor`);
+
+--
 -- Índices de tabela `produtos`
 --
 ALTER TABLE `produtos`
   ADD PRIMARY KEY (`id_produto`),
   ADD KEY `id_produtor` (`id_produtor`);
+
+--
+-- Índices de tabela `recuperacao_senha_tokens`
+--
+ALTER TABLE `recuperacao_senha_tokens`
+  ADD PRIMARY KEY (`id_token`),
+  ADD UNIQUE KEY `uk_recuperacao_senha_token` (`token`),
+  ADD KEY `idx_recuperacao_senha_id_usuario` (`id_usuario`);
 
 --
 -- Índices de tabela `usuarios`
@@ -408,7 +486,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `avaliacoes`
 --
 ALTER TABLE `avaliacoes`
-  MODIFY `id_avaliacao` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_avaliacao` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `documentos_produtor`
@@ -427,6 +505,12 @@ ALTER TABLE `feira`
 --
 ALTER TABLE `produtos`
   MODIFY `id_produto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `recuperacao_senha_tokens`
+--
+ALTER TABLE `recuperacao_senha_tokens`
+  MODIFY `id_token` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
@@ -458,24 +542,25 @@ ALTER TABLE `documentos_produtor`
   ADD CONSTRAINT `documentos_produtor_ibfk_1` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `feira`
+-- Restrições para tabelas `favoritos_produtores`
 --
-ALTER TABLE `feira`
-  ADD CONSTRAINT `fk_feira_moderador` FOREIGN KEY (`id_moderador`) REFERENCES `moderadores` (`id_moderador`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `favoritos_produtores`
+  ADD CONSTRAINT `fk_favoritos_produtores_produtor` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_favoritos_produtores_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `favoritos_produtos`
 --
 ALTER TABLE `favoritos_produtos`
-  ADD CONSTRAINT `fk_favoritos_produtos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_favoritos_produtos_produto` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_favoritos_produtos_produto` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_favoritos_produtos_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `favoritos_produtores`
+-- Restrições para tabelas `feira`
 --
-ALTER TABLE `favoritos_produtores`
-  ADD CONSTRAINT `fk_favoritos_produtores_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_favoritos_produtores_produtor` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE;
+ALTER TABLE `feira`
+  ADD CONSTRAINT `FK3ci4knhalhvrmkimpypowecpq` FOREIGN KEY (`id_moderador`) REFERENCES `usuarios` (`id_usuario`),
+  ADD CONSTRAINT `fk_feira_moderador` FOREIGN KEY (`id_moderador`) REFERENCES `moderadores` (`id_moderador`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Restrições para tabelas `moderadores`
@@ -490,10 +575,23 @@ ALTER TABLE `produtores`
   ADD CONSTRAINT `produtores_ibfk_1` FOREIGN KEY (`id_produtor`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
 
 --
+-- Restrições para tabelas `produtores_feira`
+--
+ALTER TABLE `produtores_feira`
+  ADD CONSTRAINT `FK2wyw4dbiw5lokkm9hai0ti1s9` FOREIGN KEY (`id_feira`) REFERENCES `feira` (`id_feira`),
+  ADD CONSTRAINT `FKtnplpyq8he761l1oq21ajrkha` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`);
+
+--
 -- Restrições para tabelas `produtos`
 --
 ALTER TABLE `produtos`
   ADD CONSTRAINT `produtos_ibfk_1` FOREIGN KEY (`id_produtor`) REFERENCES `produtores` (`id_produtor`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `recuperacao_senha_tokens`
+--
+ALTER TABLE `recuperacao_senha_tokens`
+  ADD CONSTRAINT `fk_recuperacao_senha_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
