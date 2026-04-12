@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/x-icon" href="" >
 	<!-- JQuery -->
 	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
  	<!-- Bootstrap 5 CSS -->
@@ -312,6 +311,7 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>ID</th>
+                                    <th>Avaliações Recebidas</th>
                                     <th>ID Documento</th>
                                     <th>CPF</th>
                                     <th>Doc. Identidade</th>
@@ -383,6 +383,7 @@ const table = $('#produtoresTable').DataTable({
     },
     columns: [
         { data: 'id', width: '50px' },
+        { data: 'avaliacoesRecebidas', width: '110px' },
         { data: 'idDocumento', width: '90px' },
         { 
             data: 'cpf',

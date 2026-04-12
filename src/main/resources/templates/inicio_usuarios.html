@@ -1168,7 +1168,7 @@
                     <p class="producer-meta">Produção familiar com foco em qualidade e proximidade na região.</p>
                     <div class="producer-tags">
                         <span class="tag"><i class="fas fa-star"></i> <span th:text="${#numbers.formatDecimal(p.mediaAvaliacaoNormalizada(), 1, 1)}">0,0</span></span>
-                        <span class="tag"><i class="fas fa-users"></i> <span th:text="${p.totalAvaliacoes} + ' usuários'">0 usuários</span></span>
+                        <span class="tag"><i class="fas fa-users"></i> <span th:text="${p.totalFavoritos} + ' usuários favoritaram'">0 usuários favoritaram</span></span>
                         <span class="tag"><i class="fas fa-seedling"></i> Agricultura familiar</span>
                     </div>
                     <a class="producer-link" th:href="'/produtores/' + ${p.id}"><i class="far fa-eye"></i> Ver perfil</a>

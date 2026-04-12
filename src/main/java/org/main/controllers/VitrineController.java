@@ -239,6 +239,7 @@ public class VitrineController {
         for (Usuario usuario : produtores) {
             if (usuario == null) continue;
             RatingStats rating = ratingForProdutor(usuario.getIdUsuario());
+            long totalFavoritos = favoritoProdutorRepository.countFavoritosPorProdutor(usuario.getIdUsuario());
             cards.add(new ProdutorCard(
                     usuario.getIdUsuario(),
                     usuario.getNome(),
@@ -250,7 +251,7 @@ public class VitrineController {
                     usuario.getTelefone(),
                     iniciais(usuario.getNome(), usuario.getSobrenome()),
                     rating.media(),
-                    rating.total()
+                    totalFavoritos
             ));
         }
         return cards;
@@ -286,7 +287,7 @@ public class VitrineController {
             String telefone,
             String iniciais,
             Double mediaAvaliacao,
-            long totalAvaliacoes
+            long totalFavoritos
     ) {
         public String nomeCompleto() {
             String n = Objects.toString(nome, "").trim();
@@ -317,8 +318,8 @@ public class VitrineController {
             return mediaAvaliacao == null ? 0.0 : mediaAvaliacao.doubleValue();
         }
 
-        public boolean temAvaliacoes() {
-            return totalAvaliacoes > 0;
+        public boolean temFavoritos() {
+            return totalFavoritos > 0;
         }
     }
 

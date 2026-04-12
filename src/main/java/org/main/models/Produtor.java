@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -19,6 +20,7 @@ public class Produtor {
     @Id
     private Integer idProdutor;
 
+    @Column(name = "avaliacoes_recebidas")
     private Integer avaliacoesRecebidas;
 
     @JsonIgnore

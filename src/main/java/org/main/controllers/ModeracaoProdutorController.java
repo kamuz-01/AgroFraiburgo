@@ -11,8 +11,10 @@ import org.main.DTOs.ProdutorDTO;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
 import org.main.models.DocumentosProdutor;
+import org.main.models.Produtor;
 import org.main.models.Usuario;
 import org.main.repository.DocumentosProdutorRepository;
+import org.main.repository.ProdutorRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.EmailService;
 import org.springframework.core.io.Resource;
@@ -40,11 +42,16 @@ public class ModeracaoProdutorController {
 
     private final UsuarioRepository usuarioRepository;
     private final DocumentosProdutorRepository documentosProdutorRepository;
+	private final ProdutorRepository produtorRepository;
 	private final EmailService emailService;
 
-    public ModeracaoProdutorController(UsuarioRepository usuarioRepository, DocumentosProdutorRepository documentosProdutorRepository, EmailService emailService) {
+    public ModeracaoProdutorController(UsuarioRepository usuarioRepository,
+                                       DocumentosProdutorRepository documentosProdutorRepository,
+                                       ProdutorRepository produtorRepository,
+                                       EmailService emailService) {
         this.usuarioRepository = usuarioRepository;
 		this.documentosProdutorRepository = documentosProdutorRepository;
+		this.produtorRepository = produtorRepository;
 		this.emailService = emailService;
     }
 
@@ -69,11 +76,15 @@ public class ModeracaoProdutorController {
                     .stream()
                     .findFirst()
                     .orElse(null);
+            Integer avaliacoesRecebidas = produtorRepository.findById(u.getIdUsuario())
+                .map(Produtor::getAvaliacoesRecebidas)
+                .orElse(0);
 
             return new ProdutorDTO(
                     u.getIdUsuario(),
                     u.getNome() + " " + u.getSobrenome(),
                     u.getCpf(),
+                avaliacoesRecebidas,
                     doc != null ? doc.getIdDocumento() : null,
                     doc != null ? doc.getDocumentoIdentidade() : null,
                     doc != null ? doc.getComprovanteResidencia() : null,

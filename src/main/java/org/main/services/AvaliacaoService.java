@@ -3,7 +3,9 @@ package org.main.services;
 import java.util.Objects;
 
 import org.main.models.Avaliacao;
+import org.main.models.Produtor;
 import org.main.repository.AvaliacaoRepository;
+import org.main.repository.ProdutorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,9 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AvaliacaoService {
 
     private final AvaliacaoRepository avaliacaoRepository;
+    private final ProdutorRepository produtorRepository;
 
-    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository) {
+    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository,
+                            ProdutorRepository produtorRepository) {
         this.avaliacaoRepository = avaliacaoRepository;
+        this.produtorRepository = produtorRepository;
     }
 
     @Transactional
@@ -40,6 +45,17 @@ public class AvaliacaoService {
         avaliacao.setNota(nota);
         avaliacao.setComentario(comentario);
 
-        return avaliacaoRepository.save(avaliacao);
+        Avaliacao salva = avaliacaoRepository.save(avaliacao);
+        sincronizarAvaliacoesRecebidas(idProdutor);
+
+        return salva;
+    }
+
+    private void sincronizarAvaliacoesRecebidas(Integer idProdutor) {
+        produtorRepository.findById(idProdutor).ifPresent(produtor -> {
+            long totalAvaliacoes = avaliacaoRepository.contarConsumidoresDistintosPorProdutor(idProdutor);
+            produtor.setAvaliacoesRecebidas((int) totalAvaliacoes);
+            produtorRepository.save(produtor);
+        });
     }
 }

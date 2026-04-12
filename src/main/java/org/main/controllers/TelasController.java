@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.main.repository.AvaliacaoRepository;
+import org.main.repository.FavoritoProdutorRepository;
 import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.JwtService;
@@ -30,6 +31,7 @@ public class TelasController {
 	private final UsuarioRepository usuarioRepository;
 	private final ProdutoRepository produtoRepository;
 	private final AvaliacaoRepository avaliacaoRepository;
+	private final FavoritoProdutorRepository favoritoProdutorRepository;
 	private final JwtService jwtService;
 	private final UsuarioService usuarioService;
 	private final RecomendacaoService recomendacaoService;
@@ -38,12 +40,14 @@ public class TelasController {
 	                       UsuarioRepository usuarioRepository,
 	                       ProdutoRepository produtoRepository,
 	                       AvaliacaoRepository avaliacaoRepository,
+	                       FavoritoProdutorRepository favoritoProdutorRepository,
 	                       JwtService jwtService,
 	                       RecomendacaoService recomendacaoService) {
 	    this.usuarioService = usuarioService;
 	    this.usuarioRepository = usuarioRepository;
 	    this.produtoRepository = produtoRepository;
 	    this.avaliacaoRepository = avaliacaoRepository;
+	    this.favoritoProdutorRepository = favoritoProdutorRepository;
 	    this.jwtService = jwtService;
 	    this.recomendacaoService = recomendacaoService;
 	}
@@ -295,6 +299,7 @@ public class TelasController {
 		for (Usuario usuario : produtores) {
 			if (usuario == null) continue;
 			RatingStats rating = ratingForProdutor(usuario.getIdUsuario());
+			long totalFavoritos = favoritoProdutorRepository.countFavoritosPorProdutor(usuario.getIdUsuario());
 			cards.add(new ProdutorCard(
 					usuario.getIdUsuario(),
 					usuario.getNome(),
@@ -306,7 +311,7 @@ public class TelasController {
 					usuario.getTelefone(),
 					iniciais(usuario.getNome(), usuario.getSobrenome()),
 					rating.media(),
-					rating.total()
+					totalFavoritos
 			));
 		}
 		return cards;
@@ -342,7 +347,7 @@ public class TelasController {
 			String telefone,
 			String iniciais,
 			Double mediaAvaliacao,
-			long totalAvaliacoes
+			long totalFavoritos
 	) {
 		public String nomeCompleto() {
 			String n = Objects.toString(nome, "").trim();
@@ -373,8 +378,8 @@ public class TelasController {
 			return mediaAvaliacao == null ? 0.0 : mediaAvaliacao.doubleValue();
 		}
 
-		public boolean temAvaliacoes() {
-			return totalAvaliacoes > 0;
+		public boolean temFavoritos() {
+			return totalFavoritos > 0;
 		}
 	}
 

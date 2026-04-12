@@ -13,6 +13,7 @@ public class ProdutorDTO {
     private Integer id;
     private String nome;
     private String cpf;
+    private Integer avaliacoesRecebidas;
     private Integer idDocumento;
     private String documentoIdentidade;
     private String comprovanteResidencia;
