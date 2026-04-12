@@ -40,4 +40,20 @@ public class EmailService {
             throw new RuntimeException("Erro ao enviar e-mail: " + e.getMessage(), e);
         }
     }
+
+    public void enviarEmailHtml(String destinatario, String assunto, String corpoHtml) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+
+            helper.setTo(destinatario);
+            helper.setSubject(assunto);
+            helper.setText(corpoHtml, true);
+            helper.setFrom("no-reply@seudominio.com");
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Erro ao enviar e-mail HTML: " + e.getMessage(), e);
+        }
+    }
 }
