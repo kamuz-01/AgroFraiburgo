@@ -96,7 +96,7 @@ public class AuthController {
         // Seta cookie
         ResponseCookie cookie = ResponseCookie.from("AF_AUTH", jwt)
                 .httpOnly(true)
-                .secure(false) // alterar para true em produção com HTTPS
+                .secure(true) // alterar para true em produção com HTTPS
                 .sameSite("Lax")
                 .path("/")
                 .maxAge(jwtTtl)
