@@ -13,6 +13,7 @@
 - 📄 Revisão/moderação da documentação dos produtores
 - 👤 Gestão e moderação de usuários
 - 🔒 Sistema de autenticação (login e OAuth2)
+- 🧾 Monitoramento de requisições e logs de aplicação
 - 🧑‍🌾 Perfis de produtores e catálogo de produtos
 - 🪪 Página de perfil unificada para todos os tipos de usuário
 - 🔑 Recuperação de senha com envio de e-mail
@@ -25,7 +26,15 @@
 - 🧠 Recomendações personalizadas (híbridas) com grafo no Neo4j
 - 📱 Interface responsiva
 
-## Novidades (Abr/2026)
+## Atualizações Recentes
+
+### Monitoramento de requisições e logs
+
+Foi adicionada uma camada de **monitoramento de acesso HTTP** com log dedicado para requisições, além dos logs gerais e de erro da aplicação. O projeto agora registra informações como IP, método, URI, status e tempo de resposta em arquivos próprios dentro de `logs/`.
+
+### Correções de consistência no backend
+
+Foram corrigidas inconsistências que afetavam a experiência de uso e a confiabilidade dos dados, como a contagem de favoritos e avaliações, a persistência de `avaliacoes_recebidas` e o fluxo de navegação do perfil entre os diferentes tipos de usuário.
 
 ### Perfil unificado por tipo de usuário
 
@@ -46,6 +55,10 @@ Foi adicionada uma página de **detalhes da feira** que exibe a feira com status
 ### Erros e modo offline
 
 O projeto passou a contar com uma página de erro mais amigável para falhas do servidor, distinguindo cenários como 404, 500 e 503, além de uma tela de fallback para o modo offline.
+
+### Segurança e uploads
+
+O fluxo de upload foi endurecido para validar o conteúdo real dos arquivos enviados, e o sistema de autenticação recebeu ajustes de segurança relacionados ao JWT e ao tratamento de sessões com cookie.
 
 ### Recomendações por grafos (Neo4j)
 
@@ -80,6 +93,7 @@ Foi introduzida a funcionalidade de **salvar/favoritar produtores** a partir do 
 - JWT
 - Jbcrypt
 - RabbitMQ
+- Logback
 - Spring Dev Tools
 - Axios
 - HTML5
@@ -97,6 +111,7 @@ Foi introduzida a funcionalidade de **salvar/favoritar produtores** a partir do 
 - Neo4j instalado localmente ou uma conta criada no Neo4j Aura, caso deseje usar as recomendações por grafo.
 - RabbitMQ devidamente instalado e em execução no ambiente local.
 - Navegador moderno com suporte a Thymeleaf/HTML5, para exibição das páginas de perfil, feira, erro e fallback offline.
+- O diretório `logs/` será utilizado pela aplicação para registrar `app.log`, `error.log` e `api-access.log`.
 
 ## Instalação
 
@@ -131,6 +146,8 @@ DB_PASSWORD=sua_senha
 ```
 
 As páginas públicas principais já incluem os fluxos de perfil, recuperação de senha, busca funcional, listagem de produtores com paginação real, detalhes da feira e tratamento amigável para erros do servidor.
+
+Os logs de monitoramento também passam a ser gerados automaticamente em `logs/`, facilitando a inspeção de erros e do tráfego HTTP.
 
 Obs.: o `.env` está no `.gitignore` e não deve ser versionado.
 
