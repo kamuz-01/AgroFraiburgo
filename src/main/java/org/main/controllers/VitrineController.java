@@ -77,6 +77,7 @@ public class VitrineController {
         model.addAttribute("q", "");
 
         List<Produto> produtosDestaque = produtoRepository.findTop4ByOrderByDataCriacaoDesc();
+        int pageSizeProdutos = 4;
         List<Usuario> produtoresDestaque = usuarioRepository.findByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
         if (produtoresDestaque.size() > 3) {
             produtoresDestaque = produtoresDestaque.subList(0, 3);
@@ -85,6 +86,9 @@ public class VitrineController {
         model.addAttribute("totalProdutoresAtivos", totalProdutoresAtivos);
         model.addAttribute("totalProdutos", totalProdutos);
         model.addAttribute("produtosDestaque", toProdutoCards(produtosDestaque));
+        model.addAttribute("currentProductPage", 0);
+        model.addAttribute("pageSizeProdutos", pageSizeProdutos);
+        model.addAttribute("hasMoreProdutos", totalProdutos > produtosDestaque.size());
         model.addAttribute("produtoresDestaque", toProdutorCards(produtoresDestaque));
 
         Integer idUsuario = currentUserId(authentication);
@@ -94,6 +98,20 @@ public class VitrineController {
         }
 
         return "inicio_usuarios";
+    }
+
+    @GetMapping("/inicio_usuarios/produtos/carregar-mais")
+    @ResponseBody
+    public ProdutosPageResponse carregarMaisProdutos(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "4") int size) {
+        Page<Produto> produtosPage = produtosPaginados(page, size);
+        return new ProdutosPageResponse(
+                toProdutoCardResponses(produtosPage.getContent()),
+                produtosPage.getNumber(),
+                produtosPage.getSize(),
+                produtosPage.getTotalElements(),
+                produtosPage.hasNext()
+        );
     }
 
     @GetMapping("/produtores")
@@ -328,6 +346,42 @@ public class VitrineController {
         return cards;
     }
 
+    private List<ProdutoCardResponse> toProdutoCardResponses(List<Produto> produtos) {
+        List<ProdutoCardResponse> cards = new ArrayList<>();
+        for (Produto produto : produtos) {
+            if (produto == null) continue;
+            Integer idProdutor = produto.getProdutor() != null ? produto.getProdutor().getIdProdutor() : null;
+            Usuario produtor = (idProdutor != null) ? usuarioRepository.findById(idProdutor).orElse(null) : null;
+            RatingStats rating = (idProdutor != null) ? ratingForProdutor(idProdutor) : RatingStats.vazio();
+
+            cards.add(new ProdutoCardResponse(
+                    produto.getIdProduto(),
+                    produto.getNomeProduto(),
+                    new ProdutoCard(
+                            produto.getIdProduto(),
+                            produto.getNomeProduto(),
+                            produto.getDescricao(),
+                            produto.getPreco(),
+                            produto.getUnidadeMedida(),
+                            produto.getImagemProduto(),
+                            produto.getStatusProduto(),
+                            produtor,
+                            rating.media(),
+                            rating.total()
+                    ).descricaoCurta(),
+                    produto.getPreco(),
+                    produto.getUnidadeMedida(),
+                    produto.getImagemProduto(),
+                    localizacaoProduto(produtor),
+                    rating.mediaNormalizada(),
+                    rating.total(),
+                    produto.getStatusProduto() == StatusProduto.COM_ESTOQUE,
+                    produto.getImagemProduto() != null && !produto.getImagemProduto().isBlank()
+            ));
+        }
+        return cards;
+    }
+
     private List<ProdutorCard> toProdutorCards(List<Usuario> produtores) {
         List<ProdutorCard> cards = new ArrayList<>();
         for (Usuario usuario : produtores) {
@@ -380,6 +434,17 @@ public class VitrineController {
         return cards;
     }
 
+    private Page<Produto> produtosPaginados(int page, int size) {
+        int pageIndex = Math.max(page, 0);
+        int pageSize = Math.max(1, Math.min(size, 24));
+        Pageable pageable = PageRequest.of(
+                pageIndex,
+                pageSize,
+                Sort.by(Sort.Order.desc("dataCriacao"), Sort.Order.desc("idProduto"))
+        );
+        return produtoRepository.findAll(pageable);
+    }
+
     private Page<Usuario> produtoresPaginados(int page, int size, String q) {
         int pageIndex = Math.max(page, 0);
         int pageSize = Math.max(1, Math.min(size, 24));
@@ -420,6 +485,14 @@ public class VitrineController {
         String estado = Objects.toString(usuario.getEstado(), "").trim();
         String loc = (cidade + (cidade.isEmpty() || estado.isEmpty() ? "" : ", ") + estado).trim();
         return loc.isEmpty() ? "Fraiburgo, SC" : loc;
+    }
+
+    private String localizacaoProduto(Usuario usuario) {
+        if (usuario == null) {
+            return "Fraiburgo";
+        }
+        String cidade = Objects.toString(usuario.getCidade(), "").trim();
+        return cidade.isEmpty() ? "Fraiburgo" : cidade;
     }
 
     private String enderecoCompleto(Feira feira) {
@@ -507,6 +580,28 @@ public class VitrineController {
             boolean temEmail,
             boolean temAvaliacoes
     ) {}
+
+        public record ProdutosPageResponse(
+            List<ProdutoCardResponse> produtos,
+            int currentPage,
+            int pageSize,
+            long totalProdutos,
+            boolean hasMore
+        ) {}
+
+        public record ProdutoCardResponse(
+            Integer id,
+            String nome,
+            String descricaoCurta,
+            Double preco,
+            String unidadeMedida,
+            String imagemProduto,
+            String cidade,
+            double mediaAvaliacaoNormalizada,
+            long totalAvaliacoesProdutor,
+            boolean disponivel,
+            boolean temImagem
+        ) {}
 
     public record ProdutoresPageResponse(
             List<ProdutorCardResponse> produtores,

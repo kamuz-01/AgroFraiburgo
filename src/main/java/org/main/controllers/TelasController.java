@@ -331,6 +331,7 @@ public class TelasController {
 		long totalProdutos = produtoRepository.count();
 
 		List<Produto> produtosDestaque = produtoRepository.findTop4ByOrderByDataCriacaoDesc();
+		int pageSizeProdutos = 4;
 		List<Usuario> produtoresDestaque = usuarioRepository.findByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
 		if (produtoresDestaque.size() > 3) {
 			produtoresDestaque = produtoresDestaque.subList(0, 3);
@@ -339,6 +340,9 @@ public class TelasController {
 		model.addAttribute("totalProdutoresAtivos", totalProdutoresAtivos);
 		model.addAttribute("totalProdutos", totalProdutos);
 		model.addAttribute("produtosDestaque", toProdutoCards(produtosDestaque));
+		model.addAttribute("currentProductPage", 0);
+		model.addAttribute("pageSizeProdutos", pageSizeProdutos);
+		model.addAttribute("hasMoreProdutos", totalProdutos > produtosDestaque.size());
 		model.addAttribute("produtoresDestaque", toProdutorCards(produtoresDestaque));
 
 		if (idUsuario != null && (tipoUsuario == TipoUsuario.CONSUMIDOR || tipoUsuario == TipoUsuario.MODERADOR)) {

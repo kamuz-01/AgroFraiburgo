@@ -470,6 +470,33 @@
             white-space: nowrap;
         }
 
+        .section-link-button {
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            padding: 0;
+            font: inherit;
+        }
+
+        .empty-state-products {
+            padding: 28px;
+            border-radius: 24px;
+            background: rgba(31, 122, 66, 0.05);
+            border: 1px dashed rgba(31, 122, 66, 0.16);
+            color: var(--muted);
+        }
+
+        .empty-state-products h3 {
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .empty-state-products p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
         .category-grid {
             display: grid;
             grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1093,10 +1120,17 @@
                     <h2 class="section-title">Produtos em destaque</h2>
                     <p class="section-subtitle">Uma seleção de itens com visual mais limpo e foco em informação: origem, disponibilidade e valor.</p>
                 </div>
-                <a href="/produtos" class="section-link">Ver mais produtos <i class="fas fa-arrow-right"></i></a>
+                <button type="button"
+                        class="section-link section-link-button"
+                        id="btnLoadMoreProducts"
+                        th:if="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}"
+                        th:disabled="${!hasMoreProdutos}"
+                        th:text="${hasMoreProdutos ? 'Ver mais produtos' : 'Não há mais produtos'}">
+                    Ver mais produtos <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
 
-            <div class="product-grid">
+            <div class="product-grid" id="produtosGrid" th:if="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
                 <article class="product-card" th:each="produto, iter : ${produtosDestaque}">
                     <div class="product-visual"
                          th:classappend="(${iter.index % 4 == 0} ? ' visual-fruit' : (${iter.index % 4 == 1} ? ' visual-dairy' : (${iter.index % 4 == 2} ? ' visual-honey' : ' visual-vegetable'))) + (${produto.imagemProduto != null and !produto.imagemProduto.isBlank()} ? ' has-photo' : '')">
@@ -1136,6 +1170,11 @@
                         </div>
                     </div>
                 </article>
+            </div>
+
+            <div class="empty-state-products" th:unless="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
+                <h3>Não tem produtos disponíveis neste momento</h3>
+                <p>Ainda não existem produtos cadastrados para exibir aqui. Assim que houver itens ativos, eles vão aparecer nesta vitrine.</p>
             </div>
             </section>
 
@@ -1213,7 +1252,136 @@
             </div>
         </footer>
 
-        <script>
+        <script th:inline="javascript">
+            let currentProductPage = /*[[${currentProductPage}]]*/ 0;
+            const productPageSize = /*[[${pageSizeProdutos}]]*/ 4;
+            let hasMoreProducts = /*[[${hasMoreProdutos}]]*/ false;
+
+            function escapeHtml(value) {
+                return String(value ?? '')
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#39;');
+            }
+
+            function productVisualClass(index) {
+                const classes = ['visual-fruit', 'visual-dairy', 'visual-honey', 'visual-vegetable'];
+                return classes[index % classes.length];
+            }
+
+            function renderProductCard(produto, index) {
+                const visualClass = productVisualClass(index);
+                const photoClass = produto.temImagem ? ' has-photo' : '';
+                const imageHtml = produto.temImagem && produto.imagemProduto
+                    ? `<img class="product-photo" src="${escapeHtml(produto.imagemProduto)}" alt="${escapeHtml(produto.nome)}" />`
+                    : '';
+
+                return `
+                    <article class="product-card">
+                        <div class="product-visual ${visualClass}${photoClass}">
+                            ${imageHtml}
+                            <span class="availability">
+                                <i class="fas fa-circle-check"></i>
+                                <span>${produto.disponivel ? 'Disponível hoje' : 'Indisponível'}</span>
+                            </span>
+                            <span class="product-badge">
+                                <i class="fas fa-location-dot"></i>
+                                <span>${escapeHtml(produto.cidade || 'Fraiburgo')}</span>
+                            </span>
+                        </div>
+                        <div class="product-body">
+                            <h3 class="product-name">${escapeHtml(produto.nome)}</h3>
+                            <p class="product-desc">${escapeHtml(produto.descricaoCurta || '')}</p>
+                            <div class="product-meta-line">
+                                <div class="product-meta">
+                                    <span>
+                                        <i class="fas fa-star"></i>
+                                        <span>${Number(produto.mediaAvaliacaoNormalizada || 0).toFixed(1)} de avaliação</span>
+                                    </span>
+                                    <span>Agricultura familiar</span>
+                                </div>
+                                <div class="price">R$ ${Number(produto.preco || 0).toFixed(2)}/${escapeHtml(produto.unidadeMedida || '')}</div>
+                            </div>
+                            <div class="hero-actions" style="margin-top: 16px;">
+                                <a class="mini-btn primary" href="/produto/${produto.id}"><i class="far fa-eye"></i> Ver detalhes</a>
+                                <a href="#" class="mini-btn js-favoritar" data-produto-id="${produto.id}">
+                                    <i class="far fa-bookmark"></i> <span>Salvar</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }
+
+            async function carregarMaisProdutos() {
+                if (!hasMoreProducts) {
+                    return;
+                }
+
+                const btn = document.getElementById('btnLoadMoreProducts');
+                const grid = document.getElementById('produtosGrid');
+                const emptyState = document.querySelector('.empty-state-products');
+                if (!btn || !grid) {
+                    return;
+                }
+
+                const nextPage = currentProductPage + 1;
+                const originalLabel = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = 'Carregando...';
+
+                try {
+                    const response = await fetch(`/inicio_usuarios/produtos/carregar-mais?page=${nextPage}&size=${productPageSize}`, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Falha ao carregar produtos');
+                    }
+
+                    const data = await response.json();
+                    const produtos = Array.isArray(data.produtos) ? data.produtos : [];
+
+                    if (!produtos.length) {
+                        hasMoreProducts = false;
+                        btn.remove();
+                        return;
+                    }
+
+                    produtos.forEach((produto, index) => {
+                        grid.insertAdjacentHTML('beforeend', renderProductCard(produto, nextPage * productPageSize + index));
+                    });
+
+                    currentProductPage = data.currentPage ?? nextPage;
+                    hasMoreProducts = !!data.hasMore;
+
+                    if (!hasMoreProducts) {
+                        btn.remove();
+                    } else {
+                        btn.disabled = false;
+                        btn.innerHTML = originalLabel;
+                    }
+
+                    if (emptyState) {
+                        emptyState.remove();
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalLabel;
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const btn = document.getElementById('btnLoadMoreProducts');
+                if (btn) {
+                    btn.addEventListener('click', carregarMaisProdutos);
+                }
+            });
+
             document.addEventListener('click', async function (e) {
                 const btn = e.target.closest('.js-favoritar');
                 if (!btn) return;

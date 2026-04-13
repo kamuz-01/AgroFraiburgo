@@ -62,6 +62,7 @@ public class SecurityConfig {
                     "/pagina_inicial",
                     "/inicio_usuarios",
                     "/inicio_usuarios.html",
+                    "/inicio_usuarios/**",
                     "/criar_conta.html",
                     "/login.html",
                     "/login",
