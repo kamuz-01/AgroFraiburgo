@@ -3,14 +3,28 @@ package org.main.config;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.main.loggings.InterceptorLoggingApi;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.lang.NonNull;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    private final InterceptorLoggingApi interceptorLoggingApi;
+
+    public WebConfig(InterceptorLoggingApi interceptorLoggingApi) {
+		this.interceptorLoggingApi = interceptorLoggingApi;
+	}
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(interceptorLoggingApi);
+    }
+
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**")

@@ -14,8 +14,8 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("API REST Spring Boot com padrão DTO e Mappers")
+                        .title("AgroFraiburgo")
                         .version("1.0.0")
-                        .description("API REST sobre um mini-sistema de gestão de usuários"));
+                        .description("Aplicativo que disponibiliza informações sobre os produtos produzidos pela agricultura familiar de Fraiburgo/SC"));
     }
 }
