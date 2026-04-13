@@ -5,7 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.main.models.Usuario;
+import org.main.models.JwtSigningKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -13,39 +16,69 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import java.util.Date;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Base64;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    private final JwtKeyRotationService jwtKeyRotationService;
+    private final ObjectMapper objectMapper;
 
     @Value("${jwt.access-token-ttl-seconds}")
     private long jwtTtl;
 
-    private SecretKey signingKey() {
-        if (jwtSecret == null || jwtSecret.isBlank()) {
-            throw new IllegalStateException("JWT_SECRET não configurado. Defina uma chave Base64 forte com pelo menos 32 bytes.");
-        }
+    public JwtService(JwtKeyRotationService jwtKeyRotationService, ObjectMapper objectMapper) {
+        this.jwtKeyRotationService = jwtKeyRotationService;
+        this.objectMapper = objectMapper;
+    }
 
-        byte[] secretBytes;
-        try {
-            secretBytes = Base64.getDecoder().decode(jwtSecret.trim());
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalStateException("JWT_SECRET deve ser uma chave Base64 válida.", ex);
-        }
-
-        if (secretBytes.length < 32) {
-            throw new IllegalStateException("JWT_SECRET deve ter pelo menos 32 bytes decodificados (chave HS256 forte).");
-        }
-
+    private SecretKey signingKeyFor(JwtSigningKey key) {
+        byte[] secretBytes = Base64.getDecoder().decode(key.getSecretBase64().trim());
         return Keys.hmacShaKeyFor(secretBytes);
+    }
+
+    private String keyIdHeader(JwtSigningKey key) {
+        return String.valueOf(key.getKeyVersion());
+    }
+
+    private Integer extractKeyVersionFromToken(String token) {
+        try {
+            String[] parts = token.split("\\.");
+            if (parts.length < 2) {
+                return null;
+            }
+
+            String headerJson = new String(Base64.getUrlDecoder().decode(parts[0]), StandardCharsets.UTF_8);
+            JsonNode header = objectMapper.readTree(headerJson);
+            JsonNode kidNode = header.get("kid");
+            if (kidNode == null || kidNode.isNull()) {
+                return null;
+            }
+
+            String kid = kidNode.asText();
+            if (kid == null || kid.isBlank()) {
+                return null;
+            }
+
+            return Integer.valueOf(kid.trim());
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private Claims parseWithKey(String token, JwtSigningKey key) {
+        return Jwts.parserBuilder()
+                .setSigningKey(signingKeyFor(key))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     // --------------------------
@@ -54,6 +87,7 @@ public class JwtService {
     public String generateToken(Map<String, Object> claims) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtTtl * 1000);
+        JwtSigningKey activeKey = jwtKeyRotationService.getActiveKey();
 
         // Se tiver uid, esse é o identificador oficial
         String subject;
@@ -69,7 +103,8 @@ public class JwtService {
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-            .signWith(signingKey(), SignatureAlgorithm.HS256)
+            .setHeaderParam("kid", keyIdHeader(activeKey))
+            .signWith(signingKeyFor(activeKey), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -77,11 +112,23 @@ public class JwtService {
     // Extrai claims do token
     // --------------------------
     public Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-            .setSigningKey(signingKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Integer keyVersion = extractKeyVersionFromToken(token);
+        if (keyVersion != null) {
+            Optional<JwtSigningKey> resolved = jwtKeyRotationService.findByVersion(keyVersion);
+            if (resolved.isPresent()) {
+                return parseWithKey(token, resolved.get());
+            }
+        }
+
+        for (JwtSigningKey key : jwtKeyRotationService.findUsableKeys()) {
+            try {
+                return parseWithKey(token, key);
+            } catch (Exception ignored) {
+                // tenta a próxima chave válida
+            }
+        }
+
+        throw new IllegalArgumentException("Token inválido ou assinado com uma chave expirada.");
     }
 
     // --------------------------
