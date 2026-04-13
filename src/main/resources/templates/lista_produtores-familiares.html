@@ -313,7 +313,7 @@
             <span th:text="${totalProdutores} + ' produtores encontrados'">0 produtores encontrados</span>
         </div>
 
-        <div class="grid">
+        <div class="grid" id="produtoresGrid">
 
             <div class="card" th:each="p : ${produtores}">
                 <div class="card-header">
@@ -349,10 +349,102 @@
 
         </div>
 
-        <div class="load-more-container">
-            <button class="btn-load-more">Carregar mais produtores</button>
+        <div class="load-more-container" th:if="${hasMore}" id="loadMoreContainer">
+            <button class="btn-load-more" id="btnLoadMore" type="button">Carregar mais produtores</button>
         </div>
     </div>
+
+    <script th:inline="javascript">
+        const produtoresGrid = document.getElementById('produtoresGrid');
+        const loadMoreButton = document.getElementById('btnLoadMore');
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
+        let currentPage = /*[[${currentPage}]]*/ 0;
+        const pageSize = /*[[${pageSize}]]*/ 9;
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function renderProdutorCard(p) {
+            const nomeCompleto = escapeHtml(p.nomeCompleto || `${p.nome || ''} ${p.sobrenome || ''}`.trim());
+            const localizacao = escapeHtml(p.localizacao || 'Fraiburgo, SC');
+            const estrelas = Number(p.mediaAvaliacaoNormalizada ?? 0).toFixed(1);
+            const fotoHtml = p.temImagem && p.imagemPerfil
+                ? `<img src="${escapeHtml(p.imagemPerfil)}" alt="${nomeCompleto}" class="avatar">`
+                : `<div class="avatar-placeholder">${escapeHtml(p.iniciais || '?')}</div>`;
+
+            const telefoneHtml = p.temTelefone && p.telefone
+                ? `<a class="btn-outline" href="tel:${escapeHtml(p.telefone)}"><i class="fas fa-phone-alt"></i> Ligar</a>`
+                : `<span class="btn-outline" style="pointer-events:none;opacity:.6;"><i class="fas fa-phone-alt"></i> Ligar</span>`;
+
+            const emailHtml = p.temEmail && p.email
+                ? `<a class="btn-outline" href="mailto:${escapeHtml(p.email)}"><i class="far fa-envelope"></i> E-mail</a>`
+                : `<span class="btn-outline" style="pointer-events:none;opacity:.6;"><i class="far fa-envelope"></i> E-mail</span>`;
+
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        ${fotoHtml}
+                        <div class="user-info">
+                            <h3>${nomeCompleto}</h3>
+                            <div class="location"><i class="fas fa-map-marker-alt"></i><span>${localizacao}</span></div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>${estrelas}</span>
+                                <span>(${Number(p.totalFavoritos ?? 0)} usuários favoritaram)</span>
+                            </div>
+                        </div>
+                        <span class="badge">Produtor</span>
+                    </div>
+                    <p class="description">Produtor local da agricultura familiar.</p>
+                    <div class="action-buttons">
+                        ${telefoneHtml}
+                        ${emailHtml}
+                    </div>
+                    <a class="btn-full" href="/produtores/${p.id}"><i class="far fa-eye"></i> Ver Perfil Completo</a>
+                </div>`;
+        }
+
+        if (loadMoreButton) {
+            loadMoreButton.addEventListener('click', async () => {
+                const nextPage = currentPage + 1;
+                loadMoreButton.disabled = true;
+                const originalText = loadMoreButton.textContent;
+                loadMoreButton.textContent = 'Carregando...';
+
+                try {
+                    const response = await fetch(`/produtores/carregar-mais?page=${nextPage}&size=${pageSize}`);
+                    if (!response.ok) {
+                        throw new Error('Falha ao carregar produtores');
+                    }
+
+                    const data = await response.json();
+                    (data.produtores || []).forEach((produtor) => {
+                        produtoresGrid.insertAdjacentHTML('beforeend', renderProdutorCard(produtor));
+                    });
+
+                    currentPage = data.currentPage;
+
+                    if (!data.hasMore && loadMoreContainer) {
+                        loadMoreContainer.remove();
+                    } else {
+                        loadMoreButton.disabled = false;
+                        loadMoreButton.textContent = originalText;
+                    }
+                } catch (error) {
+                    console.error(error);
+                    loadMoreButton.disabled = false;
+                    loadMoreButton.textContent = originalText;
+                    alert('Não foi possível carregar mais produtores no momento.');
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>

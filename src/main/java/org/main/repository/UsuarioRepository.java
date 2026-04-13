@@ -21,6 +21,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByTipoUsuarioAndStatusConta(TipoUsuario tipo, StatusConta status);
 
+    Page<Usuario> findByTipoUsuarioAndStatusConta(TipoUsuario tipo, StatusConta status, Pageable pageable);
+
     long countByTipoUsuarioAndStatusConta(TipoUsuario tipo, StatusConta status);
     
     boolean existsByNomeLogin(String nomeLogin);

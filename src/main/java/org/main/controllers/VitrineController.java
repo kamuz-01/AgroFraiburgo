@@ -19,6 +19,10 @@ import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.AvaliacaoService;
 import org.main.services.RecomendacaoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
@@ -84,11 +89,30 @@ public class VitrineController {
     }
 
     @GetMapping("/produtores")
-    public String listarProdutores(Model model) {
-        List<Usuario> produtores = usuarioRepository.findByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
-        model.addAttribute("produtores", toProdutorCards(produtores));
-        model.addAttribute("totalProdutores", produtores.size());
+    public String listarProdutores(Model model,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "9") int size) {
+        Page<Usuario> produtoresPage = produtoresPaginados(page, size);
+        model.addAttribute("produtores", toProdutorCards(produtoresPage.getContent()));
+        model.addAttribute("totalProdutores", produtoresPage.getTotalElements());
+        model.addAttribute("currentPage", produtoresPage.getNumber());
+        model.addAttribute("pageSize", produtoresPage.getSize());
+        model.addAttribute("hasMore", produtoresPage.hasNext());
         return "lista_produtores-familiares";
+    }
+
+    @GetMapping("/produtores/carregar-mais")
+    @ResponseBody
+    public ProdutoresPageResponse carregarMaisProdutores(@RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "9") int size) {
+        Page<Usuario> produtoresPage = produtoresPaginados(page, size);
+        return new ProdutoresPageResponse(
+                toProdutorCardResponses(produtoresPage.getContent()),
+                produtoresPage.getNumber(),
+                produtoresPage.getSize(),
+                produtoresPage.getTotalElements(),
+                produtoresPage.hasNext()
+        );
     }
 
     @GetMapping("/produtores/{id}")
@@ -257,6 +281,46 @@ public class VitrineController {
         return cards;
     }
 
+    private List<ProdutorCardResponse> toProdutorCardResponses(List<Usuario> produtores) {
+        List<ProdutorCardResponse> cards = new ArrayList<>();
+        for (Usuario usuario : produtores) {
+            if (usuario == null) continue;
+            RatingStats rating = ratingForProdutor(usuario.getIdUsuario());
+            long totalFavoritos = favoritoProdutorRepository.countFavoritosPorProdutor(usuario.getIdUsuario());
+            cards.add(new ProdutorCardResponse(
+                    usuario.getIdUsuario(),
+                    Objects.toString(usuario.getNome(), "").trim(),
+                    Objects.toString(usuario.getSobrenome(), "").trim(),
+                    Objects.toString(usuario.getCidade(), "").trim(),
+                    Objects.toString(usuario.getEstado(), "").trim(),
+                    ((Objects.toString(usuario.getNome(), "").trim()) + " " + Objects.toString(usuario.getSobrenome(), "").trim()).trim(),
+                    localizacao(usuario),
+                    usuario.getImagemPerfil(),
+                    usuario.getEmail(),
+                    usuario.getTelefone(),
+                    iniciais(usuario.getNome(), usuario.getSobrenome()),
+                    rating.mediaNormalizada(),
+                    totalFavoritos,
+                    usuario.getImagemPerfil() != null && !usuario.getImagemPerfil().isBlank(),
+                    usuario.getTelefone() != null && !usuario.getTelefone().isBlank(),
+                    usuario.getEmail() != null && !usuario.getEmail().isBlank(),
+                    rating.temAvaliacoes()
+            ));
+        }
+        return cards;
+    }
+
+    private Page<Usuario> produtoresPaginados(int page, int size) {
+        int pageIndex = Math.max(page, 0);
+        int pageSize = Math.max(1, Math.min(size, 24));
+        Pageable pageable = PageRequest.of(
+                pageIndex,
+                pageSize,
+                Sort.by(Sort.Order.asc("nome"), Sort.Order.asc("sobrenome"), Sort.Order.asc("idUsuario"))
+        );
+        return usuarioRepository.findByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO, pageable);
+    }
+
     private RatingStats ratingForProdutor(Integer idProdutor) {
         if (idProdutor == null) return RatingStats.vazio();
         long total = avaliacaoRepository.contarConsumidoresDistintosPorProdutor(idProdutor);
@@ -274,6 +338,13 @@ public class VitrineController {
             sb.append(Character.toUpperCase(n.charAt(0)));
         }
         return sb.length() == 0 ? "?" : sb.toString();
+    }
+
+    private String localizacao(Usuario usuario) {
+        String cidade = Objects.toString(usuario.getCidade(), "").trim();
+        String estado = Objects.toString(usuario.getEstado(), "").trim();
+        String loc = (cidade + (cidade.isEmpty() || estado.isEmpty() ? "" : ", ") + estado).trim();
+        return loc.isEmpty() ? "Fraiburgo, SC" : loc;
     }
 
     public record ProdutorCard(
@@ -322,6 +393,34 @@ public class VitrineController {
             return totalFavoritos > 0;
         }
     }
+
+    public record ProdutorCardResponse(
+            Integer id,
+            String nome,
+            String sobrenome,
+            String cidade,
+            String estado,
+            String nomeCompleto,
+            String localizacao,
+            String imagemPerfil,
+            String email,
+            String telefone,
+            String iniciais,
+            double mediaAvaliacaoNormalizada,
+            long totalFavoritos,
+            boolean temImagem,
+            boolean temTelefone,
+            boolean temEmail,
+            boolean temAvaliacoes
+    ) {}
+
+    public record ProdutoresPageResponse(
+            List<ProdutorCardResponse> produtores,
+            int currentPage,
+            int pageSize,
+            long totalProdutores,
+            boolean hasMore
+    ) {}
 
     public record ProdutoCard(
             Integer id,
