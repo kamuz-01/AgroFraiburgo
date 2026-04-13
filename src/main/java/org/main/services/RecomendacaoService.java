@@ -38,7 +38,7 @@ public class RecomendacaoService {
     public List<Produto> recomendarParaUsuario(Integer idUsuario, int limit) {
         if (limit <= 0) return List.of();
 
-        // 1) Tenta Neo4j (colaborativo por FAVORITED)
+        // 1) Tenta Neo4j (colaborativo por FAVORITED e VIEWED)
         if (neo4jEnabled && idUsuario != null) {
             try {
                 List<Integer> ids = recomendarIdsViaNeo4j(idUsuario, limit);
@@ -73,15 +73,22 @@ public class RecomendacaoService {
     private List<Integer> recomendarIdsViaNeo4j(Integer idUsuario, int limit) {
         String cypher = """
                                 MATCH (u:User {id: $userId})-[f1]->(p:Product)
-                                WHERE type(f1) = 'FAVORITED'
+                                WHERE type(f1) IN ['FAVORITED', 'VIEWED']
 
                                 MATCH (p)<-[f2]-(other:User)-[f3]->(rec:Product)
-                                WHERE type(f2) = 'FAVORITED' AND type(f3) = 'FAVORITED'
+                                WHERE type(f2) IN ['FAVORITED', 'VIEWED']
+                                  AND type(f3) IN ['FAVORITED', 'VIEWED']
                                     AND NOT EXISTS {
                                         MATCH (u)-[f4]->(rec)
-                                        WHERE type(f4) = 'FAVORITED'
+                                        WHERE type(f4) IN ['FAVORITED', 'VIEWED']
                                     }
-                RETURN rec.id AS idProduto, count(*) AS score
+                WITH rec,
+                     sum(
+                         (CASE type(f1) WHEN 'FAVORITED' THEN 3 ELSE 1 END)
+                         * (CASE type(f2) WHEN 'FAVORITED' THEN 3 ELSE 1 END)
+                         * (CASE type(f3) WHEN 'FAVORITED' THEN 3 ELSE 1 END)
+                     ) AS score
+                RETURN rec.id AS idProduto, score
                 ORDER BY score DESC
                 LIMIT $limit
                 """;
@@ -97,8 +104,10 @@ public class RecomendacaoService {
     private List<Integer> trendingIdsViaNeo4j(int limit) {
         String cypher = """
                 MATCH (:User)-[f]->(p:Product)
-                WHERE type(f) = 'FAVORITED'
-                RETURN p.id AS idProduto, count(f) AS score
+                 WHERE type(f) IN ['FAVORITED', 'VIEWED']
+                 WITH p,
+                     sum(CASE type(f) WHEN 'FAVORITED' THEN 3 ELSE 1 END) AS score
+                 RETURN p.id AS idProduto, score
                 ORDER BY score DESC
                 LIMIT $limit
                 """;
@@ -119,7 +128,7 @@ public class RecomendacaoService {
                                 WHERE type(mb) = 'MADE_BY'
                                     AND NOT EXISTS {
                                         MATCH (u)-[f]->(p)
-                                        WHERE type(f) = 'FAVORITED'
+                                        WHERE type(f) IN ['FAVORITED', 'VIEWED']
                                     }
 
                                 RETURN p.id AS idProduto
