@@ -14,12 +14,38 @@
 - 👤 Gestão e moderação de usuários
 - 🔒 Sistema de autenticação (login e OAuth2)
 - 🧑‍🌾 Perfis de produtores e catálogo de produtos
+- 🪪 Página de perfil unificada para todos os tipos de usuário
+- 🔑 Recuperação de senha com envio de e-mail
+- 🔎 Busca funcional para produtos e produtores
+- 🗺️ Página de detalhes da feira com mapa do Google Maps
 - ⭐ Avaliação de produtores
 - 🔖 Favoritar produtor ("Salvar produtor")
+- 📃 Listagem de produtores com paginação real e carregamento incremental
+- 🧭 Tratamento amigável para erros do servidor e modo offline
 - 🧠 Recomendações personalizadas (híbridas) com grafo no Neo4j
 - 📱 Interface responsiva
 
 ## Novidades (Abr/2026)
+
+### Perfil unificado por tipo de usuário
+
+Foi criada uma página de **perfil unificada** para consumidor, produtor e moderador, permitindo visualizar e editar dados básicos de cadastro em um único fluxo.
+
+### Recuperação de senha
+
+Foi implementado o fluxo de **recuperação de senha** com envio de e-mail, token temporário e página de redefinição.
+
+### Busca funcional e listagem aprimorada
+
+A busca da vitrine passou a ser **funcional** para produtos e produtores, e a listagem de produtores ganhou filtros reais, paginação incremental e preservação do termo pesquisado ao carregar mais itens.
+
+### Feira em andamento com mapa
+
+Foi adicionada uma página de **detalhes da feira** que exibe a feira com status `EM_ANDAMENTO`, mostrando o endereço cadastrado e a localização no Google Maps.
+
+### Erros e modo offline
+
+O projeto passou a contar com uma página de erro mais amigável para falhas do servidor, distinguindo cenários como 404, 500 e 503, além de uma tela de fallback para o modo offline.
 
 ### Recomendações por grafos (Neo4j)
 
@@ -43,18 +69,20 @@ Foi introduzida a funcionalidade de **salvar/favoritar produtores** a partir do 
 
 ## Tecnologias Utilizadas
 
-- Java Spring Boot
+- Java e Spring Boot
 - Maven
+- Spring Data JPA
 - Base de Dados MySQL
 - Neo4j (grafo de recomendações)
 - Spring Data Neo4j
 - Spring Security
+- Thymeleaf e Thymeleaf Extras para Security
+- JWT
 - Jbcrypt
 - RabbitMQ
-- Thymeleaf
-- Spring Dev Tools.
+- Spring Dev Tools
 - Axios
-- HMTL5
+- HTML5
 - CSS3
 - Bootstrap
 - Javascript
@@ -62,16 +90,13 @@ Foi introduzida a funcionalidade de **salvar/favoritar produtores** a partir do 
 ## Requisitos
 
 - Java 21 (recomendado; ver propriedade `java.version` no `pom.xml`)
-- SpringBoot 3.x ou superior
+- Spring Boot 3.x ou superior
 - Maven 3.x
 - IDE compatível (recomendado VS Code ou Spring Tool Suite)
-- **Ambiente de banco de dados MySQL configurado, sendo necessário ter uma das seguintes ferramentas de gerenciamento e execução do MySQL**:
-- MySQL Workbench
-- XAMPP
-- WAMP ou
-- LAMP
-- NEO4J instalado localmente ou uma conta criada no NEO4J Aura.
+- Ambiente de banco de dados MySQL configurado, com uma ferramenta de gerenciamento/execução como MySQL Workbench, XAMPP, WAMP ou LAMP.
+- Neo4j instalado localmente ou uma conta criada no Neo4j Aura, caso deseje usar as recomendações por grafo.
 - RabbitMQ devidamente instalado e em execução no ambiente local.
+- Navegador moderno com suporte a Thymeleaf/HTML5, para exibição das páginas de perfil, feira, erro e fallback offline.
 
 ## Instalação
 
@@ -104,6 +129,8 @@ DB_PASSWORD=sua_senha
 # NEO4J_PASSWORD=<senha>
 # NEO4J_DATABASE=<database>
 ```
+
+As páginas públicas principais já incluem os fluxos de perfil, recuperação de senha, busca funcional, listagem de produtores com paginação real, detalhes da feira e tratamento amigável para erros do servidor.
 
 Obs.: o `.env` está no `.gitignore` e não deve ser versionado.
 
