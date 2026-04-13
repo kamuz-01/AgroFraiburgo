@@ -478,6 +478,12 @@
             font: inherit;
         }
 
+        .products-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 18px;
+        }
+
         .empty-state-products {
             padding: 28px;
             border-radius: 24px;
@@ -1120,14 +1126,6 @@
                     <h2 class="section-title">Produtos em destaque</h2>
                     <p class="section-subtitle">Uma seleção de itens com visual mais limpo e foco em informação: origem, disponibilidade e valor.</p>
                 </div>
-                <button type="button"
-                        class="section-link section-link-button"
-                        id="btnLoadMoreProducts"
-                        th:if="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}"
-                        th:disabled="${!hasMoreProdutos}"
-                        th:text="${hasMoreProdutos ? 'Ver mais produtos' : 'Não há mais produtos'}">
-                    Ver mais produtos <i class="fas fa-arrow-right"></i>
-                </button>
             </div>
 
             <div class="product-grid" id="produtosGrid" th:if="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
@@ -1175,6 +1173,16 @@
             <div class="empty-state-products" th:unless="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
                 <h3>Não tem produtos disponíveis neste momento</h3>
                 <p>Ainda não existem produtos cadastrados para exibir aqui. Assim que houver itens ativos, eles vão aparecer nesta vitrine.</p>
+            </div>
+
+            <div class="products-actions" th:if="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
+                <button type="button"
+                        class="section-link section-link-button"
+                        id="btnLoadMoreProducts"
+                        th:disabled="${!hasMoreProdutos}"
+                        th:text="${hasMoreProdutos ? 'Ver mais produtos' : 'Não há mais produtos'}">
+                    Ver mais produtos <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
             </section>
 
