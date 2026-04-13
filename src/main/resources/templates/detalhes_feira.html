@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Feira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f4f8f2;
+            --surface: rgba(255, 255, 255, 0.9);
+            --surface-strong: #ffffff;
+            --text: #17311f;
+            --muted: #5c6f60;
+            --border: rgba(23, 49, 31, 0.08);
+            --primary: #1f7a42;
+            --primary-dark: #175f33;
+            --primary-soft: #e4f4ea;
+            --accent: #f2a93b;
+            --shadow-lg: 0 24px 60px rgba(18, 40, 26, 0.12);
+            --shadow-md: 0 14px 30px rgba(18, 40, 26, 0.08);
+            --radius-xl: 30px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Manrope', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(31, 122, 66, 0.14), transparent 28%),
+                radial-gradient(circle at top right, rgba(242, 169, 59, 0.12), transparent 24%),
+                linear-gradient(180deg, #f8fbf6 0%, #eef4ec 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .page-shell {
+            padding: 30px 0 52px;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 34px;
+            padding: 30px;
+            background: linear-gradient(135deg, #165f33 0%, #2f8d52 56%, #1b6a3b 100%);
+            color: #fff;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero::before,
+        .hero::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(12px);
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .hero::before {
+            width: 220px;
+            height: 220px;
+            top: -70px;
+            right: -40px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .hero::after {
+            width: 260px;
+            height: 260px;
+            left: -110px;
+            bottom: -140px;
+            background: rgba(242, 169, 59, 0.5);
+        }
+
+        .hero-top {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 0.84rem;
+            font-weight: 800;
+        }
+
+        .hero h1 {
+            margin: 16px 0 12px;
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2rem, 4vw, 3.8rem);
+            line-height: 1;
+            letter-spacing: -0.05em;
+            max-width: 12ch;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 62ch;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 1.02rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(16px);
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 26px;
+        }
+
+        .card-title {
+            margin: 0 0 16px;
+            font-family: 'Sora', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: -0.03em;
+        }
+
+        .info-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(31, 122, 66, 0.06);
+        }
+
+        .info-item i {
+            margin-top: 3px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .info-item strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .info-item span {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .map-wrap {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .map-frame {
+            width: 100%;
+            min-height: 460px;
+            border: 0;
+            display: block;
+        }
+
+        .map-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 13px 18px;
+            border-radius: 16px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+            color: #fff;
+            box-shadow: 0 14px 24px rgba(31, 122, 66, 0.22);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--primary-dark);
+            border-color: rgba(23, 49, 31, 0.08);
+        }
+
+        .empty-state {
+            margin-top: 18px;
+            padding: 28px;
+            border-radius: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state h2 {
+            margin: 0 0 8px;
+            font-family: 'Sora', sans-serif;
+            font-size: 1.3rem;
+        }
+
+        .empty-state p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        @media (max-width: 960px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .map-frame {
+                min-height: 380px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-shell {
+                padding: 16px 0 40px;
+            }
+
+            .hero,
+            .card-body,
+            .empty-state {
+                padding: 22px;
+            }
+
+            .hero h1 {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <div class="container">
+            <section class="hero">
+                <div class="hero-top">
+                    <div>
+                        <span class="eyebrow"><i class="fas fa-map-location-dot"></i> Feira da agricultura familiar</span>
+                        <h1 th:if="${feiraEncontrada}" th:text="${feira.nomeLocal}">Feira em andamento</h1>
+                        <h1 th:unless="${feiraEncontrada}">Nenhuma feira em andamento</h1>
+                        <p th:if="${feiraEncontrada}">A feira ativa é exibida com o endereço cadastrado no banco de dados e posicionada no mapa para facilitar a chegada de produtores e visitantes.</p>
+                        <p th:unless="${feiraEncontrada}">No momento não existe uma feira com status EM_ANDAMENTO cadastrada no sistema. Assim que houver uma feira ativa, o endereço e o mapa aparecerão aqui automaticamente.</p>
+                    </div>
+                    <div class="status-pill" th:if="${feiraEncontrada}">
+                        <i class="fas fa-circle-check"></i>
+                        <span th:text="${#strings.replace(feira.statusFeira.toString(), '_', ' ')}">EM ANDAMENTO</span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="content-grid" th:if="${feiraEncontrada}">
+                <section class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Endereço cadastrado</h2>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <i class="fas fa-signs-post"></i>
+                                <div>
+                                    <strong>Nome do local</strong>
+                                    <span th:text="${feira.nomeLocal}">Feira Central</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-location-dot"></i>
+                                <div>
+                                    <strong>Endereço completo</strong>
+                                    <span th:text="${enderecoCompleto}">Rua, número, bairro, Fraiburgo - SC, Brasil</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-house"></i>
+                                <div>
+                                    <strong>Detalhes do cadastro</strong>
+                                    <span>
+                                        <span th:text="${feira.logradouro}">Logradouro</span>
+                                        <span th:text="${' • Nº ' + feira.numero}"> • Nº 0</span>
+                                        <span th:text="${' • ' + feira.bairro}"> • Bairro</span>
+                                        <span th:if="${feira.complemento != null and !feira.complemento.isBlank()}" th:text="${' • ' + feira.complemento}"> • Complemento</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="map-actions">
+                            <a class="btn btn-primary" th:href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-route"></i> Abrir no Google Maps
+                            </a>
+                            <a class="btn btn-secondary" href="/inicio_usuarios">
+                                <i class="fas fa-arrow-left"></i> Voltar ao início
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card map-wrap">
+                    <iframe class="map-frame" th:src="${mapaUrl}" title="Mapa da feira em Fraiburgo" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </section>
+            </div>
+
+            <section class="empty-state" th:unless="${feiraEncontrada}">
+                <h2>Como a página funciona</h2>
+                <p>Quando uma feira estiver com status EM_ANDAMENTO, o sistema usa o endereço cadastrado no banco e mostra o mapa de Fraiburgo com a localização exata da feira. Isso evita informação duplicada e mantém a página sempre atualizada.</p>
+                <div class="map-actions" style="margin-top: 16px;">
+                    <a class="btn btn-primary" href="/inicio_usuarios"><i class="fas fa-house"></i> Ir para o início</a>
+                    <a class="btn btn-secondary" href="/produtores"><i class="fas fa-user-group"></i> Ver produtores</a>
+                </div>
+            </section>
+
+            <div class="footer-note">AgroFraiburgo • informações da feira atual sincronizadas com o cadastro do sistema</div>
+        </div>
+    </main>
+</body>
+</html>

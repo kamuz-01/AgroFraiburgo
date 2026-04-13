@@ -73,6 +73,7 @@ public class SecurityConfig {
                     "/produto/**",
                     "/produtores",
                     "/produtores/**",
+                    "/feira",
                     "/sobre",
                     "/buscar",
                     "/upload_documentos.html",

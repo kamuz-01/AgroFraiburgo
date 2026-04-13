@@ -1,5 +1,7 @@
 package org.main.controllers;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -8,6 +10,7 @@ import org.main.enums.StatusConta;
 import org.main.enums.StatusProduto;
 import org.main.enums.TipoUsuario;
 import org.main.models.Avaliacao;
+import org.main.models.Feira;
 import org.main.models.Produto;
 import org.main.models.Usuario;
 import org.main.models.UsuarioLogado;
@@ -15,6 +18,7 @@ import org.main.models.FavoritoProdutorId;
 import org.main.neo4j.Neo4jInteracaoService;
 import org.main.repository.AvaliacaoRepository;
 import org.main.repository.FavoritoProdutorRepository;
+import org.main.repository.FeiraRepository;
 import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
 import org.main.services.AvaliacaoService;
@@ -46,6 +50,7 @@ public class VitrineController {
     private final RecomendacaoService recomendacaoService;
     private final Neo4jInteracaoService neo4jInteracaoService;
     private final FavoritoProdutorRepository favoritoProdutorRepository;
+    private final FeiraRepository feiraRepository;
 
     public VitrineController(UsuarioRepository usuarioRepository,
                              ProdutoRepository produtoRepository,
@@ -53,7 +58,8 @@ public class VitrineController {
                              AvaliacaoService avaliacaoService,
                              RecomendacaoService recomendacaoService,
                              Neo4jInteracaoService neo4jInteracaoService,
-                             FavoritoProdutorRepository favoritoProdutorRepository) {
+                             FavoritoProdutorRepository favoritoProdutorRepository,
+                             FeiraRepository feiraRepository) {
         this.usuarioRepository = usuarioRepository;
         this.produtoRepository = produtoRepository;
         this.avaliacaoRepository = avaliacaoRepository;
@@ -61,6 +67,7 @@ public class VitrineController {
         this.recomendacaoService = recomendacaoService;
         this.neo4jInteracaoService = neo4jInteracaoService;
         this.favoritoProdutorRepository = favoritoProdutorRepository;
+        this.feiraRepository = feiraRepository;
     }
 
     @GetMapping("/inicio_usuarios")
@@ -153,6 +160,24 @@ public class VitrineController {
         }
 
         return "resultado_busca";
+    }
+
+    @GetMapping("/feira")
+    public String detalhesFeira(Model model) {
+        Feira feira = feiraRepository.findFirstByStatusFeiraOrderByIdFeiraDesc(org.main.enums.StatusFeira.EM_ANDAMENTO)
+                .orElse(null);
+
+        model.addAttribute("feira", feira);
+        model.addAttribute("feiraEncontrada", feira != null);
+
+        if (feira != null) {
+            String enderecoCompleto = enderecoCompleto(feira);
+            model.addAttribute("enderecoCompleto", enderecoCompleto);
+            model.addAttribute("mapaUrl", mapaUrl(enderecoCompleto));
+            model.addAttribute("googleMapsUrl", googleMapsUrl(enderecoCompleto));
+        }
+
+        return "detalhes_feira";
     }
 
     @GetMapping("/produtores/{id}")
@@ -390,6 +415,25 @@ public class VitrineController {
         String estado = Objects.toString(usuario.getEstado(), "").trim();
         String loc = (cidade + (cidade.isEmpty() || estado.isEmpty() ? "" : ", ") + estado).trim();
         return loc.isEmpty() ? "Fraiburgo, SC" : loc;
+    }
+
+    private String enderecoCompleto(Feira feira) {
+        String complemento = Objects.toString(feira.getComplemento(), "").trim();
+        String base = String.format("%s, %s - %s", feira.getLogradouro(), feira.getNumero(), feira.getBairro()).trim();
+        if (!complemento.isBlank()) {
+            base = base + ", " + complemento;
+        }
+        return base + ", Fraiburgo - SC, Brasil";
+    }
+
+    private String mapaUrl(String enderecoCompleto) {
+        String consulta = URLEncoder.encode(enderecoCompleto, StandardCharsets.UTF_8);
+        return "https://www.google.com/maps?q=" + consulta + "&output=embed";
+    }
+
+    private String googleMapsUrl(String enderecoCompleto) {
+        String consulta = URLEncoder.encode(enderecoCompleto, StandardCharsets.UTF_8);
+        return "https://www.google.com/maps/search/?api=1&query=" + consulta;
     }
 
     public record ProdutorCard(
