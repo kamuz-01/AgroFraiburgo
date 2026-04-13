@@ -114,148 +114,108 @@
             gap: 8px;
         }
 
-        /* --- Grid de Cards --- */
-        .grid {
+        .producer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
             margin-bottom: 40px;
         }
 
-        /* --- Card Individual --- */
-        .card {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .producer-card {
+            padding: 20px;
+            background: linear-gradient(180deg, #fff, #fbfdf9);
+            border-radius: 24px;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            box-shadow: 0 10px 28px rgba(18, 40, 26, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
 
-        .card-header {
+        .producer-card:hover {
+            box-shadow: 0 18px 32px rgba(18, 40, 26, 0.1);
+            border-color: rgba(31, 122, 66, 0.16);
+        }
+
+        .producer-top {
             display: flex;
-            gap: 16px;
-            margin-bottom: 16px;
-            position: relative;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 14px;
         }
 
         .avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
+            width: 62px;
+            height: 62px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1f7a42, #3fa35d);
+            box-shadow: 0 10px 18px rgba(31, 122, 66, 0.25);
+            overflow: hidden;
+        }
+
+        .avatar.photo {
+            padding: 0;
+        }
+
+        .avatar.photo img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
 
-        .avatar-placeholder {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background-color: #f3f4f6;
-            color: #4b5563;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        .user-info h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .producer-name {
+            font-size: 1.05rem;
+            font-weight: 700;
             margin-bottom: 4px;
-        }
-
-        .location {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 4px;
-        }
-
-        .rating {
-            font-size: 0.9rem;
-            color: #fbbf24; /* Cor da estrela */
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .rating span {
-            color: var(--text-gray);
-            font-weight: 400;
-        }
-
-        .badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: var(--badge-bg);
-            color: var(--badge-text);
-            font-size: 0.75rem;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .description {
-            color: var(--text-gray);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 24px;
-            min-height: 44px; /* Para alinhar alturas */
-        }
-
-        /* --- Botões do Card --- */
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .btn-outline {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            background: white;
-            border-radius: 6px;
             color: var(--text-dark);
-            cursor: pointer;
-            font-weight: 500;
+        }
+
+        .producer-meta {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .producer-tags {
             display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0 18px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .producer-link {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .btn-outline:hover {
-            background-color: #f9fafb;
-            border-color: #d1d5db;
-        }
-
-        .btn-full {
             width: 100%;
-            background-color: var(--primary-green);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: #fff;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            text-decoration: none;
+            font-weight: 800;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .btn-full:hover {
-            background-color: var(--primary-hover);
+        .producer-link:hover {
+            transform: translateY(-2px);
         }
 
         /* --- Botão Carregar Mais --- */
@@ -281,7 +241,7 @@
 
         /* Responsividade Mobile */
         @media (max-width: 768px) {
-            .grid {
+            .producer-grid {
                 grid-template-columns: 1fr;
             }
             header h1 {
@@ -298,54 +258,48 @@
             <p>Conheça os produtores locais e entre em contato diretamente com eles</p>
         </header>
 
-        <div class="search-container">
+        <form class="search-container" action="/produtores" method="get">
             <div class="search-input-wrapper">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Buscar produtores por nome, cidade ou especialidade...">
+                <input type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtores por nome, cidade ou especialidade...">
             </div>
-            <button class="btn-search">
+            <button class="btn-search" type="submit">
                 <i class="fas fa-search"></i> Buscar
             </button>
-        </div>
+        </form>
 
         <div class="results-count">
             <i class="fas fa-user-friends"></i>
             <span th:text="${totalProdutores} + ' produtores encontrados'">0 produtores encontrados</span>
         </div>
 
-        <div class="grid" id="produtoresGrid">
+        <div class="producer-grid" id="produtoresGrid">
 
-            <div class="card" th:each="p : ${produtores}">
-                <div class="card-header">
-                    <img th:if="${p.temImagem()}" th:src="${p.imagemPerfil}" th:alt="${p.nomeCompleto()}" class="avatar">
-                    <div th:unless="${p.temImagem()}" class="avatar-placeholder" th:text="${p.iniciais}">??</div>
-                    <div class="user-info">
-                        <h3 th:text="${p.nomeCompleto()}">Nome do produtor</h3>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span th:text="${p.localizacao()}">Fraiburgo, SC</span>
-                        </div>
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <span th:if="${p.temAvaliacoes()}" th:text="${#numbers.formatDecimal(p.mediaAvaliacaoNormalizada(), 1, 1)}">0.0</span>
-                            <span th:unless="${p.temAvaliacoes()}">0.0</span>
-                            <span th:text="'(' + ${p.totalFavoritos} + ' usuários favoritaram)'"></span>
-                        </div>
+            <article class="producer-card" th:each="p, iter : ${produtores}">
+                <div class="producer-top">
+                    <div class="avatar photo"
+                         th:if="${p.temImagem()}"
+                         th:style="${iter.index % 3 == 1} ? 'background: linear-gradient(135deg, #b45309, #f59e0b);' : (${iter.index % 3 == 2} ? 'background: linear-gradient(135deg, #7c3aed, #22c55e);' : '')">
+                        <img th:src="@{|${p.imagemPerfil}|}" th:alt="${p.nomeCompleto()}" loading="lazy" />
                     </div>
-                    <span class="badge">Produtor</span>
-                </div>
-                
-                <p class="description">Produtor local da agricultura familiar.</p>
-                
-                <div class="action-buttons">
-                    <a class="btn-outline" th:if="${p.temTelefone()}" th:href="'tel:' + ${p.telefone}"><i class="fas fa-phone-alt"></i> Ligar</a>
-                    <span class="btn-outline" th:unless="${p.temTelefone()}" style="pointer-events:none;opacity:.6;"><i class="fas fa-phone-alt"></i> Ligar</span>
 
-                    <a class="btn-outline" th:if="${p.temEmail()}" th:href="'mailto:' + ${p.email}"><i class="far fa-envelope"></i> E-mail</a>
-                    <span class="btn-outline" th:unless="${p.temEmail()}" style="pointer-events:none;opacity:.6;"><i class="far fa-envelope"></i> E-mail</span>
+                    <div class="avatar"
+                         th:unless="${p.temImagem()}"
+                         th:style="${iter.index % 3 == 1} ? 'background: linear-gradient(135deg, #b45309, #f59e0b);' : (${iter.index % 3 == 2} ? 'background: linear-gradient(135deg, #7c3aed, #22c55e);' : '')"
+                         th:text="${p.iniciais}">AA</div>
+                    <div>
+                        <h3 class="producer-name" th:text="${p.nomeCompleto()}">Produtor</h3>
+                        <div class="producer-meta"><i class="fas fa-location-dot"></i> <span th:text="${p.localizacao()}">Fraiburgo, SC</span></div>
+                    </div>
                 </div>
-                <a class="btn-full" th:href="'/produtores/' + ${p.id}"><i class="far fa-eye"></i> Ver Perfil Completo</a>
-            </div>
+                <p class="producer-meta">Produção familiar com foco em qualidade e proximidade na região.</p>
+                <div class="producer-tags">
+                    <span class="tag"><i class="fas fa-star"></i> <span th:text="${#numbers.formatDecimal(p.mediaAvaliacaoNormalizada(), 1, 1)}">0,0</span></span>
+                    <span class="tag"><i class="fas fa-users"></i> <span th:text="${p.totalFavoritos} + ' usuários favoritaram'">0 usuários favoritaram</span></span>
+                    <span class="tag"><i class="fas fa-seedling"></i> Agricultura familiar</span>
+                </div>
+                <a class="producer-link" th:href="'/produtores/' + ${p.id}"><i class="far fa-eye"></i> Ver perfil</a>
+            </article>
 
         </div>
 
@@ -360,6 +314,7 @@
         const loadMoreContainer = document.getElementById('loadMoreContainer');
         let currentPage = /*[[${currentPage}]]*/ 0;
         const pageSize = /*[[${pageSize}]]*/ 9;
+        const searchTerm = /*[[${q != null ? q : ''}]]*/ '';
 
         function escapeHtml(value) {
             return String(value ?? '')
@@ -370,44 +325,35 @@
                 .replaceAll("'", '&#39;');
         }
 
-        function renderProdutorCard(p) {
+        function renderProdutorCard(p, index) {
             const nomeCompleto = escapeHtml(p.nomeCompleto || `${p.nome || ''} ${p.sobrenome || ''}`.trim());
             const localizacao = escapeHtml(p.localizacao || 'Fraiburgo, SC');
             const estrelas = Number(p.mediaAvaliacaoNormalizada ?? 0).toFixed(1);
+            const initials = escapeHtml(p.iniciais || '?');
+            const accentStyle = index % 3 === 1
+                ? 'background: linear-gradient(135deg, #b45309, #f59e0b);'
+                : (index % 3 === 2 ? 'background: linear-gradient(135deg, #7c3aed, #22c55e);' : '');
             const fotoHtml = p.temImagem && p.imagemPerfil
-                ? `<img src="${escapeHtml(p.imagemPerfil)}" alt="${nomeCompleto}" class="avatar">`
-                : `<div class="avatar-placeholder">${escapeHtml(p.iniciais || '?')}</div>`;
-
-            const telefoneHtml = p.temTelefone && p.telefone
-                ? `<a class="btn-outline" href="tel:${escapeHtml(p.telefone)}"><i class="fas fa-phone-alt"></i> Ligar</a>`
-                : `<span class="btn-outline" style="pointer-events:none;opacity:.6;"><i class="fas fa-phone-alt"></i> Ligar</span>`;
-
-            const emailHtml = p.temEmail && p.email
-                ? `<a class="btn-outline" href="mailto:${escapeHtml(p.email)}"><i class="far fa-envelope"></i> E-mail</a>`
-                : `<span class="btn-outline" style="pointer-events:none;opacity:.6;"><i class="far fa-envelope"></i> E-mail</span>`;
+                ? `<div class="avatar photo" style="${accentStyle}"><img src="${escapeHtml(p.imagemPerfil)}" alt="${nomeCompleto}" loading="lazy"></div>`
+                : `<div class="avatar" style="${accentStyle}">${initials}</div>`;
 
             return `
-                <div class="card">
-                    <div class="card-header">
+                <article class="producer-card">
+                    <div class="producer-top">
                         ${fotoHtml}
-                        <div class="user-info">
-                            <h3>${nomeCompleto}</h3>
-                            <div class="location"><i class="fas fa-map-marker-alt"></i><span>${localizacao}</span></div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <span>${estrelas}</span>
-                                <span>(${Number(p.totalFavoritos ?? 0)} usuários favoritaram)</span>
-                            </div>
+                        <div>
+                            <h3 class="producer-name">${nomeCompleto}</h3>
+                            <div class="producer-meta"><i class="fas fa-location-dot"></i> <span>${localizacao}</span></div>
                         </div>
-                        <span class="badge">Produtor</span>
                     </div>
-                    <p class="description">Produtor local da agricultura familiar.</p>
-                    <div class="action-buttons">
-                        ${telefoneHtml}
-                        ${emailHtml}
+                    <p class="producer-meta">Produção familiar com foco em qualidade e proximidade na região.</p>
+                    <div class="producer-tags">
+                        <span class="tag"><i class="fas fa-star"></i> <span>${estrelas}</span></span>
+                        <span class="tag"><i class="fas fa-users"></i> <span>${Number(p.totalFavoritos ?? 0)} usuários favoritaram</span></span>
+                        <span class="tag"><i class="fas fa-seedling"></i> Agricultura familiar</span>
                     </div>
-                    <a class="btn-full" href="/produtores/${p.id}"><i class="far fa-eye"></i> Ver Perfil Completo</a>
-                </div>`;
+                    <a class="producer-link" href="/produtores/${p.id}"><i class="far fa-eye"></i> Ver perfil</a>
+                </article>`;
         }
 
         if (loadMoreButton) {
@@ -418,14 +364,21 @@
                 loadMoreButton.textContent = 'Carregando...';
 
                 try {
-                    const response = await fetch(`/produtores/carregar-mais?page=${nextPage}&size=${pageSize}`);
+                    const url = new URL('/produtores/carregar-mais', window.location.origin);
+                    url.searchParams.set('page', nextPage);
+                    url.searchParams.set('size', pageSize);
+                    if (searchTerm) {
+                        url.searchParams.set('q', searchTerm);
+                    }
+
+                    const response = await fetch(url.toString());
                     if (!response.ok) {
                         throw new Error('Falha ao carregar produtores');
                     }
 
                     const data = await response.json();
                     (data.produtores || []).forEach((produtor) => {
-                        produtoresGrid.insertAdjacentHTML('beforeend', renderProdutorCard(produtor));
+                        produtoresGrid.insertAdjacentHTML('beforeend', renderProdutorCard(produtor, producersGridIndex()));
                     });
 
                     currentPage = data.currentPage;
@@ -443,6 +396,10 @@
                     alert('Não foi possível carregar mais produtores no momento.');
                 }
             });
+        }
+
+        function producersGridIndex() {
+            return produtoresGrid ? produtoresGrid.children.length : 0;
         }
     </script>
 

@@ -326,6 +326,7 @@ public class TelasController {
     }
 
 	private void addInicioUsuariosModel(Model model, Integer idUsuario, TipoUsuario tipoUsuario) {
+		model.addAttribute("q", "");
 		long totalProdutoresAtivos = usuarioRepository.countByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
 		long totalProdutos = produtoRepository.count();
 

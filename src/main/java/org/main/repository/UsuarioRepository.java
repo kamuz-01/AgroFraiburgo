@@ -40,4 +40,38 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     
     @Query("SELECT u FROM Usuario u WHERE u.tipoUsuario IN ('CONSUMIDOR', 'PRODUTOR')")
     List<UsuarioDTO> findConsumidoresEProdutores();
+
+    @Query("""
+        SELECT u
+        FROM Usuario u
+        WHERE u.tipoUsuario = :tipo
+          AND u.statusConta = :status
+          AND (
+            LOWER(COALESCE(u.nome, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+            OR LOWER(COALESCE(u.sobrenome, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+            OR LOWER(COALESCE(u.cidade, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+            OR LOWER(COALESCE(u.estado, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+          )
+        ORDER BY u.nome ASC, u.sobrenome ASC, u.idUsuario ASC
+        """)
+    Page<Usuario> buscarProdutoresPorTermo(@Param("termo") String termo,
+                                           @Param("tipo") TipoUsuario tipo,
+                                           @Param("status") StatusConta status,
+                                           Pageable pageable);
+
+    @Query("""
+        SELECT COUNT(u)
+        FROM Usuario u
+        WHERE u.tipoUsuario = :tipo
+          AND u.statusConta = :status
+          AND (
+            LOWER(COALESCE(u.nome, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+            OR LOWER(COALESCE(u.sobrenome, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+            OR LOWER(COALESCE(u.cidade, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+            OR LOWER(COALESCE(u.estado, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+          )
+        """)
+    long countProdutoresPorTermo(@Param("termo") String termo,
+                                     @Param("tipo") TipoUsuario tipo,
+                                     @Param("status") StatusConta status);
 }

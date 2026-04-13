@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca | AgroFraiburgo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f3f7f1;
+            --surface: rgba(255, 255, 255, 0.86);
+            --surface-strong: #fff;
+            --text: #17311f;
+            --muted: #5c6f60;
+            --border: rgba(23, 49, 31, 0.08);
+            --primary: #1f7a42;
+            --primary-dark: #175f33;
+            --primary-soft: #e4f4ea;
+            --accent: #f2a93b;
+            --shadow-lg: 0 24px 60px rgba(18, 40, 26, 0.12);
+            --shadow-md: 0 14px 30px rgba(18, 40, 26, 0.08);
+            --radius-xl: 30px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(31, 122, 66, 0.14), transparent 28%),
+                radial-gradient(circle at top right, rgba(242, 169, 59, 0.12), transparent 24%),
+                linear-gradient(180deg, #f8fbf6 0%, #eef4ec 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .container {
+            width: min(1200px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .page {
+            padding: 28px 0 48px;
+        }
+
+        .hero {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(16px);
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 14px;
+        }
+
+        h1, h2 {
+            font-family: 'Sora', sans-serif;
+            letter-spacing: -0.03em;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            line-height: 1;
+            max-width: 14ch;
+        }
+
+        .hero p {
+            margin-top: 14px;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 68ch;
+        }
+
+        .search-bar {
+            margin-top: 22px;
+            display: flex;
+            gap: 10px;
+            padding: 8px 10px 8px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            box-shadow: var(--shadow-md);
+        }
+
+        .search-bar i {
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
+            min-width: 0;
+        }
+
+        .search-bar button,
+        .chip,
+        .back-link {
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .search-bar button {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+        }
+
+        .summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(31, 122, 66, 0.08);
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+
+        .section {
+            margin-top: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(16px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .section-header p {
+            margin-top: 8px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--surface-strong);
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(18, 40, 26, 0.06);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #dbe9d7, #eef5ea);
+        }
+
+        .card-body {
+            padding: 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .card-title {
+            font-size: 1.08rem;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .card-text {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: #f7faf4;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .actions a {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .actions .primary {
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+            color: #fff;
+        }
+
+        .actions .secondary {
+            background: #fff;
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            color: var(--text);
+        }
+
+        .empty-state {
+            padding: 18px;
+            border-radius: 18px;
+            background: #f7faf4;
+            border: 1px dashed rgba(23, 49, 31, 0.14);
+            color: var(--muted);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .product-price {
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .producer-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #dbe9d7, #eef5ea);
+        }
+
+        .producer-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .hero,
+            .section {
+                padding: 20px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page container">
+        <section class="hero">
+            <div class="eyebrow"><i class="fas fa-search"></i> Busca AgroFraiburgo</div>
+            <h1 th:text="${termoBusca != null and !termoBusca.isBlank() ? 'Resultados para \'' + termoBusca + '\'' : 'Digite um termo para buscar'}">Resultados da busca</h1>
+            <p>
+                Consulte produtos e produtores cadastrados na plataforma usando o mesmo campo de busca da home.
+            </p>
+
+            <form class="search-bar" action="/buscar" method="get" role="search">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, produtores, cidades ou especialidades">
+                <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right"></i></button>
+            </form>
+
+            <div class="summary" th:if="${termoBusca != null and !termoBusca.isBlank()}">
+                <span class="chip"><i class="fas fa-box"></i> <span th:text="${totalProdutosEncontrados} + ' produtos'">0 produtos</span></span>
+                <span class="chip"><i class="fas fa-user-group"></i> <span th:text="${totalProdutoresEncontrados} + ' produtores'">0 produtores</span></span>
+            </div>
+
+            <a class="back-link" th:href="@{/home_consumidor}"><i class="fas fa-arrow-left"></i> Voltar para a home</a>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <h2>Produtos encontrados</h2>
+                    <p th:if="${termoBusca != null and !termoBusca.isBlank()}" th:text="'Foram encontrados ' + ${totalProdutosEncontrados} + ' produtos para o termo pesquisado.'">Resultados de produtos</p>
+                    <p th:unless="${termoBusca != null and !termoBusca.isBlank()}">Use a barra acima para buscar produtos.</p>
+                </div>
+            </div>
+
+            <div class="product-grid" th:if="${produtosEncontrados != null and !produtosEncontrados.isEmpty()}">
+                <article class="card" th:each="produto : ${produtosEncontrados}">
+                    <img class="card-image" th:src="${produto.imagemProduto}" th:alt="${produto.nome}">
+                    <div class="card-body">
+                        <div>
+                            <h3 class="card-title" th:text="${produto.nome}">Nome do produto</h3>
+                            <div class="meta">
+                                <span class="tag"><i class="fas fa-box-open"></i> <span th:text="${produto.unidadeMedida}">kg</span></span>
+                                <span class="tag product-price" th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 2)}">R$ 0,00</span>
+                            </div>
+                        </div>
+                        <p class="card-text" th:text="${produto.descricaoCurta()}">Descrição do produto.</p>
+                        <div class="meta">
+                            <span class="tag"><i class="fas fa-user"></i> <span th:text="${produto.produtor != null ? produto.produtor.nome + ' ' + (produto.produtor.sobrenome != null ? produto.produtor.sobrenome : '') : 'Produtor'}">Produtor</span></span>
+                            <span class="tag"><i class="fas fa-star"></i> <span th:text="${#numbers.formatDecimal(produto.mediaAvaliacaoNormalizada(), 1, 1)} + ' de avaliação'">0,0</span></span>
+                        </div>
+                        <div class="actions">
+                            <a class="primary" th:href="@{'/produto/' + ${produto.id}}"><i class="far fa-eye"></i> Ver</a>
+                            <a class="secondary" th:href="@{/produtos}"><i class="fas fa-arrow-right"></i> Catálogo</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="empty-state" th:if="${produtosEncontrados == null or produtosEncontrados.isEmpty()}">
+                Nenhum produto encontrado para esse termo.
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <h2>Produtores encontrados</h2>
+                    <p th:if="${termoBusca != null and !termoBusca.isBlank()}" th:text="'Foram encontrados ' + ${totalProdutoresEncontrados} + ' produtores para o termo pesquisado.'">Resultados de produtores</p>
+                    <p th:unless="${termoBusca != null and !termoBusca.isBlank()}">Use a barra acima para buscar produtores.</p>
+                </div>
+            </div>
+
+            <div class="grid" th:if="${produtoresEncontrados != null and !produtoresEncontrados.isEmpty()}">
+                <article class="card" th:each="p : ${produtoresEncontrados}">
+                    <div class="card-body">
+                        <div class="producer-row">
+                            <img class="producer-avatar" th:if="${p.temImagem()}" th:src="${p.imagemPerfil}" th:alt="${p.nomeCompleto()}">
+                            <div class="producer-avatar" th:unless="${p.temImagem()}" style="display:grid;place-items:center;font-weight:800;color:#48673b;" th:text="${p.iniciais}">AA</div>
+                            <div>
+                                <h3 class="card-title" th:text="${p.nomeCompleto()}">Nome do produtor</h3>
+                                <div class="meta">
+                                    <span class="tag"><i class="fas fa-map-marker-alt"></i> <span th:text="${p.localizacao()}">Fraiburgo, SC</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="card-text">Produtor local da agricultura familiar.</p>
+
+                        <div class="meta">
+                            <span class="tag"><i class="fas fa-star"></i> <span th:text="${#numbers.formatDecimal(p.mediaAvaliacaoNormalizada(), 1, 1)}">0,0</span></span>
+                            <span class="tag"><i class="fas fa-users"></i> <span th:text="${p.totalFavoritos} + ' usuários favoritaram'">0 usuários favoritaram</span></span>
+                        </div>
+
+                        <div class="actions">
+                            <a class="primary" th:href="@{'/produtores/' + ${p.id}}"><i class="far fa-eye"></i> Ver perfil</a>
+                            <a class="secondary" th:href="@{/produtores}"><i class="fas fa-list"></i> Listagem</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="empty-state" th:if="${produtoresEncontrados == null or produtoresEncontrados.isEmpty()}">
+                Nenhum produtor encontrado para esse termo.
+            </div>
+        </section>
+
+        <section class="section" th:if="${produtosRecomendados != null and !produtosRecomendados.isEmpty()}">
+            <div class="section-header">
+                <div>
+                    <h2>Também pode interessar</h2>
+                    <p>Algumas recomendações para você continuar explorando.</p>
+                </div>
+            </div>
+
+            <div class="grid">
+                <article class="card" th:each="produto : ${produtosRecomendados}">
+                    <img class="card-image" th:src="${produto.imagemProduto}" th:alt="${produto.nome}">
+                    <div class="card-body">
+                        <div>
+                            <h3 class="card-title" th:text="${produto.nome}">Nome do produto</h3>
+                            <div class="meta">
+                                <span class="tag product-price" th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 2)}">R$ 0,00</span>
+                            </div>
+                        </div>
+                        <p class="card-text" th:text="${produto.descricaoCurta()}">Descrição.</p>
+                        <div class="actions">
+                            <a class="primary" th:href="@{'/produto/' + ${produto.id}}"><i class="far fa-eye"></i> Ver</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

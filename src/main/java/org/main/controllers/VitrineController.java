@@ -67,6 +67,7 @@ public class VitrineController {
     public String inicioUsuarios(Model model, Authentication authentication) {
         long totalProdutoresAtivos = usuarioRepository.countByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
         long totalProdutos = produtoRepository.count();
+        model.addAttribute("q", "");
 
         List<Produto> produtosDestaque = produtoRepository.findTop4ByOrderByDataCriacaoDesc();
         List<Usuario> produtoresDestaque = usuarioRepository.findByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
@@ -91,21 +92,24 @@ public class VitrineController {
     @GetMapping("/produtores")
     public String listarProdutores(Model model,
                                    @RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "9") int size) {
-        Page<Usuario> produtoresPage = produtoresPaginados(page, size);
+                                   @RequestParam(defaultValue = "9") int size,
+                                   @RequestParam(required = false) String q) {
+        Page<Usuario> produtoresPage = produtoresPaginados(page, size, q);
         model.addAttribute("produtores", toProdutorCards(produtoresPage.getContent()));
         model.addAttribute("totalProdutores", produtoresPage.getTotalElements());
         model.addAttribute("currentPage", produtoresPage.getNumber());
         model.addAttribute("pageSize", produtoresPage.getSize());
         model.addAttribute("hasMore", produtoresPage.hasNext());
+        model.addAttribute("q", q);
         return "lista_produtores-familiares";
     }
 
     @GetMapping("/produtores/carregar-mais")
     @ResponseBody
     public ProdutoresPageResponse carregarMaisProdutores(@RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "9") int size) {
-        Page<Usuario> produtoresPage = produtoresPaginados(page, size);
+                                                         @RequestParam(defaultValue = "9") int size,
+                                                         @RequestParam(required = false) String q) {
+        Page<Usuario> produtoresPage = produtoresPaginados(page, size, q);
         return new ProdutoresPageResponse(
                 toProdutorCardResponses(produtoresPage.getContent()),
                 produtoresPage.getNumber(),
@@ -113,6 +117,42 @@ public class VitrineController {
                 produtoresPage.getTotalElements(),
                 produtoresPage.hasNext()
         );
+    }
+
+    @GetMapping("/buscar")
+    public String buscar(@RequestParam(required = false) String q, Model model, Authentication authentication) {
+        String termo = q == null ? "" : q.trim();
+        model.addAttribute("q", termo);
+        model.addAttribute("termoBusca", termo);
+
+        if (termo.isBlank()) {
+            model.addAttribute("produtosEncontrados", List.of());
+            model.addAttribute("produtoresEncontrados", List.of());
+            model.addAttribute("totalProdutosEncontrados", 0);
+            model.addAttribute("totalProdutoresEncontrados", 0);
+            return "resultado_busca";
+        }
+
+        List<Produto> produtosEncontrados = produtoRepository.buscarPorTermo(termo);
+        List<Usuario> produtoresEncontrados = usuarioRepository.buscarProdutoresPorTermo(
+                termo,
+                TipoUsuario.PRODUTOR,
+                StatusConta.ATIVO,
+                PageRequest.of(0, 24, Sort.by(Sort.Order.asc("nome"), Sort.Order.asc("sobrenome"), Sort.Order.asc("idUsuario")))
+        ).getContent();
+
+        model.addAttribute("produtosEncontrados", toProdutoCards(produtosEncontrados));
+        model.addAttribute("produtoresEncontrados", toProdutorCards(produtoresEncontrados));
+        model.addAttribute("totalProdutosEncontrados", produtosEncontrados.size());
+        model.addAttribute("totalProdutoresEncontrados", produtoresEncontrados.size());
+
+        Integer idUsuario = currentUserId(authentication);
+        if (idUsuario != null && isConsumidorOuModerador(authentication)) {
+            List<Produto> recomendados = recomendacaoService.recomendarParaUsuario(idUsuario, 4);
+            model.addAttribute("produtosRecomendados", toProdutoCards(recomendados));
+        }
+
+        return "resultado_busca";
     }
 
     @GetMapping("/produtores/{id}")
@@ -310,7 +350,7 @@ public class VitrineController {
         return cards;
     }
 
-    private Page<Usuario> produtoresPaginados(int page, int size) {
+    private Page<Usuario> produtoresPaginados(int page, int size, String q) {
         int pageIndex = Math.max(page, 0);
         int pageSize = Math.max(1, Math.min(size, 24));
         Pageable pageable = PageRequest.of(
@@ -318,7 +358,12 @@ public class VitrineController {
                 pageSize,
                 Sort.by(Sort.Order.asc("nome"), Sort.Order.asc("sobrenome"), Sort.Order.asc("idUsuario"))
         );
-        return usuarioRepository.findByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO, pageable);
+        String termo = q == null ? "" : q.trim();
+        if (termo.isBlank()) {
+            return usuarioRepository.findByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO, pageable);
+        }
+
+        return usuarioRepository.buscarProdutoresPorTermo(termo, TipoUsuario.PRODUTOR, StatusConta.ATIVO, pageable);
     }
 
     private RatingStats ratingForProdutor(Integer idProdutor) {

@@ -900,11 +900,11 @@
                 </span>
             </a>
 
-            <div class="search-bar" role="search">
+            <form class="search-bar" action="/buscar" method="get" role="search">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Buscar produtos, categorias ou produtores em Fraiburgo">
+                <input type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, categorias ou produtores em Fraiburgo">
                 <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right"></i></button>
-            </div>
+            </form>
 
             <div class="header-actions">
                 <a href="/produtores" class="action-item">
