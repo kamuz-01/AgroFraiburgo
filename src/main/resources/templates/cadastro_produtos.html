@@ -195,7 +195,7 @@
 						   xmlns="http://www.w3.org/2000/svg">
 						   <path
 						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2 Z"
-						     id="path2"
+                           id="path2-lista-produtos"
 						     style="fill:#338000" 
 						   />
 						   <path
@@ -204,27 +204,27 @@
 							 -13.3,45.5 -11,68.6 1.1,9.4 3.4,17.3 8.9,21.8 H 18 V 96.6 H 2.3 V 254 H 18 v -68.9 h 74.6 l -10.4,51.6 c -1.6,7.8 3.5,15.4 
 							 11.3,17 1,0.2 1.9,0.3 2.9,0.3 6.7,0 12.7,-4.7 14.1,-11.6 l 8.8,-43.7 11.2,30.1 c 2.2,5.8 7.7,9.4 13.5,9.4 1.7,0 3.4,-0.3 5,-0.9 
 							 7.5,-2.8 11.2,-11.1 8.5,-18.5 l -24.4,-65.5 c -2.1,-5.6 -7.5,-9.4 -13.5,-9.4 H 81 v -9.1 H 207 V 254 h 15.7 V 119.2 Z"
-						     id="path3"
+                id="path3-lista-produtos"
 						     style="fill:#483e37" 
 						    />
 							<path
 						     d="m 91.6,18.2 c 12.5,0 22.6,10.1 22.6,22.6 0,12.5 -10.1,22.6 -22.6,22.6 C 79.1,63.4 69,53.3 69,40.8 69,28.3 79.1,18.2 91.6,18.2"
-						     id="path1"
+                id="path1-lista-produtos"
 						     style="fill:#483e37" 
 							/>
 							<path
 						     style="fill:#44aa00;stroke-width:0.32"
 						     d="m 172.93984,119.55498 39.74127,-0.33118"
-						     id="path4" /><path
+                id="path4-lista-produtos" /><path
 						     style="fill:#803300;stroke-width:0.32"
 						     d="m 81.20375,119.88616 91.07374,-0.66236 50.00776,0.33118 0.33118,133.7956 H 206.71992 L 207.0511,134.45796 81.20375,134.12678 Z"
-						     id="path5" 
+                id="path5-lista-produtos" 
 							/>
 							<path
 						     style="fill:#803300;stroke-width:0.32"
 						     d="m 93.126131,185.79043 0.331178,-13.90945 0.662355,-2.64942 -75.177232,0.66236 -0.662355,-0.66236 -0.662355,-72.52781 
 							 -14.9029742,0.331178 -0.6623545,156.315652 15.5653287,0.33118 0.331177,-67.89133 z"
-						     id="path6" 
+                id="path6-lista-produtos" 
 							/>
 						</svg>
 						Administrar Produtos
@@ -326,13 +326,14 @@
               <!-- Imagem -->
               <div class="mb-3">
                 <label for="imagem" class="form-label">Imagem do Produto <span class="text-danger">*</span></label>
-                <input type="file" class="form-control" id="imagem" name="imagem_produto" accept="image/*" required aria-required="true">
+                <input type="file" class="form-control" id="imagem" name="imagem_produto" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif" required aria-required="true">
                 <div class="mt-2 position-relative">
                   <div class="mt-2 image-wrapper">
 				  	<img id="previewImagem" class="product-image-preview" alt="Pré-visualização do produto selecionado">
 				  	<button type="button" id="clearImage" class="btn-close position-absolute" style="top: 5px; right: 5px; display: none; z-index: 10;" aria-label="Remover imagem" title="Remover imagem"></button>
 				  </div>
               	</div>
+              </div>
 
               <!-- Mensagem de erro acessível -->
               <div id="erroForm" class="alert alert-danger d-none" role="alert" tabindex="0"></div>

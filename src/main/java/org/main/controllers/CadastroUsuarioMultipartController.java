@@ -60,6 +60,8 @@ public class CadastroUsuarioMultipartController {
                     "isProdutor", false
                 ));
             }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (MultipartException e) {
             return ResponseEntity.badRequest().body("Erro no upload de arquivos: " + e.getMessage());
         } catch (Exception e) {

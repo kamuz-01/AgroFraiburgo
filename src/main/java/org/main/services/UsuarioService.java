@@ -17,6 +17,7 @@ import org.main.models.DocumentosProdutor;
 import org.main.models.Usuario;
 import org.main.repository.DocumentosProdutorRepository;
 import org.main.repository.UsuarioRepository;
+import org.main.utils.UploadFileValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,16 +114,18 @@ public class UsuarioService {
         Files.createDirectories(capaDir);
 
         if (imagemPerfil != null && !imagemPerfil.isEmpty()) {
-            String perfilNome = "perfil_" + System.currentTimeMillis() + obterExtensao(imagemPerfil.getOriginalFilename(), ".png");
+            UploadFileValidator.FileTypeInfo perfilInfo = UploadFileValidator.validarImagem(imagemPerfil, "A imagem de perfil");
+            String perfilNome = "perfil_" + System.currentTimeMillis() + perfilInfo.extension();
             Path destino = perfilDir.resolve(perfilNome);
-            imagemPerfil.transferTo(destino.toFile());
+            Files.write(destino, imagemPerfil.getBytes());
             usuario.setImagemPerfil("/imagens-usuarios/" + idUsuario + "/imagem-perfil/" + perfilNome);
         }
 
         if (imagemCapa != null && !imagemCapa.isEmpty()) {
-            String capaNome = "capa_" + System.currentTimeMillis() + obterExtensao(imagemCapa.getOriginalFilename(), ".png");
+            UploadFileValidator.FileTypeInfo capaInfo = UploadFileValidator.validarImagem(imagemCapa, "A imagem de capa");
+            String capaNome = "capa_" + System.currentTimeMillis() + capaInfo.extension();
             Path destino = capaDir.resolve(capaNome);
-            imagemCapa.transferTo(destino.toFile());
+            Files.write(destino, imagemCapa.getBytes());
             usuario.setImagemCapa("/imagens-usuarios/" + idUsuario + "/imagem-capa/" + capaNome);
         }
 
@@ -241,38 +244,45 @@ public class UsuarioService {
         doc.setIdProdutor(salvo.getIdUsuario());
 
         if (documentos.getDocIdentidade() != null && !documentos.getDocIdentidade().isEmpty()) {
+            UploadFileValidator.validarPdf(documentos.getDocIdentidade(), "O documento de identidade");
             String fileName = "identidade_" + System.currentTimeMillis() + ".pdf";
-            documentos.getDocIdentidade().transferTo(docsDir.resolve(fileName).toFile());
+            Files.write(docsDir.resolve(fileName), documentos.getDocIdentidade().getBytes());
             doc.setDocumentoIdentidade("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getComprovanteResidencia() != null && !documentos.getComprovanteResidencia().isEmpty()) {
+            UploadFileValidator.validarPdf(documentos.getComprovanteResidencia(), "O comprovante de residência");
             String fileName = "residencia_" + System.currentTimeMillis() + ".pdf";
-            documentos.getComprovanteResidencia().transferTo(docsDir.resolve(fileName).toFile());
+            Files.write(docsDir.resolve(fileName), documentos.getComprovanteResidencia().getBytes());
             doc.setComprovanteResidencia("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getCadastroAgriculturaFamiliar() != null && !documentos.getCadastroAgriculturaFamiliar().isEmpty()) {
+            UploadFileValidator.validarPdf(documentos.getCadastroAgriculturaFamiliar(), "O cadastro de agricultura familiar");
             String fileName = "pronaf_" + System.currentTimeMillis() + ".pdf";
-            documentos.getCadastroAgriculturaFamiliar().transferTo(docsDir.resolve(fileName).toFile());
+            Files.write(docsDir.resolve(fileName), documentos.getCadastroAgriculturaFamiliar().getBytes());
             doc.setDeclaracaoPronaf("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getCertificadoOrganico() != null && !documentos.getCertificadoOrganico().isEmpty()) {
+            UploadFileValidator.validarPdf(documentos.getCertificadoOrganico(), "O certificado orgânico");
             String fileName = "organico_" + System.currentTimeMillis() + ".pdf";
-            documentos.getCertificadoOrganico().transferTo(docsDir.resolve(fileName).toFile());
+            Files.write(docsDir.resolve(fileName), documentos.getCertificadoOrganico().getBytes());
             doc.setCertificadoOrganico("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getCodigoRastreabilidade() != null && !documentos.getCodigoRastreabilidade().isEmpty()) {
+            UploadFileValidator.validarPdf(documentos.getCodigoRastreabilidade(), "O código de rastreabilidade");
             String fileName = "rastreabilidade_" + System.currentTimeMillis() + ".pdf";
-            documentos.getCodigoRastreabilidade().transferTo(docsDir.resolve(fileName).toFile());
+            Files.write(docsDir.resolve(fileName), documentos.getCodigoRastreabilidade().getBytes());
             doc.setCodigoRastreabilidade("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getInscricaoEstadual() != null && !documentos.getInscricaoEstadual().isEmpty()) {
+            UploadFileValidator.validarPdf(documentos.getInscricaoEstadual(), "A inscrição estadual");
             String fileName = "inscricao_" + System.currentTimeMillis() + ".pdf";
-            documentos.getInscricaoEstadual().transferTo(docsDir.resolve(fileName).toFile());
+            Files.write(docsDir.resolve(fileName), documentos.getInscricaoEstadual().getBytes());
             doc.setNumeroInscricaoEstadual("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getAlvaraSanitario() != null && !documentos.getAlvaraSanitario().isEmpty()) {
+            UploadFileValidator.validarPdf(documentos.getAlvaraSanitario(), "O alvará sanitário");
             String fileName = "alvara_" + System.currentTimeMillis() + ".pdf";
-            documentos.getAlvaraSanitario().transferTo(docsDir.resolve(fileName).toFile());
+            Files.write(docsDir.resolve(fileName), documentos.getAlvaraSanitario().getBytes());
             doc.setAlvaraSanitario("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
 
@@ -326,18 +336,20 @@ public class UsuarioService {
         Files.createDirectories(capaDir);
 
         if (dto.getImagemPerfil() != null && !dto.getImagemPerfil().isEmpty()) {
-            String perfilNome = "perfil_" + System.currentTimeMillis() + ".png";
+            UploadFileValidator.FileTypeInfo perfilInfo = UploadFileValidator.validarImagem(dto.getImagemPerfil(), "A imagem de perfil");
+            String perfilNome = "perfil_" + System.currentTimeMillis() + perfilInfo.extension();
             Path destino = perfilDir.resolve(perfilNome);
-            dto.getImagemPerfil().transferTo(destino.toFile());
+            Files.write(destino, dto.getImagemPerfil().getBytes());
             salvo.setImagemPerfil("/imagens-usuarios/" + salvo.getIdUsuario() + "/imagem-perfil/" + perfilNome);
         } else {
             salvo.setImagemPerfil("/imagens-usuarios/defaults/imagem-perfil/perfil.png");
         }
 
         if (dto.getImagemCapa() != null && !dto.getImagemCapa().isEmpty()) {
-            String capaNome = "capa_" + System.currentTimeMillis() + ".png";
+            UploadFileValidator.FileTypeInfo capaInfo = UploadFileValidator.validarImagem(dto.getImagemCapa(), "A imagem de capa");
+            String capaNome = "capa_" + System.currentTimeMillis() + capaInfo.extension();
             Path destino = capaDir.resolve(capaNome);
-            dto.getImagemCapa().transferTo(destino.toFile());
+            Files.write(destino, dto.getImagemCapa().getBytes());
             salvo.setImagemCapa("/imagens-usuarios/" + salvo.getIdUsuario() + "/imagem-capa/" + capaNome);
         } else {
             salvo.setImagemCapa("/imagens-usuarios/defaults/imagem-capa/capa.webp");
@@ -455,20 +467,6 @@ public class UsuarioService {
         return null;
     }
 
-    private String obterExtensao(String nomeArquivo, String padrao) {
-        if (nomeArquivo == null || nomeArquivo.isBlank()) {
-            return padrao;
-        }
-
-        int index = nomeArquivo.lastIndexOf('.');
-        if (index < 0 || index == nomeArquivo.length() - 1) {
-            return padrao;
-        }
-
-        String extensao = nomeArquivo.substring(index).trim();
-        return extensao.isBlank() ? padrao : extensao;
-    }
-    
     public Optional<Usuario> buscarPorOauthProviderAndOauthId(String provider, String oauthId) {
         return usuarioRepository.findByOauthProviderAndOauthId(provider, oauthId);
     }

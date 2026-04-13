@@ -65,6 +65,8 @@ public class ProdutoController {
             );
 
             return ResponseEntity.ok(produto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError()
@@ -101,6 +103,8 @@ public class ProdutoController {
             return ResponseEntity.ok(atualizado);
         } catch (AccessDeniedException ade) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Erro ao atualizar produto: " + e.getMessage());
         }

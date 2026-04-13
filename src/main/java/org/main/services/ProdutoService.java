@@ -8,11 +8,11 @@ import org.main.models.Produtor;
 import org.main.enums.StatusProduto;
 import org.main.models.Produto;
 import org.main.repository.ProdutoRepository;
+import org.main.utils.UploadFileValidator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -40,18 +40,18 @@ public class ProdutoService {
             throw new IllegalArgumentException("A imagem do produto é obrigatória.");
         }
 
+        UploadFileValidator.FileTypeInfo imagemInfo = UploadFileValidator.validarImagem(imagem, "A imagem do produto");
+
         // Cria diretório se não existir
         Path produtorPath = Paths.get(basePath, String.valueOf(produtor.getIdProdutor()), "produtos");
         Files.createDirectories(produtorPath);
 
         // Gera nome único
-        String nomeArquivoOriginal = imagem.getOriginalFilename();
-        String nomeArquivo = System.currentTimeMillis() + "_" +
-                (nomeArquivoOriginal != null ? nomeArquivoOriginal : "imagem.png");
+        String nomeArquivo = System.currentTimeMillis() + "_imagem" + imagemInfo.extension();
 
         // Salva o arquivo
         Path destino = produtorPath.resolve(nomeArquivo);
-        Files.copy(imagem.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+        Files.write(destino, imagem.getBytes());
 
         // Cria e popula o objeto
         Produto produto = new Produto();
@@ -98,12 +98,13 @@ public class ProdutoService {
 
         // Salvar nova imagem, se houver
         if (imagem != null && !imagem.isEmpty()) {
+            UploadFileValidator.FileTypeInfo imagemInfo = UploadFileValidator.validarImagem(imagem, "A imagem do produto");
             Path produtorPath = Paths.get(basePath, String.valueOf(idProdutor), "produtos");
             Files.createDirectories(produtorPath);
 
-            String nomeArquivo = System.currentTimeMillis() + "_" + imagem.getOriginalFilename();
+            String nomeArquivo = System.currentTimeMillis() + "_imagem" + imagemInfo.extension();
             Path destino = produtorPath.resolve(nomeArquivo);
-            Files.copy(imagem.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+            Files.write(destino, imagem.getBytes());
 
             produto.setImagemProduto("/" + produtorPath.resolve(nomeArquivo).toString().replace("\\", "/"));
         }
