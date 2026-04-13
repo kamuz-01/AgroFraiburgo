@@ -29,6 +29,7 @@ public class Neo4jInteracaoService {
                     MERGE (u:User {id: $userId})
                     MERGE (p:Product {id: $productId})
                     MERGE (u)-[v:VIEWED]->(p)
+                    ON CREATE SET v.firstAt = datetime()
                     SET v.lastAt = datetime()
                     """;
 

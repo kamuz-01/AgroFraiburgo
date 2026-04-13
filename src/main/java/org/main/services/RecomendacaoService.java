@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class RecomendacaoService {
 
     private static final Logger log = LoggerFactory.getLogger(RecomendacaoService.class);
+    private static final double VIEW_HALF_LIFE_DAYS = 30.0;
 
     private final Neo4jClient neo4jClient;
     private final ProdutoRepository produtoRepository;
@@ -84,9 +85,26 @@ public class RecomendacaoService {
                                     }
                 WITH rec,
                      sum(
-                         (CASE type(f1) WHEN 'FAVORITED' THEN 3 ELSE 1 END)
-                         * (CASE type(f2) WHEN 'FAVORITED' THEN 3 ELSE 1 END)
-                         * (CASE type(f3) WHEN 'FAVORITED' THEN 3 ELSE 1 END)
+                         (
+                             CASE type(f1)
+                                 WHEN 'FAVORITED' THEN 3.0
+                                 ELSE 1.0 + exp(-toFloat(datetime().epochMillis - coalesce(f1.lastAt, f1.at, datetime()).epochMillis) / 86400000.0 / $viewHalfLifeDays)
+                             END
+                         )
+                         *
+                         (
+                             CASE type(f2)
+                                 WHEN 'FAVORITED' THEN 3.0
+                                 ELSE 1.0 + exp(-toFloat(datetime().epochMillis - coalesce(f2.lastAt, f2.at, datetime()).epochMillis) / 86400000.0 / $viewHalfLifeDays)
+                             END
+                         )
+                         *
+                         (
+                             CASE type(f3)
+                                 WHEN 'FAVORITED' THEN 3.0
+                                 ELSE 1.0 + exp(-toFloat(datetime().epochMillis - coalesce(f3.lastAt, f3.at, datetime()).epochMillis) / 86400000.0 / $viewHalfLifeDays)
+                             END
+                         )
                      ) AS score
                 RETURN rec.id AS idProduto, score
                 ORDER BY score DESC
@@ -95,6 +113,7 @@ public class RecomendacaoService {
 
         return new ArrayList<>(neo4jClient.query(cypher)
                 .bind(idUsuario).to("userId")
+                .bind(VIEW_HALF_LIFE_DAYS).to("viewHalfLifeDays")
                 .bind(limit).to("limit")
                 .fetchAs(Integer.class)
                 .mappedBy((typeSystem, record) -> record.get("idProduto").asInt())
@@ -106,13 +125,19 @@ public class RecomendacaoService {
                 MATCH (:User)-[f]->(p:Product)
                  WHERE type(f) IN ['FAVORITED', 'VIEWED']
                  WITH p,
-                     sum(CASE type(f) WHEN 'FAVORITED' THEN 3 ELSE 1 END) AS score
+                     sum(
+                         CASE type(f)
+                             WHEN 'FAVORITED' THEN 3.0
+                             ELSE 1.0 + exp(-toFloat(datetime().epochMillis - coalesce(f.lastAt, f.at, datetime()).epochMillis) / 86400000.0 / $viewHalfLifeDays)
+                         END
+                     ) AS score
                  RETURN p.id AS idProduto, score
                 ORDER BY score DESC
                 LIMIT $limit
                 """;
 
         return new ArrayList<>(neo4jClient.query(cypher)
+                .bind(VIEW_HALF_LIFE_DAYS).to("viewHalfLifeDays")
                 .bind(limit).to("limit")
                 .fetchAs(Integer.class)
                 .mappedBy((typeSystem, record) -> record.get("idProduto").asInt())
