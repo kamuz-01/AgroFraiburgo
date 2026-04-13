@@ -16,7 +16,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Base64;
 import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
@@ -26,6 +28,25 @@ public class JwtService {
 
     @Value("${jwt.access-token-ttl-seconds}")
     private long jwtTtl;
+
+    private SecretKey signingKey() {
+        if (jwtSecret == null || jwtSecret.isBlank()) {
+            throw new IllegalStateException("JWT_SECRET não configurado. Defina uma chave Base64 forte com pelo menos 32 bytes.");
+        }
+
+        byte[] secretBytes;
+        try {
+            secretBytes = Base64.getDecoder().decode(jwtSecret.trim());
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalStateException("JWT_SECRET deve ser uma chave Base64 válida.", ex);
+        }
+
+        if (secretBytes.length < 32) {
+            throw new IllegalStateException("JWT_SECRET deve ter pelo menos 32 bytes decodificados (chave HS256 forte).");
+        }
+
+        return Keys.hmacShaKeyFor(secretBytes);
+    }
 
     // --------------------------
     // Gera token JWT a partir de claims
@@ -48,7 +69,7 @@ public class JwtService {
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256)
+            .signWith(signingKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -57,7 +78,7 @@ public class JwtService {
     // --------------------------
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+            .setSigningKey(signingKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

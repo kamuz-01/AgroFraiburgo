@@ -21,6 +21,11 @@ public class AgroFraiburgoApplication {
                 return;
             }
 
+            if ("JWT_SECRET".equals(key)) {
+                System.setProperty(key, value);
+                return;
+            }
+
             if (System.getProperty(key) == null) {
                 System.setProperty(key, value);
             }

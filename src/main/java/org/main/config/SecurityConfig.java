@@ -4,10 +4,10 @@ import java.util.Map;
 import org.main.models.Usuario;
 import org.main.services.JwtService;
 import org.main.services.UsuarioService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,9 +23,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class SecurityConfig {
-
-    @Value("${jwt.secret}")
-    private String jwtSecret;
 
     @Value("${jwt.access-token-ttl-seconds}")
     private long jwtTtl;
