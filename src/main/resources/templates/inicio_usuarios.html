@@ -89,6 +89,10 @@
             margin: 0 auto;
         }
 
+        .flecha{
+            color: var(--primary-soft) !important;
+        }
+
         .main-header {
             position: sticky;
             top: 0;
@@ -925,7 +929,7 @@
 <body>
     <header class="main-header">
         <div class="container header-grid">
-            <a href="/" class="brand" aria-label="AgroFraiburgo">
+            <a href="#" class="brand" aria-label="AgroFraiburgo">
                 <span class="brand-mark"><i class="fas fa-seedling"></i></span>
                 <span class="brand-text">
                     <span class="brand-title">AgroFraiburgo</span>
@@ -936,7 +940,7 @@
             <form class="search-bar" action="/buscar" method="get" role="search">
                 <i class="fas fa-search"></i>
                 <input type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, categorias ou produtores em Fraiburgo">
-                <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right"></i></button>
+                <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right flecha"></i></button>
             </form>
 
             <div class="header-actions">
