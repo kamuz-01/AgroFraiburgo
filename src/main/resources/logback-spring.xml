@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_PATH" value="logs"/>
+
+    <!-- formato padrão -->
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"/>
+
+    <!-- APPENDER CONSOLE -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- LOG GERAL -->
+    <appender name="FILE_APP"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${LOG_PATH}/app.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- LOG APENAS DE ERROS -->
+    <appender name="FILE_ERROR"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${LOG_PATH}/error.log</file>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+    </appender>
+    
+    <appender name="API_ACCESS"
+          class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    		<file>logs/api-access.log</file>
+
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	        <fileNamePattern>logs/api-access-%d{yyyy-MM-dd}.log</fileNamePattern>
+	        <maxHistory>30</maxHistory>
+	    </rollingPolicy>
+
+	    <encoder>
+	        <pattern>%d{yyyy-MM-dd HH:mm:ss} %msg%n</pattern>
+	    </encoder>
+
+	</appender>
+
+	<logger name="API_ACCESS_LOG" level="INFO" additivity="false">
+	    <appender-ref ref="API_ACCESS"/>
+	</logger>
+
+    <!-- ROOT LOGGER -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE_APP"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </root>
+
+</configuration>
