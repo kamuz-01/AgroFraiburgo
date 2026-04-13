@@ -113,15 +113,15 @@ public class RecuperacaoSenhaService {
                     <title>Recuperação de senha - AgroFraiburgo</title>
                 </head>
                 <body style="margin:0;padding:0;background:#f4f0e6;font-family:Arial,Helvetica,sans-serif;color:#17311f;">
-                    <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" style="background:linear-gradient(180deg,#f8fbf6 0%%,#eef4ec 100%%);padding:32px 16px;">
+                    <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#f4f0e6" style="background-color:#f4f0e6;padding:32px 16px;">
                         <tr>
                             <td align="center">
-                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 18px 50px rgba(18,40,26,0.12);border:1px solid rgba(23,49,31,0.08);">
+                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width:640px;background-color:#ffffff;border:1px solid #dfe6db;">
                                     <tr>
-                                        <td style="padding:28px 32px;background:linear-gradient(135deg,#1f7a42,#2f8d52);color:#ffffff;">
-                                            <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;opacity:0.9;">AgroFraiburgo</div>
-                                            <h1 style="margin:10px 0 0;font-size:30px;line-height:1.05;font-weight:800;">Recuperação de senha</h1>
-                                            <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:rgba(255,255,255,0.92);">Um novo link foi solicitado para a sua conta. Use o botão abaixo para criar uma senha nova com segurança.</p>
+                                        <td bgcolor="#1f7a42" style="padding:28px 32px;background-color:#1f7a42;color:#ffffff;">
+                                            <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:#dff2e7;">AgroFraiburgo</div>
+                                            <h1 style="margin:10px 0 0;font-size:30px;line-height:1.05;font-weight:800;color:#ffffff;">Recuperação de senha</h1>
+                                            <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:#e7f5ec;">Um novo link foi solicitado para a sua conta. Use o botão abaixo para criar uma senha nova com segurança.</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -129,11 +129,15 @@ public class RecuperacaoSenhaService {
                                             <p style="margin:0 0 16px;font-size:16px;line-height:1.7;">Olá, <strong>%s</strong>.</p>
                                             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#5a6b5d;">Recebemos uma solicitação para redefinir a senha da sua conta na AgroFraiburgo. Se foi você, clique no botão abaixo para continuar.</p>
 
-                                            <div style="text-align:center;margin:30px 0;">
-                                                <a href="%s" style="display:inline-block;background:linear-gradient(135deg,#2e7d4a,#3d8e57);color:#ffffff;text-decoration:none;font-weight:800;padding:14px 26px;border-radius:999px;box-shadow:0 14px 28px rgba(46,125,74,0.24);">Redefinir minha senha</a>
-                                            </div>
+                                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:28px auto 24px;">
+                                                <tr>
+                                                    <td align="center" bgcolor="#2e7d4a" style="border-radius:999px;">
+                                                        <a href="%s" style="display:inline-block;padding:14px 26px;font-size:15px;font-weight:800;font-family:Arial,Helvetica,sans-serif;color:#ffffff;text-decoration:none;border-radius:999px;">Redefinir minha senha</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
 
-                                            <div style="background:#f7faf4;border:1px solid rgba(23,49,31,0.08);border-radius:18px;padding:18px 20px;">
+                                            <div style="background:#f7faf4;border:1px solid #e2eadf;padding:18px 20px;">
                                                 <p style="margin:0;font-size:14px;line-height:1.7;color:#5a6b5d;">Se o botão não funcionar, copie e cole este link no navegador:</p>
                                                 <p style="margin:10px 0 0;font-size:13px;line-height:1.6;word-break:break-all;color:#1f7a42;">%s</p>
                                             </div>
@@ -142,7 +146,7 @@ public class RecuperacaoSenhaService {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:18px 32px 28px;background:#f9fbf8;border-top:1px solid rgba(23,49,31,0.08);font-size:12px;line-height:1.6;color:#6b7b6d;">
+                                        <td bgcolor="#f9fbf8" style="padding:18px 32px 28px;background-color:#f9fbf8;border-top:1px solid #e2eadf;font-size:12px;line-height:1.6;color:#6b7b6d;">
                                             AgroFraiburgo - agricultura familiar, confiança e proximidade.
                                         </td>
                                     </tr>
