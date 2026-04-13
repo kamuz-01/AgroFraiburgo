@@ -162,6 +162,11 @@ public class VitrineController {
         return "resultado_busca";
     }
 
+    @GetMapping("/offline")
+    public String offline() {
+        return "offline";
+    }
+
     @GetMapping("/feira")
     public String detalhesFeira(Model model) {
         Feira feira = feiraRepository.findFirstByStatusFeiraOrderByIdFeiraDesc(org.main.enums.StatusFeira.EM_ANDAMENTO)

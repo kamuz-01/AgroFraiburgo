@@ -1,31 +1,94 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Offline</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 2rem;
-      background-color: #f0e8d4;
-      color: #333;
-    }
-    a {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #6b8e23;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - AgroFraiburgo</title>
+
+    <link rel="icon" href="/imagens/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/estilos-pagina_inicial.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Sofia Sans', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(40, 166, 69, 0.12), transparent 28%),
+                radial-gradient(circle at top right, rgba(245, 158, 11, 0.10), transparent 26%),
+                linear-gradient(180deg, #f8fbf7 0%, #edf4ec 100%);
+            color: #293042;
+            min-height: 100vh;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+        .hero-error {
+            margin: 48px 0;
+            padding: 34px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(41, 48, 66, 0.08);
+            border-radius: 34px;
+            box-shadow: 0 22px 60px rgba(31, 127, 55, 0.12);
+            text-align: center;
+        }
+
+        .error-code {
+            margin: 0;
+            font-size: clamp(4rem, 10vw, 6.5rem);
+            color: #28a645;
+            line-height: 1;
+        }
+
+        .h2 {
+            margin: 16px 0 12px;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+        }
+
+        .text-404 {
+            margin: 0 0 10px;
+            color: #6b7280;
+            font-size: 1.08rem;
+            line-height: 1.7;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 220px;
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .cta-primary { background: linear-gradient(135deg, #28a645, #3bb85a); color: #fff; }
+        .cta-secondary { background: #fff; color: #1f7f37; border-color: rgba(41, 48, 66, 0.10); }
+    </style>
 </head>
 <body>
-  <h1>Você está offline</h1>
-  <p>Não foi possível carregar esta página no momento.</p>
-  <a href="/">Voltar ao início</a>
+  <main class="container">
+    <section class="hero-error">
+      <h1 class="error-code">OFF</h1>
+      <h2 class="h2">Você está offline</h2>
+      <p class="text-404">Não foi possível carregar esta página no momento. Verifique sua conexão e tente novamente.</p>
+      <div class="actions">
+        <a href="/" class="cta cta-primary"><i class="fas fa-home"></i> Voltar para o Início</a>
+        <a href="/feira" class="cta cta-secondary"><i class="fas fa-map-location-dot"></i> Ver feira</a>
+      </div>
+    </section>
+  </main>
 </body>
 </html>

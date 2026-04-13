@@ -76,6 +76,7 @@ public class SecurityConfig {
                     "/feira",
                     "/sobre",
                     "/buscar",
+                    "/offline",
                     "/upload_documentos.html",
                     "/produtos.html",
                     "/sobre.html",
