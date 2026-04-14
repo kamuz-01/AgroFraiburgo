@@ -207,6 +207,7 @@ public class TelasController {
 	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
 	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
 	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
+	        model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
 	        return "home_produtor";
@@ -259,6 +260,7 @@ public class TelasController {
 	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
 	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
 	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
+	        model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
 	        return "home_consumidor";
@@ -310,6 +312,7 @@ public class TelasController {
 	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
 	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
 	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
+	        model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
 	        return "home_moderador";

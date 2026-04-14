@@ -14,7 +14,7 @@
 </head>
 <body>
 
-    <header id="header-menu" role="banner">
+	<th:block th:replace="~{shared_header :: homeHeader}">
 		    	<div class="logo">
                 <a href="#" aria-label="Ir para a página inicial" class="log">
                 	<svg class="logo-img" role="img"
@@ -289,7 +289,7 @@
                 </li>
             </ul>
         </nav>
-    </header>
+	</th:block>
 
 	<th:block th:replace="~{inicio_usuarios :: inicioBody}"></th:block>
 	

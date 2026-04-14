@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="homeHeader">
+    <header class="main-header">
+        <div class="container header-grid">
+            <a th:href="${homeUrl != null ? homeUrl : '/inicio_usuarios'}" class="brand" aria-label="AgroFraiburgo">
+                <span class="brand-mark"><i class="fas fa-seedling"></i></span>
+                <span class="brand-text">
+                    <span class="brand-title">AgroFraiburgo</span>
+                    <span class="brand-subtitle">Informação e valorização da agricultura familiar</span>
+                </span>
+            </a>
+
+            <form class="search-bar" action="/buscar" method="get" role="search">
+                <i class="fas fa-search"></i>
+                <input class="search-term" type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, categorias ou produtores em Fraiburgo">
+                <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right flecha"></i></button>
+            </form>
+
+            <div class="header-actions">
+                <details class="mobile-nav">
+                    <summary class="action-item primary mobile-nav-toggle" aria-label="Abrir menu de navegação">
+                        <span class="account-badge"><i class="fas fa-bars"></i></span>
+                        <span class="account-labels">
+                            <strong th:text="${tipoUsuario != null ? 'Menu' : 'Explorar'}">Menu</strong>
+                            <span th:text="${tipoUsuario != null ? tipoUsuario : 'Acesso rápido'}">Acesso rápido</span>
+                        </span>
+                        <i class="fas fa-chevron-down account-caret"></i>
+                    </summary>
+
+                    <div class="mobile-nav-panel">
+                        <div class="role-actions" th:if="${tipoUsuario == null}">
+                            <a href="/produtores" class="action-item">
+                                <i class="fas fa-users"></i>
+                                <span>Produtores</span>
+                            </a>
+                            <a href="/login.html" class="action-item primary">
+                                <i class="far fa-user"></i>
+                                <span>Entrar</span>
+                            </a>
+                        </div>
+
+                        <div class="role-actions" th:if="${tipoUsuario != null and tipoUsuario.name() == 'CONSUMIDOR'}">
+                            <a href="/produtores" class="action-item">
+                                <i class="fas fa-users"></i>
+                                <span>Produtores</span>
+                            </a>
+                            <a href="/feira" class="action-item">
+                                <i class="fas fa-map-location-dot"></i>
+                                <span>Feira</span>
+                            </a>
+                        </div>
+
+                        <div class="role-actions" th:if="${tipoUsuario != null and tipoUsuario.name() == 'PRODUTOR'}">
+                            <a href="/cadastro_produtos" class="action-item">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Cadastrar produto</span>
+                            </a>
+                            <a href="/lista_produtos" class="action-item">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Administrar Produtos</span>
+                            </a>
+                        </div>
+
+                        <div class="role-actions" th:if="${tipoUsuario != null and tipoUsuario.name() == 'MODERADOR'}">
+                            <details class="account-menu">
+                                <summary class="action-item" id="alertDropdown" aria-label="Abrir notificações">
+                                    <span class="account-badge">
+                                        <i class="fas fa-bell"></i>
+                                    </span>
+                                    <span class="account-labels">
+                                        <strong>Notificações</strong>
+                                        <span>Cadastros pendentes</span>
+                                    </span>
+                                    <span class="badge rounded-pill bg-danger" id="alert-count">0</span>
+                                </summary>
+                                <ul class="account-panel" id="alert-list" aria-labelledby="alertDropdown">
+                                    <li><span class="dropdown-item">Sem novos cadastros</span></li>
+                                </ul>
+                            </details>
+                            <a href="/cadastro_moderadores" class="action-item">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Cadastrar moderador</span>
+                            </a>
+                            <a href="/cadastro_feira" class="action-item">
+                                <i class="fas fa-map-location-dot"></i>
+                                <span>Cadastrar feira</span>
+                            </a>
+                            <a href="/listagem_feiras" class="action-item">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Consultar feira</span>
+                            </a>
+                            <a href="/moderacao_usuarios" class="action-item">
+                                <i class="fas fa-users-gear"></i>
+                                <span>Administrar Usuários</span>
+                            </a>
+                        </div>
+
+                        <div class="dropdown account-dropdown" th:if="${tipoUsuario != null}">
+                            <button class="action-item primary account-toggle dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="account-badge">
+                                    <img th:if="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:src="@{|${imagemPerfil}|}" alt="Foto do usuário">
+                                    <i th:unless="${imagemPerfil != null and !imagemPerfil.isBlank()}" class="far fa-user"></i>
+                                </span>
+                                <span class="account-labels">
+                                    <strong th:text="${nome != null ? 'Olá, ' + nome : 'Meu perfil'}">Meu perfil</strong>
+                                    <span th:text="${tipoUsuario != null ? tipoUsuario : ''}">TIPO_USUARIO</span>
+                                </span>
+                                <i class="fas fa-chevron-down account-caret"></i>
+                            </button>
+                            <div class="dropdown-menu account-panel" aria-labelledby="userMenuDropdown">
+                                <div class="profile-meta">
+                                    <span class="profile-fallback" th:unless="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:text="${nome != null and !nome.isBlank() ? #strings.substring(nome, 0, 1) : 'U'}">U</span>
+                                    <img th:if="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:src="@{|${imagemPerfil}|}" alt="Foto do usuário">
+                                    <div>
+                                        <strong th:text="${nome != null ? nome : 'Usuário'}">Usuário</strong>
+                                        <span th:text="${tipoUsuario != null ? tipoUsuario : 'Visitante'}">Tipo</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item profile-link" href="/perfil"><i class="far fa-user"></i> Meu perfil</a>
+                                <a class="dropdown-item logout-link" href="/logout"><i class="fas fa-right-from-bracket"></i> Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </header>
+</th:block>
+</body>
+</html>
