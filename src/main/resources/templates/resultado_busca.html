@@ -355,7 +355,7 @@
                 <span class="chip" th:if="${temFiltroPreco}"><i class="fas fa-coins"></i> <span th:text="${faixaPrecoTexto}">Faixa de preço</span></span>
             </div>
 
-            <a class="back-link" th:href="@{/home_consumidor}"><i class="fas fa-arrow-left"></i> Voltar para a home</a>
+            <a class="back-link" th:href="${homeUrl != null ? homeUrl : '/inicio_usuarios'}"><i class="fas fa-arrow-left"></i> Voltar para a home</a>
         </section>
 
         <section class="section">

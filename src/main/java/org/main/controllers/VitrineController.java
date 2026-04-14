@@ -179,6 +179,7 @@ public class VitrineController {
         model.addAttribute("termoBusca", termo);
         model.addAttribute("temFiltroPreco", temFiltroPreco);
         model.addAttribute("faixaPrecoTexto", faixaPrecoTexto);
+        model.addAttribute("homeUrl", homeUrlFor(authentication));
 
         if (termo.isBlank() && !temFiltroPreco) {
             model.addAttribute("produtosEncontrados", List.of());
@@ -355,6 +356,28 @@ public class VitrineController {
         } catch (Exception ignored) {
             return null;
         }
+    }
+
+    private String homeUrlFor(Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) {
+            return "/inicio_usuarios";
+        }
+
+        for (GrantedAuthority authority : auth.getAuthorities()) {
+            if (authority == null) continue;
+            String role = authority.getAuthority();
+            if ("ROLE_PRODUTOR".equals(role)) {
+                return "/home_produtor";
+            }
+            if ("ROLE_MODERADOR".equals(role)) {
+                return "/home_moderador";
+            }
+            if ("ROLE_CONSUMIDOR".equals(role)) {
+                return "/home_consumidor";
+            }
+        }
+
+        return "/inicio_usuarios";
     }
 
     private List<ProdutoCard> toProdutoCards(List<Produto> produtos) {
