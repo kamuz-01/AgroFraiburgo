@@ -93,6 +93,10 @@ body {
     z-index: 100;
 }
 
+.header .container {
+    overflow: visible;
+}
+
 .container {
     max-width: 1100px;
     margin: auto;
@@ -106,6 +110,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 1rem 0;
+    gap: 1rem;
 }
 
 .nav ul {
@@ -476,13 +481,26 @@ h2 {
 }
 
 @media (max-width: 768px) {
-    header .container {
+    .header .nav-wrapper {
         flex-direction: column;
         gap: 1rem;
+        align-items: stretch;
     }
-    header .header-text {
-        text-align: center;
-        margin-left: 0;
+
+    .header .logo,
+    .header .nav,
+    .header .auth-buttons {
+        width: 100%;
+    }
+
+    .header .nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    .header .auth-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
     }
     h1 {
         font-size: 2rem;

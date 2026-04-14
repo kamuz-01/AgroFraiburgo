@@ -20,7 +20,7 @@
 
             <div class="header-actions">
                 <div class="dropdown account-dropdown" th:if="${tipoUsuario != null}">
-                    <button class="action-item primary account-toggle dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="action-item primary account-toggle dropdown-toggle" type="button" id="userMenuDropdown" aria-expanded="false">
                         <span class="account-badge">
                             <img th:if="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:src="@{|${imagemPerfil}|}" alt="Foto do usuário">
                             <i th:unless="${imagemPerfil != null and !imagemPerfil.isBlank()}" class="far fa-user"></i>
@@ -187,6 +187,9 @@
             const body = document.body;
             const rail = document.getElementById('desktopRail');
             const toggle = document.querySelector('[data-rail-toggle]');
+            const accountDropdown = document.querySelector('.account-dropdown');
+            const accountToggle = document.getElementById('userMenuDropdown');
+            const accountPanel = accountDropdown ? accountDropdown.querySelector('.account-panel') : null;
 
             if (!body || !rail || !toggle) {
                 return;
@@ -209,6 +212,43 @@
                     window.localStorage.setItem(storageKey, nextCollapsed ? '1' : '0');
                 }
             });
+
+            if (accountDropdown && accountToggle && accountPanel) {
+                const closeAccountMenu = () => {
+                    accountDropdown.classList.remove('show');
+                    accountPanel.classList.remove('show');
+                    accountToggle.setAttribute('aria-expanded', 'false');
+                };
+
+                const toggleAccountMenu = (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const isOpen = accountDropdown.classList.contains('show');
+                    if (isOpen) {
+                        closeAccountMenu();
+                        return;
+                    }
+
+                    accountDropdown.classList.add('show');
+                    accountPanel.classList.add('show');
+                    accountToggle.setAttribute('aria-expanded', 'true');
+                };
+
+                accountToggle.addEventListener('click', toggleAccountMenu);
+
+                document.addEventListener('click', function (event) {
+                    if (!accountDropdown.contains(event.target)) {
+                        closeAccountMenu();
+                    }
+                });
+
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape') {
+                        closeAccountMenu();
+                    }
+                });
+            }
         })();
     </script>
 </th:block>
