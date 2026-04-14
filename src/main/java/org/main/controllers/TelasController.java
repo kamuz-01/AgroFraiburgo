@@ -568,6 +568,7 @@ public class TelasController {
         model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
         model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
         model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 
         return "cadastro_produtos";
 	}
@@ -613,6 +614,7 @@ public class TelasController {
         model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
         model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
         model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 
         return "lista_produtos";
 	}

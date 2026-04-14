@@ -384,15 +384,24 @@
             box-shadow: var(--shadow-lg);
             gap: 10px;
             display: none;
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            z-index: 70;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(8px);
         }
 
         .account-dropdown .dropdown-menu.account-panel {
-            inset: auto 0 calc(100% + 12px) auto;
             margin: 0;
         }
 
         .account-dropdown .dropdown-menu.account-panel.show {
             display: grid;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0);
         }
 
         .account-panel .profile-link,
@@ -1495,11 +1504,11 @@
 
         @media (min-width: 1360px) {
             .user-page-content {
-                padding-left: 336px;
+                padding-left: 0;
             }
 
             body.user-shell.desktop-rail-collapsed .user-page-content {
-                padding-left: 104px;
+                padding-left: 0;
             }
 
             .desktop-rail {
@@ -1508,7 +1517,7 @@
                 top: 92px;
                 left: 0;
                 width: 304px;
-                z-index: 45;
+                z-index: 62;
             }
 
             body.user-shell.desktop-rail-collapsed .desktop-rail {
