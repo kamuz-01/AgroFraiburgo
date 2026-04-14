@@ -71,7 +71,7 @@
         							64zM258 528C265.1 555.6 290.2 576 320 576C349.8 576 374.9 555.6 382 528L258 528z"
         						/>
     						</svg>
-    						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="alert-count" style="font-size: 0.7rem;">
+     						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger alert-count" id="alert-count" style="font-size: 0.7rem;">
         						0
     						</span>
   						</span>
@@ -304,7 +304,9 @@ async function carregarAlertas() {
     const response = await axios.get("/api/moderador/novos-produtores");
     const data = response.data;
 
-    document.getElementById("alert-count").textContent = data.total;
+		document.querySelectorAll(".alert-count").forEach((elemento) => {
+			elemento.textContent = data.total;
+		});
 
     const lista = document.getElementById("alert-list");
     lista.innerHTML = "";
