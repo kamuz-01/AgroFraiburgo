@@ -102,6 +102,7 @@ public class SecurityConfig {
                 .requestMatchers("/produtores_pendentes").hasRole("MODERADOR")
                 .requestMatchers("/listagem_feiras", "/listagem_feiras.html").hasRole("MODERADOR")
                 .requestMatchers("/cadastro_feira", "/cadastro_feira.html").hasRole("MODERADOR")
+                .requestMatchers("/administrar_usuarios", "/administrar_usuarios.html").hasRole("MODERADOR")
                 .requestMatchers("/moderacao_usuarios", "/moderacao_usuarios.html").hasRole("MODERADOR")
                 // APIs específicas por perfil
                 .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()

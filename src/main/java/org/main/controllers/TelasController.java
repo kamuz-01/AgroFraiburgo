@@ -839,4 +839,9 @@ public class TelasController {
 
         return "moderacao_usuarios";
     }
+
+	@GetMapping({"/moderacao_usuarios", "/moderacao_usuarios.html"})
+	public String moderacaoUsuariosAlias(Model model, Authentication auth) {
+		return administrarUsuarios(model, auth);
+	}
 }
