@@ -171,16 +171,6 @@
         </nav>
     </header>
 
-	<section class="section-shell container animate-in delay-1" th:if="${tipoUsuario != null and tipoUsuario.name() == 'PRODUTOR'}">
-		<div class="section-heading">
-			<div>
-				<h2 class="section-title">Análise de concorrência</h2>
-				<p class="section-subtitle">Use a faixa de preço para comparar o mercado e posicionar seus produtos com mais objetividade.</p>
-			</div>
-			<a class="section-link" href="#filtro-precos">Ir para o filtro <i class="fas fa-arrow-down"></i></a>
-		</div>
-	</section>
-
 	<th:block th:replace="~{inicio_usuarios :: inicioBody}"></th:block>
 	
 	<script src="js/MenuResponsivo.js"></script>
