@@ -1556,6 +1556,33 @@
                 justify-content: flex-start;
             }
 
+            .search-bar {
+                width: 100%;
+                flex-wrap: nowrap;
+                gap: 8px;
+                padding: 8px 12px;
+            }
+
+            .search-bar i {
+                flex: 0 0 auto;
+                display: inline-flex;
+                align-items: center;
+                line-height: 1;
+            }
+
+            .search-bar .search-term {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .search-bar button {
+                flex: 0 0 40px;
+                width: 40px;
+                height: 40px;
+                display: inline-grid;
+                place-items: center;
+            }
+
             .account-dropdown .dropdown-menu.account-panel {
                 width: 100%;
                 left: 0;
@@ -1632,7 +1659,7 @@
             }
 
             .search-bar {
-                padding-left: 12px;
+                gap: 8px;
             }
 
             .search-bar input {
