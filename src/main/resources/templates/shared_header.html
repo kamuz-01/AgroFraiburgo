@@ -96,12 +96,14 @@
 
             <details class="rail-section rail-alert-section" th:if="${tipoUsuario.name() == 'MODERADOR'}">
                 <summary id="alertDropdown" class="rail-alert-summary" aria-label="Abrir notificações">
-                    <span class="rail-icon"><i class="fas fa-bell"></i></span>
+                    <span class="rail-icon rail-alert-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill bg-danger" id="alert-count">0</span>
+                    </span>
                     <span class="rail-summary-text">
                         <strong>Notificações</strong>
                         <span>Cadastros pendentes</span>
                     </span>
-                    <span class="badge rounded-pill bg-danger" id="alert-count">0</span>
                     <i class="fas fa-chevron-down rail-caret"></i>
                 </summary>
                 <ul class="rail-list" id="alert-list" aria-labelledby="alertDropdown">

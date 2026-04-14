@@ -610,14 +610,24 @@
 
         .rail-alert-summary {
             position: relative;
-            padding-right: 58px;
         }
 
-        .rail-alert-summary #alert-count {
+        .rail-alert-icon {
+            position: relative;
+        }
+
+        .rail-alert-icon #alert-count {
             position: absolute;
-            right: 46px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: -6px;
+            right: -6px;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            display: inline-grid;
+            place-items: center;
+            font-size: 0.72rem;
+            line-height: 1;
+            border: 2px solid #fff;
         }
 
         .desktop-rail-collapsed .rail-section summary {
@@ -626,15 +636,9 @@
             padding: 12px 8px;
         }
 
-        .desktop-rail-collapsed .rail-alert-summary {
-            padding-right: 8px;
-        }
-
-        .desktop-rail-collapsed .rail-alert-summary #alert-count {
-            position: static;
-            transform: none;
-            margin-top: 6px;
-            justify-self: center;
+        .desktop-rail-collapsed .rail-alert-icon #alert-count {
+            top: -3px;
+            right: -13px;
         }
 
         .rail-section summary::-webkit-details-marker {
