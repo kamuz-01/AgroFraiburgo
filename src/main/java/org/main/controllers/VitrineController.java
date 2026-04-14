@@ -119,14 +119,15 @@ public class VitrineController {
     public String listarProdutores(Model model,
                                    @RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "9") int size,
-                                   @RequestParam(required = false) String q) {
+                                   @RequestParam(required = false) String q,
+                                   Authentication authentication) {
         Page<Usuario> produtoresPage = produtoresPaginados(page, size, q);
+        applyUserShellModel(model, authentication, q);
         model.addAttribute("produtores", toProdutorCards(produtoresPage.getContent()));
         model.addAttribute("totalProdutores", produtoresPage.getTotalElements());
         model.addAttribute("currentPage", produtoresPage.getNumber());
         model.addAttribute("pageSize", produtoresPage.getSize());
         model.addAttribute("hasMore", produtoresPage.hasNext());
-        model.addAttribute("q", q);
         return "lista_produtores-familiares";
     }
 
@@ -223,7 +224,8 @@ public class VitrineController {
     }
 
     @GetMapping("/feira")
-    public String detalhesFeira(Model model) {
+    public String detalhesFeira(Model model, Authentication authentication) {
+        applyUserShellModel(model, authentication, null);
         Feira feira = feiraRepository.findFirstByStatusFeiraOrderByIdFeiraDesc(org.main.enums.StatusFeira.EM_ANDAMENTO)
                 .orElse(null);
 
@@ -242,6 +244,7 @@ public class VitrineController {
 
     @GetMapping("/produtores/{id}")
     public String perfilProdutor(@PathVariable Integer id, Model model, Authentication authentication) {
+        applyUserShellModel(model, authentication, null);
         Usuario produtor = usuarioRepository.findById(id)
                 .filter(u -> u.getTipoUsuario() == TipoUsuario.PRODUTOR)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produtor não encontrado"));
@@ -303,6 +306,7 @@ public class VitrineController {
 
     @GetMapping("/produto/{id}")
     public String detalhesProduto(@PathVariable Integer id, Model model, Authentication authentication) {
+        applyUserShellModel(model, authentication, null);
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
 
@@ -378,6 +382,38 @@ public class VitrineController {
         }
 
         return "/inicio_usuarios";
+    }
+
+    private String homeUrlFor(TipoUsuario tipoUsuario) {
+        if (tipoUsuario == TipoUsuario.PRODUTOR) {
+            return "/home_produtor";
+        }
+        if (tipoUsuario == TipoUsuario.MODERADOR) {
+            return "/home_moderador";
+        }
+        if (tipoUsuario == TipoUsuario.CONSUMIDOR) {
+            return "/home_consumidor";
+        }
+
+        return "/inicio_usuarios";
+    }
+
+    private void applyUserShellModel(Model model, Authentication authentication, String q) {
+        Integer idUsuario = currentUserId(authentication);
+        Usuario usuario = idUsuario != null ? usuarioRepository.findById(idUsuario).orElse(null) : null;
+
+        if (usuario != null) {
+            model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
+            model.addAttribute("nome", usuario.getNome());
+            model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
+            model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+        } else {
+            model.addAttribute("homeUrl", homeUrlFor(authentication));
+        }
+
+        if (q != null) {
+            model.addAttribute("q", q);
+        }
     }
 
     private List<ProdutoCard> toProdutoCards(List<Produto> produtos) {

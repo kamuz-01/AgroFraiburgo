@@ -6,6 +6,7 @@
     <title>Produtores da Agricultura Familiar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
     
     <style>
         :root {
@@ -250,9 +251,10 @@
         }
     </style>
 </head>
-<body>
+<body class="user-shell">
+    <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
 
-    <div class="container">
+    <div class="container user-page-content">
         <header>
             <h1>Produtores da Agricultura Familiar</h1>
             <p>Conheça os produtores locais e entre em contato diretamente com eles</p>
