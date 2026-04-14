@@ -78,6 +78,8 @@ public class SecurityConfig {
                     "/upload_documentos.html",
                     "/produtos.html",
                     "/sobre.html",
+                    "/error",
+                    "/error/**",
                     "/manifest.json",
                     "/service-worker.js",
                     "/imagens/**",

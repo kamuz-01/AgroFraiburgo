@@ -23,11 +23,18 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
     @Query("""
         SELECT p
         FROM Produto p
-        WHERE LOWER(COALESCE(p.nomeProduto, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
-           OR LOWER(COALESCE(p.descricao, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+        WHERE (
+            :termo IS NULL
+            OR LOWER(COALESCE(p.nomeProduto, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+            OR LOWER(COALESCE(p.descricao, '')) LIKE LOWER(CONCAT('%', :termo, '%'))
+        )
+          AND (:minPreco IS NULL OR p.preco >= :minPreco)
+          AND (:maxPreco IS NULL OR p.preco <= :maxPreco)
         ORDER BY p.dataCriacao DESC
         """)
-    List<Produto> buscarPorTermo(@Param("termo") String termo);
+    List<Produto> buscarPorTermoEPreco(@Param("termo") String termo,
+                                       @Param("minPreco") Double minPreco,
+                                       @Param("maxPreco") Double maxPreco);
 
     Optional<Produto> findByIdProdutoAndProdutor_IdProdutor(Integer idProduto, Integer idProdutor);
 

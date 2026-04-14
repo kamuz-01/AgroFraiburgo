@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.main.enums.StatusConta;
@@ -145,12 +146,41 @@ public class VitrineController {
     }
 
     @GetMapping("/buscar")
-    public String buscar(@RequestParam(required = false) String q, Model model, Authentication authentication) {
+    public String buscar(@RequestParam(required = false) String q,
+                         @RequestParam(required = false) Double minPreco,
+                         @RequestParam(required = false) Double maxPreco,
+                         Model model,
+                         Authentication authentication) {
         String termo = q == null ? "" : q.trim();
-        model.addAttribute("q", termo);
-        model.addAttribute("termoBusca", termo);
+        Double precoMinimo = minPreco;
+        Double precoMaximo = maxPreco;
 
-        if (termo.isBlank()) {
+        if (precoMinimo != null && precoMaximo != null && precoMinimo > precoMaximo) {
+            Double temp = precoMinimo;
+            precoMinimo = precoMaximo;
+            precoMaximo = temp;
+        }
+
+        boolean temFiltroPreco = precoMinimo != null || precoMaximo != null;
+        String faixaPrecoTexto = null;
+        if (temFiltroPreco) {
+            String precoMinTexto = precoMinimo != null
+                ? String.format(Locale.forLanguageTag("pt-BR"), "R$ %.2f", precoMinimo)
+                : "Sem mínimo";
+            String precoMaxTexto = precoMaximo != null
+                ? String.format(Locale.forLanguageTag("pt-BR"), "R$ %.2f", precoMaximo)
+                : "Sem máximo";
+            faixaPrecoTexto = precoMinTexto + " - " + precoMaxTexto;
+        }
+
+        model.addAttribute("q", termo);
+        model.addAttribute("minPreco", precoMinimo);
+        model.addAttribute("maxPreco", precoMaximo);
+        model.addAttribute("termoBusca", termo);
+        model.addAttribute("temFiltroPreco", temFiltroPreco);
+        model.addAttribute("faixaPrecoTexto", faixaPrecoTexto);
+
+        if (termo.isBlank() && !temFiltroPreco) {
             model.addAttribute("produtosEncontrados", List.of());
             model.addAttribute("produtoresEncontrados", List.of());
             model.addAttribute("totalProdutosEncontrados", 0);
@@ -158,13 +188,19 @@ public class VitrineController {
             return "resultado_busca";
         }
 
-        List<Produto> produtosEncontrados = produtoRepository.buscarPorTermo(termo);
-        List<Usuario> produtoresEncontrados = usuarioRepository.buscarProdutoresPorTermo(
-                termo,
-                TipoUsuario.PRODUTOR,
-                StatusConta.ATIVO,
-                PageRequest.of(0, 24, Sort.by(Sort.Order.asc("nome"), Sort.Order.asc("sobrenome"), Sort.Order.asc("idUsuario")))
-        ).getContent();
+        List<Produto> produtosEncontrados = produtoRepository.buscarPorTermoEPreco(
+                termo.isBlank() ? null : termo,
+                precoMinimo,
+                precoMaximo);
+
+        List<Usuario> produtoresEncontrados = termo.isBlank()
+                ? List.of()
+                : usuarioRepository.buscarProdutoresPorTermo(
+                        termo,
+                        TipoUsuario.PRODUTOR,
+                        StatusConta.ATIVO,
+                        PageRequest.of(0, 24, Sort.by(Sort.Order.asc("nome"), Sort.Order.asc("sobrenome"), Sort.Order.asc("idUsuario")))
+                ).getContent();
 
         model.addAttribute("produtosEncontrados", toProdutoCards(produtosEncontrados));
         model.addAttribute("produtoresEncontrados", toProdutorCards(produtoresEncontrados));

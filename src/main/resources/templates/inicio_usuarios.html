@@ -148,6 +148,7 @@
 
         .search-bar {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 10px;
             padding: 8px 10px 8px 16px;
@@ -169,6 +170,62 @@
             color: var(--text);
             font: inherit;
             min-width: 0;
+        }
+
+        .search-bar .search-term {
+            flex: 1 1 240px;
+        }
+
+        .price-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            box-shadow: 0 10px 26px rgba(18, 40, 26, 0.06);
+        }
+
+        .price-filter-bar .filter-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            white-space: nowrap;
+        }
+
+        .price-filter-bar input {
+            border: 1px solid rgba(23, 49, 31, 0.1);
+            border-radius: 14px;
+            padding: 12px 14px;
+            font: inherit;
+            color: var(--text);
+            min-width: 0;
+            background: #fff;
+        }
+
+        .price-filter-bar input[type="number"] {
+            width: 160px;
+        }
+
+        .price-filter-bar .search-term {
+            flex: 1 1 240px;
+        }
+
+        .price-filter-bar button {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font: inherit;
+            font-weight: 800;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+            box-shadow: 0 12px 22px rgba(31, 122, 66, 0.24);
         }
 
         .search-bar button {
@@ -939,7 +996,7 @@
 
             <form class="search-bar" action="/buscar" method="get" role="search">
                 <i class="fas fa-search"></i>
-                <input type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, categorias ou produtores em Fraiburgo">
+                <input class="search-term" type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, categorias ou produtores em Fraiburgo">
                 <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right flecha"></i></button>
             </form>
 
@@ -1126,6 +1183,14 @@
                     <p class="section-subtitle">Uma seleção de itens com visual mais limpo e foco em informação: origem, disponibilidade e valor.</p>
                 </div>
             </div>
+
+            <form class="price-filter-bar" id="filtro-precos" action="/buscar" method="get" role="search">
+                <span class="filter-label"><i class="fas fa-coins"></i> Filtrar produtos por preço</span>
+                <input class="search-term" type="hidden" name="q" value="">
+                <input type="number" name="minPreco" th:value="${minPreco != null ? minPreco : ''}" step="0.01" min="0" placeholder="Preço mínimo">
+                <input type="number" name="maxPreco" th:value="${maxPreco != null ? maxPreco : ''}" step="0.01" min="0" placeholder="Preço máximo">
+                <button type="submit"><i class="fas fa-filter"></i> Aplicar filtro</button>
+            </form>
 
             <div class="product-grid" id="produtosGrid" th:if="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
                 <article class="product-card" th:each="produto, iter : ${produtosDestaque}">

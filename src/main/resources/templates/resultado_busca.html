@@ -56,6 +56,11 @@
             padding: 28px 0 48px;
         }
 
+        .flecha{
+            color: #fff !important;
+            margin-left: 16px !important;
+        }
+
         .hero {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -100,6 +105,8 @@
         .search-bar {
             margin-top: 22px;
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
             gap: 10px;
             padding: 8px 10px 8px 16px;
             border-radius: 999px;
@@ -110,7 +117,9 @@
 
         .search-bar i {
             color: var(--muted);
-            margin-top: 3px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
         }
 
         .search-bar input {
@@ -327,20 +336,23 @@
     <main class="page container">
         <section class="hero">
             <div class="eyebrow"><i class="fas fa-search"></i> Busca AgroFraiburgo</div>
-            <h1 th:text="${termoBusca != null and !termoBusca.isBlank() ? 'Resultados para \'' + termoBusca + '\'' : 'Digite um termo para buscar'}">Resultados da busca</h1>
+            <h1 th:if="${termoBusca != null and !termoBusca.isBlank()}" th:text="'Resultados para ' + ${termoBusca}">Resultados da busca</h1>
+            <h1 th:if="${(termoBusca == null or termoBusca.isBlank()) and temFiltroPreco}">Produtos filtrados por preço</h1>
+            <h1 th:if="${(termoBusca == null or termoBusca.isBlank()) and !temFiltroPreco}">Digite um termo para buscar</h1>
             <p>
                 Consulte produtos e produtores cadastrados na plataforma usando o mesmo campo de busca da home.
             </p>
 
             <form class="search-bar" action="/buscar" method="get" role="search">
                 <i class="fas fa-search"></i>
-                <input type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, produtores, cidades ou especialidades">
-                <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right"></i></button>
+                <input class="search-term" type="text" name="q" th:value="${q != null ? q : ''}" placeholder="Buscar produtos, produtores, cidades ou especialidades">
+                <button type="submit" aria-label="Buscar"><i class="fas fa-arrow-right flecha"></i></button>
             </form>
 
-            <div class="summary" th:if="${termoBusca != null and !termoBusca.isBlank()}">
+            <div class="summary" th:if="${(termoBusca != null and !termoBusca.isBlank()) or temFiltroPreco}">
                 <span class="chip"><i class="fas fa-box"></i> <span th:text="${totalProdutosEncontrados} + ' produtos'">0 produtos</span></span>
                 <span class="chip"><i class="fas fa-user-group"></i> <span th:text="${totalProdutoresEncontrados} + ' produtores'">0 produtores</span></span>
+                <span class="chip" th:if="${temFiltroPreco}"><i class="fas fa-coins"></i> <span th:text="${faixaPrecoTexto}">Faixa de preço</span></span>
             </div>
 
             <a class="back-link" th:href="@{/home_consumidor}"><i class="fas fa-arrow-left"></i> Voltar para a home</a>
@@ -351,7 +363,8 @@
                 <div>
                     <h2>Produtos encontrados</h2>
                     <p th:if="${termoBusca != null and !termoBusca.isBlank()}" th:text="'Foram encontrados ' + ${totalProdutosEncontrados} + ' produtos para o termo pesquisado.'">Resultados de produtos</p>
-                    <p th:unless="${termoBusca != null and !termoBusca.isBlank()}">Use a barra acima para buscar produtos.</p>
+                    <p th:if="${(termoBusca == null or termoBusca.isBlank()) and temFiltroPreco}" th:text="'Foram encontrados ' + ${totalProdutosEncontrados} + ' produtos dentro da faixa de preço informada.'">Resultados de produtos</p>
+                    <p th:unless="${(termoBusca != null and !termoBusca.isBlank()) or temFiltroPreco}">Use a barra acima para buscar produtos.</p>
                 </div>
             </div>
 
@@ -373,14 +386,15 @@
                         </div>
                         <div class="actions">
                             <a class="primary" th:href="@{'/produto/' + ${produto.id}}"><i class="far fa-eye"></i> Ver</a>
-                            <a class="secondary" th:href="@{/produtos}"><i class="fas fa-arrow-right"></i> Catálogo</a>
                         </div>
                     </div>
                 </article>
             </div>
 
             <div class="empty-state" th:if="${produtosEncontrados == null or produtosEncontrados.isEmpty()}">
-                Nenhum produto encontrado para esse termo.
+                <span th:if="${termoBusca != null and !termoBusca.isBlank()}">Nenhum produto encontrado para esse termo.</span>
+                <span th:if="${(termoBusca == null or termoBusca.isBlank()) and temFiltroPreco}">Nenhum produto encontrado dentro da faixa de preço informada.</span>
+                <span th:if="${(termoBusca == null or termoBusca.isBlank()) and !temFiltroPreco}">Nenhum produto encontrado.</span>
             </div>
         </section>
 
@@ -389,7 +403,7 @@
                 <div>
                     <h2>Produtores encontrados</h2>
                     <p th:if="${termoBusca != null and !termoBusca.isBlank()}" th:text="'Foram encontrados ' + ${totalProdutoresEncontrados} + ' produtores para o termo pesquisado.'">Resultados de produtores</p>
-                    <p th:unless="${termoBusca != null and !termoBusca.isBlank()}">Use a barra acima para buscar produtores.</p>
+                    <p th:unless="${termoBusca != null and !termoBusca.isBlank()}">A busca por faixa de preço filtra apenas produtos; produtores continuam sendo localizados por nome, cidade ou estado.</p>
                 </div>
             </div>
 
