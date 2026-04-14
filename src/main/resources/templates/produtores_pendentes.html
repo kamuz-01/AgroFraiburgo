@@ -13,12 +13,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 	<!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="css/estilos-home_moderador.css">
     <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
 <title>Lista de produtores pendentes</title>
 </head>
-<body>
+<body class="user-shell">
+   <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
 
    <header id="header-menu" role="banner">
         <div class="logo">

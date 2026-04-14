@@ -11,6 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="css/estilos-home_moderador.css">
 	<link rel="stylesheet" href="css/estilos-cadastro_moderadores.css">
+    <th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
 <!-- Font Awesome para ícones -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
@@ -18,7 +19,8 @@
 	<link rel="icon" href="imagens/favicon.png" type="image/x-icon">
 <title>Insert title here</title>
 </head>
-<body>
+<body class="user-shell">
+    <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
     
  <header id="header-menu" role="banner">
            <div class="logo">

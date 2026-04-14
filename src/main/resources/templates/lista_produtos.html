@@ -11,11 +11,13 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
   <link rel="stylesheet" href="css/estilos-cadastro_produtos.css">
   <link rel="stylesheet" href="css/estilos-lista_produtos.css">
   <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
 </head>
-<body>
+<body class="user-shell">
+	<th:block th:replace="~{shared_header :: homeHeader}"></th:block>
 
 <header id="header-menu" role="banner">
         <div class="logo">
