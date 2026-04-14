@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/x-icon" href="" >
+<link rel="icon" type="image/x-icon" href="imagens/favicon.png">
 	<!-- JQuery -->
 	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
  	<!-- Bootstrap 5 CSS -->
@@ -457,8 +457,9 @@ async function carregarAlertas() {
       data.produtores.forEach(produtor => {
     	  lista.innerHTML += `
     		  <li>
-    		  <a class="dropdown-item" href="/produtores_pendentes">
-    		      ${produtor.nome}
+     		  <a class="dropdown-item" href="/produtores_pendentes">
+    		      <span class="alert-person"><i class="fas fa-user"></i></span>
+    		      <span>${produtor.nome}</span>
     		    </a>
     		  </li>
     		`;

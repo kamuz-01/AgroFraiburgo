@@ -536,8 +536,9 @@ async function carregarAlertas() {
       data.produtores.forEach(produtor => {
     	  lista.innerHTML += `
     		  <li>
-    		  <a class="dropdown-item" href="/produtores_pendentes">
-    		      ${produtor.nome}
+     		  <a class="dropdown-item" href="/produtores_pendentes">
+    		      <span class="alert-person"><i class="fas fa-user"></i></span>
+    		      <span>${produtor.nome}</span>
     		    </a>
     		  </li>
     		`;

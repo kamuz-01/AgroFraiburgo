@@ -19,115 +19,198 @@
             </form>
 
             <div class="header-actions">
-                <details class="mobile-nav">
-                    <summary class="action-item primary mobile-nav-toggle" aria-label="Abrir menu de navegação">
-                        <span class="account-badge"><i class="fas fa-bars"></i></span>
+                <div class="dropdown account-dropdown" th:if="${tipoUsuario != null}">
+                    <button class="action-item primary account-toggle dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="account-badge">
+                            <img th:if="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:src="@{|${imagemPerfil}|}" alt="Foto do usuário">
+                            <i th:unless="${imagemPerfil != null and !imagemPerfil.isBlank()}" class="far fa-user"></i>
+                        </span>
                         <span class="account-labels">
-                            <strong th:text="${tipoUsuario != null ? 'Menu' : 'Explorar'}">Menu</strong>
-                            <span th:text="${tipoUsuario != null ? tipoUsuario : 'Acesso rápido'}">Acesso rápido</span>
+                            <strong th:text="${nome != null ? 'Olá, ' + nome : 'Meu perfil'}">Meu perfil</strong>
+                            <span th:text="${tipoUsuario != null ? tipoUsuario : ''}">TIPO_USUARIO</span>
                         </span>
                         <i class="fas fa-chevron-down account-caret"></i>
-                    </summary>
-
-                    <div class="mobile-nav-panel">
-                        <div class="role-actions" th:if="${tipoUsuario == null}">
-                            <a href="/produtores" class="action-item">
-                                <i class="fas fa-users"></i>
-                                <span>Produtores</span>
-                            </a>
-                            <a href="/login.html" class="action-item primary">
-                                <i class="far fa-user"></i>
-                                <span>Entrar</span>
-                            </a>
-                        </div>
-
-                        <div class="role-actions" th:if="${tipoUsuario != null and tipoUsuario.name() == 'CONSUMIDOR'}">
-                            <a href="/produtores" class="action-item">
-                                <i class="fas fa-users"></i>
-                                <span>Produtores</span>
-                            </a>
-                            <a href="/feira" class="action-item">
-                                <i class="fas fa-map-location-dot"></i>
-                                <span>Feira</span>
-                            </a>
-                        </div>
-
-                        <div class="role-actions" th:if="${tipoUsuario != null and tipoUsuario.name() == 'PRODUTOR'}">
-                            <a href="/cadastro_produtos" class="action-item">
-                                <i class="fas fa-plus-circle"></i>
-                                <span>Cadastrar produto</span>
-                            </a>
-                            <a href="/lista_produtos" class="action-item">
-                                <i class="fas fa-clipboard-list"></i>
-                                <span>Administrar Produtos</span>
-                            </a>
-                        </div>
-
-                        <div class="role-actions" th:if="${tipoUsuario != null and tipoUsuario.name() == 'MODERADOR'}">
-                            <details class="account-menu">
-                                <summary class="action-item" id="alertDropdown" aria-label="Abrir notificações">
-                                    <span class="account-badge">
-                                        <i class="fas fa-bell"></i>
-                                    </span>
-                                    <span class="account-labels">
-                                        <strong>Notificações</strong>
-                                        <span>Cadastros pendentes</span>
-                                    </span>
-                                    <span class="badge rounded-pill bg-danger" id="alert-count">0</span>
-                                </summary>
-                                <ul class="account-panel" id="alert-list" aria-labelledby="alertDropdown">
-                                    <li><span class="dropdown-item">Sem novos cadastros</span></li>
-                                </ul>
-                            </details>
-                            <a href="/cadastro_moderadores" class="action-item">
-                                <i class="fas fa-user-plus"></i>
-                                <span>Cadastrar moderador</span>
-                            </a>
-                            <a href="/cadastro_feira" class="action-item">
-                                <i class="fas fa-map-location-dot"></i>
-                                <span>Cadastrar feira</span>
-                            </a>
-                            <a href="/listagem_feiras" class="action-item">
-                                <i class="fas fa-clipboard-list"></i>
-                                <span>Consultar feira</span>
-                            </a>
-                            <a href="/moderacao_usuarios" class="action-item">
-                                <i class="fas fa-users-gear"></i>
-                                <span>Administrar Usuários</span>
-                            </a>
-                        </div>
-
-                        <div class="dropdown account-dropdown" th:if="${tipoUsuario != null}">
-                            <button class="action-item primary account-toggle dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="account-badge">
-                                    <img th:if="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:src="@{|${imagemPerfil}|}" alt="Foto do usuário">
-                                    <i th:unless="${imagemPerfil != null and !imagemPerfil.isBlank()}" class="far fa-user"></i>
-                                </span>
-                                <span class="account-labels">
-                                    <strong th:text="${nome != null ? 'Olá, ' + nome : 'Meu perfil'}">Meu perfil</strong>
-                                    <span th:text="${tipoUsuario != null ? tipoUsuario : ''}">TIPO_USUARIO</span>
-                                </span>
-                                <i class="fas fa-chevron-down account-caret"></i>
-                            </button>
-                            <div class="dropdown-menu account-panel" aria-labelledby="userMenuDropdown">
-                                <div class="profile-meta">
-                                    <span class="profile-fallback" th:unless="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:text="${nome != null and !nome.isBlank() ? #strings.substring(nome, 0, 1) : 'U'}">U</span>
-                                    <img th:if="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:src="@{|${imagemPerfil}|}" alt="Foto do usuário">
-                                    <div>
-                                        <strong th:text="${nome != null ? nome : 'Usuário'}">Usuário</strong>
-                                        <span th:text="${tipoUsuario != null ? tipoUsuario : 'Visitante'}">Tipo</span>
-                                    </div>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item profile-link" href="/perfil"><i class="far fa-user"></i> Meu perfil</a>
-                                <a class="dropdown-item logout-link" href="/logout"><i class="fas fa-right-from-bracket"></i> Sair</a>
+                    </button>
+                    <div class="dropdown-menu account-panel" aria-labelledby="userMenuDropdown">
+                        <div class="profile-meta">
+                            <span class="profile-fallback" th:unless="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:text="${nome != null and !nome.isBlank() ? #strings.substring(nome, 0, 1) : 'U'}">U</span>
+                            <img th:if="${imagemPerfil != null and !imagemPerfil.isBlank()}" th:src="@{|${imagemPerfil}|}" alt="Foto do usuário">
+                            <div>
+                                <strong th:text="${nome != null ? nome : 'Usuário'}">Usuário</strong>
+                                <span th:text="${tipoUsuario != null ? tipoUsuario : 'Visitante'}">Tipo</span>
                             </div>
                         </div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item profile-link" href="/perfil"><i class="far fa-user"></i> Meu perfil</a>
+                        <a class="dropdown-item logout-link" href="/logout"><i class="fas fa-right-from-bracket"></i> Sair</a>
                     </div>
-                </details>
+                </div>
             </div>
         </div>
     </header>
+
+    <aside class="desktop-rail" th:if="${tipoUsuario != null}" id="desktopRail">
+        <div class="desktop-rail-card">
+            <div class="rail-topbar">
+                <div class="rail-intro">
+                    <span class="rail-kicker">Menu lateral</span>
+                    <strong th:text="${tipoUsuario != null ? tipoUsuario : 'Acesso rápido'}">Acesso rápido</strong>
+                </div>
+                <button class="rail-toggle rail-toggle-fab" type="button" aria-label="Exibir ou esconder menu lateral" aria-controls="desktopRail" aria-expanded="true" data-rail-toggle>
+                    <i class="fas fa-xmark rail-toggle-open"></i>
+                    <i class="fas fa-bars rail-toggle-closed"></i>
+                </button>
+            </div>
+
+            <details class="rail-section" th:if="${tipoUsuario.name() == 'CONSUMIDOR'}">
+                <summary>
+                    <span class="rail-icon"><i class="fas fa-compass"></i></span>
+                    <span class="rail-summary-text">
+                        <strong>Explorar</strong>
+                        <span>Produtores, feira e produtos</span>
+                    </span>
+                    <i class="fas fa-chevron-down rail-caret"></i>
+                </summary>
+                <div class="rail-links">
+                    <a href="/produtores"><i class="fas fa-users"></i> Produtores</a>
+                    <a href="/feira"><i class="fas fa-map-location-dot"></i> Feira</a>
+                    <a href="/produtos"><i class="fas fa-leaf"></i> Produtos</a>
+                </div>
+            </details>
+
+            <details class="rail-section" th:if="${tipoUsuario.name() == 'PRODUTOR'}">
+                <summary>
+                    <span class="rail-icon"><i class="fas fa-seedling"></i></span>
+                    <span class="rail-summary-text">
+                        <strong>Produção</strong>
+                        <span>Cadastro e gestão comercial</span>
+                    </span>
+                    <i class="fas fa-chevron-down rail-caret"></i>
+                </summary>
+                <div class="rail-links">
+                    <a href="/cadastro_produtos"><i class="fas fa-plus-circle"></i> Cadastrar produto</a>
+                    <a href="/lista_produtos"><i class="fas fa-clipboard-list"></i> Administrar produtos</a>
+                    <a href="/produtos"><i class="fas fa-store"></i> Ver catálogo</a>
+                </div>
+            </details>
+
+            <details class="rail-section rail-alert-section" th:if="${tipoUsuario.name() == 'MODERADOR'}">
+                <summary id="alertDropdown" class="rail-alert-summary" aria-label="Abrir notificações">
+                    <span class="rail-icon"><i class="fas fa-bell"></i></span>
+                    <span class="rail-summary-text">
+                        <strong>Notificações</strong>
+                        <span>Cadastros pendentes</span>
+                    </span>
+                    <span class="badge rounded-pill bg-danger" id="alert-count">0</span>
+                    <i class="fas fa-chevron-down rail-caret"></i>
+                </summary>
+                <ul class="rail-list" id="alert-list" aria-labelledby="alertDropdown">
+                    <li><span class="dropdown-item">Sem novos cadastros</span></li>
+                </ul>
+            </details>
+
+            <details class="rail-section" th:if="${tipoUsuario.name() == 'MODERADOR'}">
+                <summary>
+                    <span class="rail-icon"><i class="fas fa-shield-halved"></i></span>
+                    <span class="rail-summary-text">
+                        <strong>Moderação</strong>
+                        <span>Ferramentas administrativas</span>
+                    </span>
+                    <i class="fas fa-chevron-down rail-caret"></i>
+                </summary>
+                <div class="rail-links">
+                    <a href="/cadastro_moderadores"><i class="fas fa-user-plus"></i> Cadastrar moderador</a>
+                    <a href="/cadastro_feira"><i class="fas fa-map-location-dot"></i> Cadastrar feira</a>
+                    <a href="/listagem_feiras"><i class="fas fa-clipboard-list"></i> Consultar feira</a>
+                    <a href="/moderacao_usuarios"><i class="fas fa-users-gear"></i> Administrar usuários</a>
+                </div>
+            </details>
+        </div>
+    </aside>
+
+    <nav class="mobile-bottom-nav" th:if="${tipoUsuario != null}" aria-label="Ações rápidas">
+        <div class="mobile-bottom-dock" th:classappend="${tipoUsuario != null and tipoUsuario.name() == 'MODERADOR'} ? ' moderator-dock' : ''">
+            <a th:if="${tipoUsuario.name() == 'CONSUMIDOR'}" href="/produtores" class="mobile-nav-item">
+                <i class="fas fa-users"></i>
+                <span>Produtores</span>
+            </a>
+            <a th:if="${tipoUsuario.name() == 'CONSUMIDOR'}" href="/feira" class="mobile-nav-item">
+                <i class="fas fa-map-location-dot"></i>
+                <span>Feira</span>
+            </a>
+            <a th:if="${tipoUsuario.name() == 'CONSUMIDOR'}" href="/produtos" class="mobile-nav-item">
+                <i class="fas fa-leaf"></i>
+                <span>Produtos</span>
+            </a>
+
+            <a th:if="${tipoUsuario.name() == 'PRODUTOR'}" href="/cadastro_produtos" class="mobile-nav-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Cadastrar</span>
+            </a>
+            <a th:if="${tipoUsuario.name() == 'PRODUTOR'}" href="/lista_produtos" class="mobile-nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Produtos</span>
+            </a>
+            <a th:if="${tipoUsuario.name() == 'PRODUTOR'}" href="/produtos" class="mobile-nav-item">
+                <i class="fas fa-store"></i>
+                <span>Catálogo</span>
+            </a>
+
+            <details class="mobile-nav-item mobile-alert-item" th:if="${tipoUsuario.name() == 'MODERADOR'}">
+                <summary aria-label="Abrir notificações">
+                    <i class="fas fa-bell"></i>
+                    <span>Alertas</span>
+                    <span class="badge rounded-pill bg-danger">0</span>
+                </summary>
+                <ul class="mobile-alert-panel">
+                    <li><span class="dropdown-item">Sem novos cadastros</span></li>
+                </ul>
+            </details>
+            <a th:if="${tipoUsuario.name() == 'MODERADOR'}" href="/cadastro_moderadores" class="mobile-nav-item">
+                <i class="fas fa-user-plus"></i>
+                <span>Moderador</span>
+            </a>
+            <a th:if="${tipoUsuario.name() == 'MODERADOR'}" href="/cadastro_feira" class="mobile-nav-item">
+                <i class="fas fa-map-location-dot"></i>
+                <span>Feira</span>
+            </a>
+            <a th:if="${tipoUsuario.name() == 'MODERADOR'}" href="/moderacao_usuarios" class="mobile-nav-item">
+                <i class="fas fa-users-gear"></i>
+                <span>Usuários</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        (function () {
+            const storageKey = 'agrofraiburgo.desktopRailCollapsed';
+            const body = document.body;
+            const rail = document.getElementById('desktopRail');
+            const toggle = document.querySelector('[data-rail-toggle]');
+
+            if (!body || !rail || !toggle) {
+                return;
+            }
+
+            const applyState = (collapsed) => {
+                body.classList.toggle('desktop-rail-collapsed', collapsed);
+                toggle.setAttribute('aria-expanded', String(!collapsed));
+                toggle.title = collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral';
+            };
+
+            const savedState = window.localStorage ? window.localStorage.getItem(storageKey) : null;
+            applyState(savedState === '1');
+
+            toggle.addEventListener('click', function () {
+                const nextCollapsed = !body.classList.contains('desktop-rail-collapsed');
+                applyState(nextCollapsed);
+
+                if (window.localStorage) {
+                    window.localStorage.setItem(storageKey, nextCollapsed ? '1' : '0');
+                }
+            });
+        })();
+    </script>
 </th:block>
 </body>
 </html>
