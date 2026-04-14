@@ -30,7 +30,7 @@ html, body {
 }
 
 /* Container header */
-.container {
+.cadastro-moderadores-page {
     background: var(--white);
     border-radius: 16px;
     box-shadow: var(--shadow);
@@ -292,7 +292,7 @@ h2{
 
 /* Responsive Design */
 @media (max-width: 640px) {
-    .container {
+    .cadastro-moderadores-page {
         max-width: 360px;
         padding: 24px 20px;
         margin: 15px auto;

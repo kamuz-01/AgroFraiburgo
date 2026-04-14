@@ -14,6 +14,11 @@
     <th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
 <!-- Font Awesome para ícones -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body.user-shell #header-menu {
+            display: none !important;
+        }
+    </style>
     <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
     <link rel="manifest" href="/manifest.json">
 	<link rel="icon" href="imagens/favicon.png" type="image/x-icon">
@@ -21,7 +26,6 @@
 </head>
 <body class="user-shell">
     <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
-    
  <header id="header-menu" role="banner">
            <div class="logo">
                 <a href="#" aria-label="Ir para a página inicial" class="log">
@@ -298,7 +302,7 @@
         </nav>
     </header>
     
-    <section class="container">
+    <section class="container user-page-content cadastro-moderadores-page">
         <div class="header-login">
             <h1>Criar conta</h1>
             <p>Faça seu cadastro e descubra os produtos que a agricultura familiar fraiburguense tem a lhe oferecer.</p>

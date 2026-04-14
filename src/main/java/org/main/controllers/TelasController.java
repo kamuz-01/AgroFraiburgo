@@ -662,6 +662,7 @@ public class TelasController {
         model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
         model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
         model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 
         return "cadastro_moderadores";
     }
@@ -706,6 +707,7 @@ public class TelasController {
         model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
         model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
         model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 
         return "produtores_pendentes";
     }
@@ -750,6 +752,7 @@ public class TelasController {
         model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
         model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
         model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 
         return "listagem_feiras";
     }
@@ -794,6 +797,7 @@ public class TelasController {
         model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
         model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
         model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 
         return "cadastro_feira";
     }
@@ -838,6 +842,7 @@ public class TelasController {
         model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
         model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
         model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 
         return "moderacao_usuarios";
     }
