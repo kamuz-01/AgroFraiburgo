@@ -28,15 +28,17 @@
             font-family: 'Inter', sans-serif;
         }
 
-        body {
+        body.user-shell {
             background-color: var(--bg-body);
             color: var(--text-dark);
-            padding: 30px 20px;
+            padding: 0;
         }
 
-        .container {
+        .container.user-page-content {
             max-width: 850px; /* Um pouco mais largo para a capa */
+            width: min(850px, calc(100% - 32px));
             margin: 0 auto;
+            padding: 30px 20px;
         }
 
         .back-link {
