@@ -739,11 +739,11 @@
         .mobile-bottom-dock {
             display: grid;
             grid-auto-flow: column;
-            grid-auto-columns: minmax(90px, 1fr);
-            gap: 10px;
+            grid-auto-columns: minmax(82px, 1fr);
+            gap: 8px;
             overflow-x: auto;
-            padding: 10px;
-            border-radius: 26px;
+            padding: 8px;
+            border-radius: 24px;
             background: rgba(247, 250, 245, 0.96);
             border: 1px solid rgba(23, 49, 31, 0.08);
             box-shadow: var(--shadow-lg);
@@ -757,20 +757,20 @@
         .mobile-nav-item {
             position: relative;
             display: grid;
-            gap: 6px;
+            gap: 4px;
             justify-items: center;
-            padding: 12px 10px;
-            border-radius: 18px;
+            padding: 9px 8px;
+            border-radius: 16px;
             text-decoration: none;
             color: var(--text);
             background: rgba(31, 122, 66, 0.07);
-            min-height: 76px;
+            min-height: 64px;
             text-align: center;
             font-weight: 700;
         }
 
         .mobile-nav-item i {
-            font-size: 1.05rem;
+            font-size: 0.98rem;
             color: var(--primary-dark);
         }
 
@@ -789,26 +789,26 @@
         .mobile-alert-item summary {
             position: relative;
             display: grid;
-            gap: 6px;
+            gap: 4px;
             justify-items: center;
-            padding: 12px 10px;
-            border-radius: 18px;
+            padding: 9px 8px;
+            border-radius: 16px;
             background: rgba(31, 122, 66, 0.07);
-            min-height: 76px;
+            min-height: 64px;
             cursor: pointer;
             font-weight: 700;
         }
 
         .mobile-alert-item summary .alert-count-mobile {
             position: absolute;
-            top: -3px;
-            right: 15px;
-            min-width: 20px;
-            height: 20px;
-            padding: 0 5px;
+            top: -4px;
+            right: 10px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
             display: inline-grid;
             place-items: center;
-            font-size: 0.68rem;
+            font-size: 0.64rem;
             line-height: 1;
             border: 2px solid #fff;
         }
@@ -1539,7 +1539,7 @@
 
             body.user-shell {
                 padding-right: 0;
-                padding-bottom: 118px;
+                padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px));
             }
 
             .user-page-content {
@@ -1569,15 +1569,17 @@
             .mobile-bottom-nav {
                 display: block;
                 position: fixed;
-                left: 12px;
-                right: 12px;
-                bottom: 12px;
+                left: 0;
+                right: 0;
+                bottom: 0;
                 z-index: 60;
+                padding: 0 10px calc(env(safe-area-inset-bottom, 0px) + 8px);
+                box-sizing: border-box;
             }
 
             .mobile-bottom-dock {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
-                grid-auto-flow: row;
+                border-radius: 24px 24px 0 0;
             }
 
             .mobile-bottom-dock.moderator-dock {
@@ -1586,14 +1588,14 @@
 
             .mobile-bottom-dock.moderator-dock .mobile-nav-item,
             .mobile-bottom-dock.moderator-dock .mobile-alert-item summary {
-                min-height: 70px;
-                padding: 10px 8px;
-                gap: 4px;
+                min-height: 64px;
+                padding: 8px 6px;
+                gap: 3px;
             }
 
             .mobile-bottom-dock.moderator-dock .mobile-nav-item span,
             .mobile-bottom-dock.moderator-dock .mobile-alert-item summary span {
-                font-size: 0.76rem;
+                font-size: 0.72rem;
             }
 
             .action-item {
