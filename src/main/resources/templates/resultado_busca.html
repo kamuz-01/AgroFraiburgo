@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
     <style>
         :root {
             --bg: #f3f7f1;
@@ -332,8 +333,9 @@
         }
     </style>
 </head>
-<body>
-    <main class="page container">
+<body class="user-shell">
+    <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
+    <main class="page container user-page-content">
         <section class="hero">
             <div class="eyebrow"><i class="fas fa-search"></i> Busca AgroFraiburgo</div>
             <h1 th:if="${termoBusca != null and !termoBusca.isBlank()}" th:text="'Resultados para ' + ${termoBusca}">Resultados da busca</h1>

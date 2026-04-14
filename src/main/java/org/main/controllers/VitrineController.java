@@ -155,6 +155,7 @@ public class VitrineController {
         String termo = q == null ? "" : q.trim();
         Double precoMinimo = minPreco;
         Double precoMaximo = maxPreco;
+        applyUserShellModel(model, authentication, termo);
 
         if (precoMinimo != null && precoMaximo != null && precoMinimo > precoMaximo) {
             Double temp = precoMinimo;
@@ -174,13 +175,11 @@ public class VitrineController {
             faixaPrecoTexto = precoMinTexto + " - " + precoMaxTexto;
         }
 
-        model.addAttribute("q", termo);
         model.addAttribute("minPreco", precoMinimo);
         model.addAttribute("maxPreco", precoMaximo);
         model.addAttribute("termoBusca", termo);
         model.addAttribute("temFiltroPreco", temFiltroPreco);
         model.addAttribute("faixaPrecoTexto", faixaPrecoTexto);
-        model.addAttribute("homeUrl", homeUrlFor(authentication));
 
         if (termo.isBlank() && !temFiltroPreco) {
             model.addAttribute("produtosEncontrados", List.of());
