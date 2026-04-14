@@ -362,7 +362,7 @@
                             <a class="btn btn-primary" th:href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer">
                                 <i class="fas fa-route"></i> Abrir no Google Maps
                             </a>
-                            <a class="btn btn-secondary" href="/inicio_usuarios">
+                            <a class="btn btn-secondary" th:href="${homeUrl != null ? homeUrl : '/inicio_usuarios'}">
                                 <i class="fas fa-arrow-left"></i> Voltar ao início
                             </a>
                         </div>
@@ -378,7 +378,7 @@
                 <h2>Como a página funciona</h2>
                 <p>Quando uma feira estiver com status EM_ANDAMENTO, o sistema usa o endereço cadastrado no banco e mostra o mapa de Fraiburgo com a localização exata da feira. Isso evita informação duplicada e mantém a página sempre atualizada.</p>
                 <div class="map-actions" style="margin-top: 16px;">
-                    <a class="btn btn-primary" href="/inicio_usuarios"><i class="fas fa-house"></i> Ir para o início</a>
+                    <a class="btn btn-primary" th:href="${homeUrl != null ? homeUrl : '/inicio_usuarios'}"><i class="fas fa-house"></i> Ir para o início</a>
                     <a class="btn btn-secondary" href="/produtores"><i class="fas fa-user-group"></i> Ver produtores</a>
                 </div>
             </section>
