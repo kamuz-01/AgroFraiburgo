@@ -469,6 +469,18 @@
                 min-width: 0;
             }
 
+            .producer-head,
+            .producer-title,
+            .meta-row,
+            .summary-item,
+            .doc-card,
+            .decision-form,
+            .field-group,
+            .status-options {
+                width: 100%;
+                max-width: 100%;
+            }
+
             .producer-avatar {
                 width: 84px;
                 height: 84px;
@@ -491,16 +503,20 @@
                 text-align: center;
                 padding: 9px 10px;
                 min-height: 40px;
+                min-width: 0;
             }
 
             .producer-title h1 {
                 font-size: 1.4rem;
                 line-height: 1.12;
+                overflow-wrap: anywhere;
             }
 
             .helper-text {
                 grid-column: 1 / -1;
                 width: 100%;
+                max-width: 100%;
+                overflow-wrap: anywhere;
             }
 
             .helper-text {
