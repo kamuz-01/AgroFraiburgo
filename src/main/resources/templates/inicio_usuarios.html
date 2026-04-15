@@ -1639,6 +1639,8 @@
                 z-index: 60;
                 padding: 0;
                 box-sizing: border-box;
+                max-width: 100vw;
+                overflow-x: hidden;
             }
 
             .mobile-bottom-dock {
@@ -1648,7 +1650,8 @@
             }
 
             .mobile-bottom-dock.moderator-dock {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                overflow-x: hidden;
             }
 
             .mobile-bottom-dock {

@@ -39,15 +39,18 @@
             color: var(--text-dark);
             padding: 0 0 40px;
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
 
         .page-wrap {
             padding: 28px 0 56px;
+            overflow-x: clip;
         }
 
         .page-shell {
             display: grid;
             gap: 20px;
+            min-width: 0;
         }
 
         .back-link {
@@ -70,34 +73,15 @@
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow);
             backdrop-filter: blur(14px);
+            min-width: 0;
         }
 
         .hero-card {
             overflow: hidden;
         }
 
-        .hero-cover {
-            height: 180px;
-            background:
-                linear-gradient(135deg, rgba(23, 97, 51, 0.95), rgba(31, 122, 66, 0.74)),
-                linear-gradient(135deg, #1f7a42, #2d8c4f);
-            position: relative;
-        }
-
-        .hero-cover::after {
-            content: '';
-            position: absolute;
-            inset: auto -60px -60px auto;
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.10);
-            filter: blur(6px);
-        }
-
         .hero-content {
-            margin-top: -56px;
-            padding: 0 24px 24px;
+            padding: 24px;
             display: grid;
             gap: 18px;
         }
@@ -339,6 +323,55 @@
             color: var(--text-dark);
         }
 
+        .status-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .status-option {
+            position: relative;
+            display: grid;
+            min-width: 0;
+        }
+
+        .status-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .status-option label {
+            display: grid;
+            place-items: center;
+            min-height: 50px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(23, 49, 31, 0.14);
+            background: #fff;
+            color: var(--text-dark);
+            font-weight: 800;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+        }
+
+        .status-option input:checked + label {
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 12px 22px rgba(31, 122, 66, 0.18);
+        }
+
+        .status-option label small {
+            display: block;
+            margin-top: 2px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            opacity: 0.84;
+        }
+
         .field-group select,
         .field-group textarea {
             width: 100%;
@@ -356,9 +389,13 @@
         }
 
         .helper-text {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
+            color: var(--text-dark);
+            font-size: 0.94rem;
+            line-height: 1.65;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(31, 122, 66, 0.08);
+            border: 1px solid rgba(31, 122, 66, 0.10);
         }
 
         .decision-actions {
@@ -406,17 +443,37 @@
             }
 
             .hero-content {
-                padding: 0 16px 18px;
+                padding: 18px 16px 18px;
             }
 
             .producer-head {
                 align-items: flex-start;
             }
 
+            .producer-head,
+            .meta-row,
+            .summary-grid,
+            .doc-grid,
+            .form-grid,
+            .decision-actions,
+            .doc-actions {
+                min-width: 0;
+            }
+
             .producer-avatar {
                 width: 96px;
                 height: 96px;
                 border-radius: 24px;
+            }
+
+            .producer-title h1 {
+                font-size: 1.55rem;
+            }
+
+            .helper-text {
+                font-size: 1rem;
+                line-height: 1.7;
+                padding: 14px 16px;
             }
 
             .panel-card {
@@ -430,6 +487,27 @@
 
             .decision-actions .action-button {
                 width: 100%;
+            }
+
+            .field-group select {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                font-size: 0.98rem;
+                line-height: 1.25;
+            }
+
+            .status-options {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-card-header {
+                align-items: flex-start;
+            }
+
+            .doc-status {
+                white-space: normal;
+                text-align: center;
             }
         }
     </style>
@@ -445,7 +523,6 @@
             </a>
 
             <section class="hero-card">
-                <div class="hero-cover"></div>
                 <div class="hero-content">
                     <div class="producer-head">
                         <img th:if="${produtor.imagemPerfil != null and !produtor.imagemPerfil.isBlank()}"
@@ -536,13 +613,25 @@
                 <form class="decision-form" id="decisaoForm" th:attr="data-produtor-id=${produtor.idUsuario}">
                     <div class="form-grid">
                         <div class="field-group">
-                            <label for="novoStatus">Status da conta</label>
-                            <select id="novoStatus" name="novoStatus">
-                                <option value="PENDENTE" th:selected="${produtor.statusConta.name() == 'PENDENTE'}">Pendente</option>
-                                <option value="ATIVO" th:selected="${produtor.statusConta.name() == 'ATIVO'}">Ativo</option>
-                                <option value="REJEITADO" th:selected="${produtor.statusConta.name() == 'REJEITADO'}">Rejeitado</option>
-                                <option value="BLOQUEADO" th:selected="${produtor.statusConta.name() == 'BLOQUEADO'}">Bloqueado</option>
-                            </select>
+                            <label>Status da conta</label>
+                            <div class="status-options" role="radiogroup" aria-label="Status da conta">
+                                <div class="status-option">
+                                    <input type="radio" id="statusPendente" name="novoStatus" value="PENDENTE" th:checked="${produtor.statusConta.name() == 'PENDENTE'}">
+                                    <label for="statusPendente">Pendente<small>Aguardando revisão</small></label>
+                                </div>
+                                <div class="status-option">
+                                    <input type="radio" id="statusAtivo" name="novoStatus" value="ATIVO" th:checked="${produtor.statusConta.name() == 'ATIVO'}">
+                                    <label for="statusAtivo">Ativo<small>Cadastro aprovado</small></label>
+                                </div>
+                                <div class="status-option">
+                                    <input type="radio" id="statusRejeitado" name="novoStatus" value="REJEITADO" th:checked="${produtor.statusConta.name() == 'REJEITADO'}">
+                                    <label for="statusRejeitado">Rejeitado<small>Necessita correção</small></label>
+                                </div>
+                                <div class="status-option">
+                                    <input type="radio" id="statusBloqueado" name="novoStatus" value="BLOQUEADO" th:checked="${produtor.statusConta.name() == 'BLOQUEADO'}">
+                                    <label for="statusBloqueado">Bloqueado<small>Uso suspenso</small></label>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="field-group">
@@ -577,15 +666,19 @@
     <script>
         (function () {
             const form = document.getElementById('decisaoForm');
-            const statusSelect = document.getElementById('novoStatus');
             const observacaoWrap = document.getElementById('observacaoWrap');
             const observacao = document.getElementById('observacao');
             const feedback = document.getElementById('feedback');
             const saveButton = document.getElementById('salvarDecisao');
 
-            if (!form || !statusSelect || !observacaoWrap || !observacao || !feedback || !saveButton) {
+            if (!form || !observacaoWrap || !observacao || !feedback || !saveButton) {
                 return;
             }
+
+            const getSelectedStatus = () => {
+                const checked = form.querySelector('input[name="novoStatus"]:checked');
+                return checked ? checked.value : 'PENDENTE';
+            };
 
             const setFeedback = (message, type) => {
                 feedback.className = 'feedback show ' + type;
@@ -593,7 +686,8 @@
             };
 
             const toggleObservation = () => {
-                const needsObservation = statusSelect.value === 'REJEITADO' || statusSelect.value === 'BLOQUEADO';
+                const selectedStatus = getSelectedStatus();
+                const needsObservation = selectedStatus === 'REJEITADO' || selectedStatus === 'BLOQUEADO';
                 observacaoWrap.style.display = needsObservation ? 'grid' : 'none';
                 if (!needsObservation) {
                     observacao.value = '';
@@ -601,12 +695,14 @@
             };
 
             toggleObservation();
-            statusSelect.addEventListener('change', toggleObservation);
+            form.querySelectorAll('input[name="novoStatus"]').forEach((input) => {
+                input.addEventListener('change', toggleObservation);
+            });
 
             form.addEventListener('submit', async function (event) {
                 event.preventDefault();
                 const produtorId = Number(form.dataset.produtorId);
-                const status = statusSelect.value;
+                const status = getSelectedStatus();
                 const textoObservacao = observacao.value.trim();
 
                 if ((status === 'REJEITADO' || status === 'BLOQUEADO') && !textoObservacao) {
