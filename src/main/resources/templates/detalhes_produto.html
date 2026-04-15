@@ -365,8 +365,8 @@
     <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
 
     <div class="container user-page-content">
-        <a th:href="@{/inicio_usuarios}" class="back-link">
-            <i class="fas fa-arrow-left"></i> Voltar aos produtos
+        <a class="back-link" th:href="${homeUrl != null ? homeUrl : '/inicio_usuarios'}">
+            <i class="fas fa-arrow-left"></i> Voltar
         </a>
 
         <section class="product-section">
