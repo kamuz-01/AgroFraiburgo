@@ -7,6 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 @Component
 public class InterceptorLoggingApi implements HandlerInterceptor {
@@ -24,7 +25,7 @@ public class InterceptorLoggingApi implements HandlerInterceptor {
 
 	@Override
 	public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler,
-			@NonNull Exception ex) {
+			@Nullable Exception ex) {
 
 		long startTime = (long) request.getAttribute(START_TIME);
 		long duration = System.currentTimeMillis() - startTime;
