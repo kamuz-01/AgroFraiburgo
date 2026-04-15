@@ -445,10 +445,18 @@
 
             .hero-content {
                 padding: 18px 16px 18px;
+                gap: 14px;
             }
 
             .producer-head {
-                align-items: flex-start;
+                display: grid;
+                grid-template-columns: 84px minmax(0, 1fr);
+                align-items: center;
+                gap: 12px;
+            }
+
+            .producer-title {
+                gap: 8px;
             }
 
             .producer-head,
@@ -462,19 +470,43 @@
             }
 
             .producer-avatar {
-                width: 96px;
-                height: 96px;
-                border-radius: 24px;
+                width: 84px;
+                height: 84px;
+                border-radius: 22px;
+            }
+
+            .meta-row {
+                display: grid;
+                gap: 8px;
+            }
+
+            .info-chip {
+                display: none;
+            }
+
+            .status-chip,
+            .info-chip {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+                padding: 9px 10px;
+                min-height: 40px;
             }
 
             .producer-title h1 {
-                font-size: 1.55rem;
+                font-size: 1.4rem;
+                line-height: 1.12;
             }
 
             .helper-text {
-                font-size: 1rem;
-                line-height: 1.7;
-                padding: 14px 16px;
+                grid-column: 1 / -1;
+                width: 100%;
+            }
+
+            .helper-text {
+                font-size: 0.95rem;
+                line-height: 1.55;
+                padding: 12px 14px;
             }
 
             .panel-card {
@@ -540,18 +572,14 @@
                                     <i class="fas fa-clock"></i>
                                     Análise pendente
                                 </span>
-                                <span class="info-chip">
-                                    <i class="fas fa-star"></i>
-                                    <span th:text="${avaliacoesRecebidas != null ? avaliacoesRecebidas : 0}">0</span>
-                                    avaliações recebidas
-                                </span>
                             </div>
                             <h1 th:text="${(produtor.nome != null ? produtor.nome : '') + ' ' + (produtor.sobrenome != null ? produtor.sobrenome : '')}">Produtor</h1>
-                            <p class="helper-text">
-                                Analise os documentos enviados, avalie os requisitos e defina o status final da conta.
-                            </p>
                         </div>
                     </div>
+
+                    <p class="helper-text">
+                        Analise os documentos enviados, avalie os requisitos e defina o status final da conta.
+                    </p>
 
                     <div class="summary-grid">
                         <div class="summary-item">
