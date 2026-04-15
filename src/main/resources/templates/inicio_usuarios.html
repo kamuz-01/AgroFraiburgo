@@ -796,18 +796,6 @@
         }
 
         .mobile-alert-item {
-            display: grid;
-        }
-
-        .mobile-alert-item summary {
-            list-style: none;
-        }
-
-        .mobile-alert-item summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .mobile-alert-item summary {
             position: relative;
             display: grid;
             gap: 4px;
@@ -818,9 +806,11 @@
             min-height: 64px;
             cursor: pointer;
             font-weight: 700;
+            color: var(--primary-dark) !important;
+            text-decoration: none !important;
         }
 
-        .mobile-alert-item summary .alert-count-mobile {
+        .mobile-alert-item .alert-count-mobile {
             position: absolute;
             top: -4px;
             right: 10px;
@@ -834,6 +824,12 @@
             border: 2px solid #fff;
         }
 
+        .mobile-alert-item:hover {
+            background: rgba(31, 122, 66, 0.12);
+            color: var(--primary-dark) !important;
+            text-decoration: none !important;
+        }
+
         .mobile-alert-panel {
             position: absolute;
             left: 0;
@@ -845,6 +841,7 @@
             background: #fff;
             border: 1px solid rgba(23, 49, 31, 0.08);
             box-shadow: var(--shadow-lg);
+            isolation: isolate;
             display: grid;
             gap: 8px;
             list-style: none;

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Análise do Produtor - ' + ${((produtor.nome != null ? produtor.nome : '') + ' ' + (produtor.sobrenome != null ? produtor.sobrenome : '')).trim()}">Análise do Produtor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
+
+    <style>
+        :root {
+            --bg-page: #f3f7f1;
+            --card: rgba(255, 255, 255, 0.92);
+            --text-dark: #17311f;
+            --text-muted: #5c6f60;
+            --border: rgba(23, 49, 31, 0.08);
+            --primary: #1f7a42;
+            --primary-dark: #175f33;
+            --danger: #b42318;
+            --warning: #b54708;
+            --radius-xl: 28px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --shadow: 0 18px 44px rgba(18, 40, 26, 0.10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.user-shell {
+            background:
+                radial-gradient(circle at top left, rgba(31, 122, 66, 0.12), transparent 26%),
+                radial-gradient(circle at top right, rgba(242, 169, 59, 0.10), transparent 24%),
+                linear-gradient(180deg, #f8fbf6 0%, var(--bg-page) 100%);
+            color: var(--text-dark);
+            padding: 0 0 40px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .page-wrap {
+            padding: 28px 0 56px;
+        }
+
+        .page-shell {
+            display: grid;
+            gap: 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .hero-card,
+        .panel-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+        }
+
+        .hero-card {
+            overflow: hidden;
+        }
+
+        .hero-cover {
+            height: 180px;
+            background:
+                linear-gradient(135deg, rgba(23, 97, 51, 0.95), rgba(31, 122, 66, 0.74)),
+                linear-gradient(135deg, #1f7a42, #2d8c4f);
+            position: relative;
+        }
+
+        .hero-cover::after {
+            content: '';
+            position: absolute;
+            inset: auto -60px -60px auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            filter: blur(6px);
+        }
+
+        .hero-content {
+            margin-top: -56px;
+            padding: 0 24px 24px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .producer-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 18px;
+        }
+
+        .producer-avatar {
+            width: 112px;
+            height: 112px;
+            border-radius: 28px;
+            object-fit: cover;
+            border: 5px solid #fff;
+            box-shadow: 0 14px 28px rgba(18, 40, 26, 0.18);
+            background: #fff;
+        }
+
+        .producer-avatar.placeholder {
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #1f7a42, #2d8c4f);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .producer-title {
+            display: grid;
+            gap: 8px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .producer-title h1 {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            line-height: 1.1;
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-chip,
+        .info-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .status-chip {
+            background: #ecfdf3;
+            color: var(--primary-dark);
+        }
+
+        .info-chip {
+            background: rgba(31, 122, 66, 0.08);
+            color: var(--primary-dark);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            font-weight: 800;
+        }
+
+        .summary-value {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .panel-card {
+            padding: 22px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .section-title h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .doc-card {
+            border: 1px solid rgba(23, 49, 31, 0.08);
+            border-radius: 18px;
+            padding: 16px;
+            background: #fff;
+            display: grid;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .doc-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .doc-type {
+            display: grid;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .doc-type strong {
+            font-size: 1rem;
+        }
+
+        .doc-type span {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            word-break: break-word;
+        }
+
+        .doc-status {
+            font-size: 0.82rem;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+            background: rgba(31, 122, 66, 0.08);
+            color: var(--primary-dark);
+            white-space: nowrap;
+        }
+
+        .doc-status.missing {
+            background: rgba(180, 35, 24, 0.08);
+            color: var(--danger);
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .doc-actions a,
+        .doc-actions span,
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 0 14px;
+            border-radius: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .action-button.primary {
+            background: linear-gradient(135deg, var(--primary), #2d8c4f);
+            color: #fff;
+        }
+
+        .action-button.primary:hover {
+            opacity: 0.92;
+        }
+
+        .action-button.secondary {
+            background: #fff;
+            border-color: rgba(23, 49, 31, 0.12);
+            color: var(--text-dark);
+        }
+
+        .action-button.disabled {
+            background: #f3f4f6;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .decision-form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .field-group label {
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .field-group select,
+        .field-group textarea {
+            width: 100%;
+            border: 1px solid rgba(23, 49, 31, 0.12);
+            border-radius: 16px;
+            padding: 14px 16px;
+            font: inherit;
+            color: var(--text-dark);
+            background: #fff;
+        }
+
+        .field-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .helper-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .decision-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .feedback {
+            display: none;
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-weight: 700;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.success {
+            background: #ecfdf3;
+            color: #175f33;
+            border: 1px solid #a7f3d0;
+        }
+
+        .feedback.error {
+            background: #fff1f2;
+            color: #b42318;
+            border: 1px solid #fecdd3;
+        }
+
+        @media (max-width: 992px) {
+            .summary-grid,
+            .doc-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-wrap {
+                padding-top: 18px;
+                padding-bottom: 110px;
+            }
+
+            .hero-content {
+                padding: 0 16px 18px;
+            }
+
+            .producer-head {
+                align-items: flex-start;
+            }
+
+            .producer-avatar {
+                width: 96px;
+                height: 96px;
+                border-radius: 24px;
+            }
+
+            .panel-card {
+                padding: 18px;
+                border-radius: 20px;
+            }
+
+            .decision-actions {
+                justify-content: stretch;
+            }
+
+            .decision-actions .action-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="user-shell moderacao-produtor-detail-page">
+    <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
+
+    <main class="page-wrap">
+        <div class="container page-shell">
+            <a class="back-link" th:href="@{/produtores_pendentes}">
+                <i class="fas fa-arrow-left"></i>
+                Voltar para pendentes
+            </a>
+
+            <section class="hero-card">
+                <div class="hero-cover"></div>
+                <div class="hero-content">
+                    <div class="producer-head">
+                        <img th:if="${produtor.imagemPerfil != null and !produtor.imagemPerfil.isBlank()}"
+                             th:src="@{|${produtor.imagemPerfil}|}"
+                             th:alt="${produtor.nome + ' ' + produtor.sobrenome}"
+                             class="producer-avatar">
+                        <div th:unless="${produtor.imagemPerfil != null and !produtor.imagemPerfil.isBlank()}"
+                             class="producer-avatar placeholder"
+                             th:text="${(produtor.nome != null and !produtor.nome.isBlank()) ? #strings.substring(produtor.nome, 0, 1) : 'P'}">P</div>
+
+                        <div class="producer-title">
+                            <div class="meta-row">
+                                <span class="status-chip">
+                                    <i class="fas fa-clock"></i>
+                                    Análise pendente
+                                </span>
+                                <span class="info-chip">
+                                    <i class="fas fa-star"></i>
+                                    <span th:text="${avaliacoesRecebidas != null ? avaliacoesRecebidas : 0}">0</span>
+                                    avaliações recebidas
+                                </span>
+                            </div>
+                            <h1 th:text="${(produtor.nome != null ? produtor.nome : '') + ' ' + (produtor.sobrenome != null ? produtor.sobrenome : '')}">Produtor</h1>
+                            <p class="helper-text">
+                                Analise os documentos enviados, avalie os requisitos e defina o status final da conta.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-label">CPF</span>
+                            <span class="summary-value" th:text="${produtor.cpf != null ? produtor.cpf : 'Não informado'}">Não informado</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Localização</span>
+                            <span class="summary-value" th:text="${(produtor.cidade != null ? produtor.cidade : 'Fraiburgo') + ', ' + (produtor.estado != null ? produtor.estado : 'SC')}">Fraiburgo, SC</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Contato</span>
+                            <span class="summary-value" th:text="${produtor.email != null ? produtor.email : 'Não informado'}">Não informado</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-card">
+                <div class="section-title">
+                    <div>
+                        <h2>Documentos enviados</h2>
+                        <p>Baixe os arquivos para validar o cadastro do produtor.</p>
+                    </div>
+                </div>
+
+                <div class="doc-grid">
+                    <article class="doc-card" th:each="documento : ${documentosAnalise}">
+                        <div class="doc-card-header">
+                            <div class="doc-type">
+                                <strong th:text="${documento.titulo}">Documento</strong>
+                                <span th:text="${documento.nomeArquivo() != null ? documento.nomeArquivo() : 'Não enviado'}">Não enviado</span>
+                            </div>
+                            <span class="doc-status" th:classappend="${!documento.disponivel()} ? ' missing' : ''" th:text="${documento.disponivel() ? 'Enviado' : 'Ausente'}">Ausente</span>
+                        </div>
+                        <div class="doc-actions">
+                            <a th:if="${documento.disponivel()}"
+                               class="action-button primary"
+                               th:href="${documento.downloadUrl()}"
+                               target="_blank"
+                               rel="noopener">
+                                <i class="fas fa-download"></i> Baixar documento
+                            </a>
+                            <span th:unless="${documento.disponivel()}" class="action-button disabled">Indisponível</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="panel-card">
+                <div class="section-title">
+                    <div>
+                        <h2>Decisão da moderação</h2>
+                        <p>Defina o status final da conta e deixe uma observação quando necessário.</p>
+                    </div>
+                </div>
+
+                <div id="feedback" class="feedback"></div>
+
+                <form class="decision-form" id="decisaoForm" th:attr="data-produtor-id=${produtor.idUsuario}">
+                    <div class="form-grid">
+                        <div class="field-group">
+                            <label for="novoStatus">Status da conta</label>
+                            <select id="novoStatus" name="novoStatus">
+                                <option value="PENDENTE" th:selected="${produtor.statusConta.name() == 'PENDENTE'}">Pendente</option>
+                                <option value="ATIVO" th:selected="${produtor.statusConta.name() == 'ATIVO'}">Ativo</option>
+                                <option value="REJEITADO" th:selected="${produtor.statusConta.name() == 'REJEITADO'}">Rejeitado</option>
+                                <option value="BLOQUEADO" th:selected="${produtor.statusConta.name() == 'BLOQUEADO'}">Bloqueado</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="resumoStatus">Status atual</label>
+                            <div class="summary-item" id="resumoStatus">
+                                <span class="summary-label">Situação atual</span>
+                                <span class="summary-value" th:text="${produtor.statusConta}">PENDENTE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-group" id="observacaoWrap">
+                        <label for="observacao">Observação</label>
+                        <textarea id="observacao" name="observacao" placeholder="Descreva o motivo da rejeição ou bloqueio, se aplicável."></textarea>
+                        <p class="helper-text">A observação é obrigatória para rejeição ou bloqueio.</p>
+                    </div>
+
+                    <div class="decision-actions">
+                        <a class="action-button secondary" th:href="@{/produtores_pendentes}">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </a>
+                        <button type="submit" class="action-button primary" id="salvarDecisao">
+                            <i class="fas fa-save"></i> Salvar decisão
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        (function () {
+            const form = document.getElementById('decisaoForm');
+            const statusSelect = document.getElementById('novoStatus');
+            const observacaoWrap = document.getElementById('observacaoWrap');
+            const observacao = document.getElementById('observacao');
+            const feedback = document.getElementById('feedback');
+            const saveButton = document.getElementById('salvarDecisao');
+
+            if (!form || !statusSelect || !observacaoWrap || !observacao || !feedback || !saveButton) {
+                return;
+            }
+
+            const setFeedback = (message, type) => {
+                feedback.className = 'feedback show ' + type;
+                feedback.textContent = message;
+            };
+
+            const toggleObservation = () => {
+                const needsObservation = statusSelect.value === 'REJEITADO' || statusSelect.value === 'BLOQUEADO';
+                observacaoWrap.style.display = needsObservation ? 'grid' : 'none';
+                if (!needsObservation) {
+                    observacao.value = '';
+                }
+            };
+
+            toggleObservation();
+            statusSelect.addEventListener('change', toggleObservation);
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                const produtorId = Number(form.dataset.produtorId);
+                const status = statusSelect.value;
+                const textoObservacao = observacao.value.trim();
+
+                if ((status === 'REJEITADO' || status === 'BLOQUEADO') && !textoObservacao) {
+                    setFeedback('Informe uma observação antes de salvar essa decisão.', 'error');
+                    observacao.focus();
+                    return;
+                }
+
+                feedback.className = 'feedback';
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+
+                try {
+                    const response = await axios.post('/api/moderador/produtores/alterar-status', {
+                        idProdutor: produtorId,
+                        novoStatus: status,
+                        observacao: textoObservacao
+                    }, {
+                        withCredentials: true
+                    });
+
+                    setFeedback(response.data?.mensagem || 'Status atualizado com sucesso.', 'success');
+                    window.setTimeout(() => {
+                        window.location.href = '/produtores_pendentes';
+                    }, 900);
+                } catch (error) {
+                    const mensagem = error.response?.data?.erro || error.response?.data?.message || 'Não foi possível atualizar o status.';
+                    setFeedback(mensagem, 'error');
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = '<i class="fas fa-save"></i> Salvar decisão';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

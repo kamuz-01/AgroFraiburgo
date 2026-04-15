@@ -18,6 +18,105 @@
     <link rel="stylesheet" href="css/estilos-home_moderador.css">
     <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
 <title>Lista de produtores pendentes</title>
+<style>
+    .mobile-pendentes-wrap {
+        display: none;
+        padding: 0 14px 28px;
+    }
+
+    .mobile-pendentes-head {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 14px;
+    }
+
+    .mobile-pendentes-head h2 {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #17311f;
+        margin: 0;
+    }
+
+    .mobile-pendentes-head p {
+        margin: 0;
+        color: #5c6f60;
+    }
+
+    .mobile-pendentes-cards {
+        display: grid;
+        gap: 14px;
+    }
+
+    .mobile-pendente-card {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(23, 49, 31, 0.08);
+        border-radius: 22px;
+        box-shadow: 0 14px 30px rgba(18, 40, 26, 0.08);
+        padding: 16px;
+        display: grid;
+        gap: 12px;
+        text-decoration: none;
+        color: #17311f !important;
+    }
+
+    .mobile-pendente-card:hover {
+        background: #fff;
+        color: #17311f !important;
+        text-decoration: none;
+    }
+
+    .mobile-pendente-card__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .mobile-pendente-card__name {
+        font-size: 1.02rem;
+        font-weight: 800;
+        color: #17311f;
+    }
+
+    .mobile-pendente-card__meta {
+        color: #5c6f60;
+        font-size: 0.92rem;
+        line-height: 1.5;
+    }
+
+    .mobile-pendente-card__status {
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #fff7ed;
+        color: #9a3412;
+        white-space: nowrap;
+    }
+
+    .mobile-pendente-card__action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 46px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #1f7a42, #2d8c4f);
+        color: #fff;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .mobile-pendente-card__action:hover {
+        color: #fff;
+    }
+
+    @media (max-width: 991.98px) {
+        .mobile-pendentes-wrap {
+            display: block;
+        }
+    }
+</style>
 </head>
 <body class="user-shell">
    <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
@@ -298,7 +397,7 @@
         </nav>
     </header>
     
-	<div class="container-fluid">
+    <div class="container-fluid d-none d-lg-block">
         <div class="row">
             <div class="col-12">
                 <div class="card shadow">
@@ -333,6 +432,15 @@
             </div>
         </div>
     </div>
+
+    <section class="container-fluid mobile-pendentes-wrap d-lg-none">
+        <div class="mobile-pendentes-head">
+            <h2>Produtores pendentes</h2>
+            <p>Toque em um card para abrir a tela de análise dos documentos enviados.</p>
+        </div>
+
+        <div id="mobilePendentesCards" class="mobile-pendentes-cards"></div>
+    </section>
     
     <!-- Modal para Confirmação de Status -->
     <div class="modal fade" id="statusModal" tabindex="-1">
@@ -369,6 +477,7 @@
     $(document).ready(function() {
         let produtorSelecionado = null;
         let statusSelecionado = null;
+        const mobilePendentesCards = document.getElementById('mobilePendentesCards');
 
         // Inicializar DataTable
 const table = $('#produtoresTable').DataTable({
@@ -583,6 +692,62 @@ const table = $('#produtoresTable').DataTable({
 		        mostrarNotificacao("Erro ao baixar documento: " + err.message, "danger");
 		    }
 		});
+
+        async function carregarPendentesMobile() {
+            if (!mobilePendentesCards) {
+                return;
+            }
+
+            try {
+                const response = await axios.get('/api/moderador/produtores/pendentes', { withCredentials: true });
+                const produtores = response.data || [];
+
+                if (!produtores.length) {
+                    mobilePendentesCards.innerHTML = `
+                        <div class="mobile-pendente-card">
+                            <div class="mobile-pendente-card__name">Nenhum produtor pendente</div>
+                            <div class="mobile-pendente-card__meta">Assim que houver novos cadastros, eles aparecerão aqui.</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                mobilePendentesCards.innerHTML = produtores.map((produtor) => {
+                    const id = produtor.idUsuario ?? produtor.id ?? '';
+                    const nomeCompleto = `${produtor.nome ?? ''} ${produtor.sobrenome ?? ''}`.trim() || `Produtor #${id}`;
+                    const local = `${produtor.cidade ?? 'Fraiburgo'}, ${produtor.estado ?? 'SC'}`;
+                    const cpf = produtor.cpf ?? 'CPF não informado';
+                    const status = produtor.statusConta ?? 'PENDENTE';
+
+                    return `
+                        <a class="mobile-pendente-card" href="/produtores_pendentes/${id}">
+                            <div class="mobile-pendente-card__header">
+                                <div>
+                                    <div class="mobile-pendente-card__name">${nomeCompleto}</div>
+                                    <div class="mobile-pendente-card__meta">${local}</div>
+                                </div>
+                                <span class="mobile-pendente-card__status">${status}</span>
+                            </div>
+                            <div class="mobile-pendente-card__meta">${cpf}</div>
+                            <span class="mobile-pendente-card__action">
+                                <i class="fas fa-folder-open"></i>
+                                Abrir análise
+                            </span>
+                        </a>
+                    `;
+                }).join('');
+            } catch (error) {
+                mobilePendentesCards.innerHTML = `
+                    <div class="mobile-pendente-card">
+                        <div class="mobile-pendente-card__name">Erro ao carregar pendências</div>
+                        <div class="mobile-pendente-card__meta">Atualize a página para tentar novamente.</div>
+                    </div>
+                `;
+                console.error('Erro ao carregar pendências no mobile', error);
+            }
+        }
+
+        carregarPendentesMobile();
 
         // Event handler para alteração de status
         $('#produtoresTable').on('click', '.status-option', function(e) {
