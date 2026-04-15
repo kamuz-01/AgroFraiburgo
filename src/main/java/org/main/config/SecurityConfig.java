@@ -27,6 +27,9 @@ public class SecurityConfig {
     @Value("${jwt.access-token-ttl-seconds}")
     private long jwtTtl;
 
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -137,10 +140,10 @@ public class SecurityConfig {
 
             	        Cookie cookie = new Cookie("AF_AUTH", token);
             	        cookie.setHttpOnly(true);
-            	        cookie.setSecure(true); // use true em produção com HTTPS
+            	        cookie.setSecure(cookieSecure);
             	        cookie.setPath("/");
             	        cookie.setMaxAge((int) jwtTtl);
-            	        cookie.setAttribute("SameSite", "None");
+            	        cookie.setAttribute("SameSite", cookieSecure ? "None" : "Lax");
             	        response.addCookie(cookie);
 
             	        // Redireciona conforme perfil
@@ -182,7 +185,7 @@ public class SecurityConfig {
 
             	            Cookie cookie = new Cookie("AF_AUTH", token);
             	            cookie.setHttpOnly(true);
-            	            cookie.setSecure(true);
+            	            cookie.setSecure(cookieSecure);
             	            cookie.setPath("/");
             	            cookie.setMaxAge((int) jwtTtl);
             	            cookie.setAttribute("SameSite", "Lax");

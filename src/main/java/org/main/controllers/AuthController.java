@@ -45,6 +45,9 @@ public class AuthController {
     @Value("${jwt.access-token-ttl-seconds}")
     private long jwtTtl;
 
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
+
     // --------------------------
     // Me
     // --------------------------
@@ -96,7 +99,7 @@ public class AuthController {
         // Seta cookie
         ResponseCookie cookie = ResponseCookie.from("AF_AUTH", jwt)
                 .httpOnly(true)
-                .secure(true) // alterar para true em produção com HTTPS
+            .secure(cookieSecure)
                 .sameSite("Lax")
                 .path("/")
                 .maxAge(jwtTtl)
@@ -118,10 +121,10 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("AF_AUTH", "");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(cookieSecure);
         cookie.setPath("/");
         cookie.setMaxAge(0);
-        cookie.setAttribute("SameSite", "None");
+        cookie.setAttribute("SameSite", cookieSecure ? "None" : "Lax");
         response.addCookie(cookie);
         return ResponseEntity.noContent().build();
     }

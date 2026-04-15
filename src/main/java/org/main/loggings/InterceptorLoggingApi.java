@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.NonNull;
 
 @Component
 public class InterceptorLoggingApi implements HandlerInterceptor {
@@ -15,15 +16,15 @@ public class InterceptorLoggingApi implements HandlerInterceptor {
 	private static final String START_TIME = "startTime";
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+	public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
 
 		request.setAttribute(START_TIME, System.currentTimeMillis());
 		return true;
 	}
 
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
-			Exception ex) {
+	public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler,
+			@NonNull Exception ex) {
 
 		long startTime = (long) request.getAttribute(START_TIME);
 		long duration = System.currentTimeMillis() - startTime;

@@ -22,12 +22,15 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final long jwtTtl;
     private final UsuarioService usuarioService;
+    private final boolean cookieSecure;
 
     public JwtRefreshFilter(JwtService jwtService, UsuarioService usuarioService,
-                            @Value("${jwt.access-token-ttl-seconds}") long jwtTtl) {
+                            @Value("${jwt.access-token-ttl-seconds}") long jwtTtl,
+                            @Value("${app.cookie.secure:false}") boolean cookieSecure) {
         this.jwtService = jwtService;
         this.usuarioService = usuarioService;
         this.jwtTtl = jwtTtl;
+        this.cookieSecure = cookieSecure;
     }
 
     @Override
@@ -49,10 +52,10 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
 
                 Cookie cookie = new Cookie("AF_AUTH", token);
                 cookie.setHttpOnly(true);
-                cookie.setSecure(true); // usar true em produção com HTTPS
+                cookie.setSecure(cookieSecure);
                 cookie.setPath("/");
                 cookie.setMaxAge((int) jwtTtl);
-                cookie.setAttribute("SameSite", "None");
+                cookie.setAttribute("SameSite", cookieSecure ? "None" : "Lax");
                 response.addCookie(cookie);
             }
         }
