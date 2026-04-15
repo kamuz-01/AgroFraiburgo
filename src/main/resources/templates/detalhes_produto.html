@@ -26,15 +26,23 @@
             font-family: 'Inter', sans-serif;
         }
 
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
         body {
             background-color: var(--bg-body);
             color: var(--text-dark);
-            padding: 20px;
+            padding: 0 0 40px;
         }
 
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            width: min(100%, 1000px);
+            padding-left: 16px;
+            padding-right: 16px;
         }
 
         /* --- Link de Voltar --- */
@@ -91,6 +99,7 @@
         .product-info {
             display: flex;
             flex-direction: column;
+            min-width: 0;
         }
 
         .top-row {
@@ -150,6 +159,7 @@
             border-radius: 8px;
             padding: 20px;
             background-color: #fff;
+            min-width: 0;
         }
 
         .details-box h4 {
@@ -246,6 +256,7 @@
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
+            min-width: 0;
         }
 
         .btn {
@@ -261,7 +272,7 @@
             font-size: 1rem;
             transition: all 0.2s;
             flex: 1; /* Botões ocupam largura igual */
-            min-width: 150px;
+            min-width: 0;
         }
 
         .btn-primary {
@@ -307,6 +318,7 @@
             gap: 15px;
             width: 100%;
             max-width: 500px;
+            min-width: 0;
         }
 
         /* Responsividade */
@@ -319,9 +331,11 @@
             }
             .btn-group, .cta-buttons {
                 flex-direction: column;
+                width: 100%;
             }
             .btn {
                 width: 100%;
+                flex: 0 1 auto;
             }
         }
     </style>
