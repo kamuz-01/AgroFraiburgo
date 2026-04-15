@@ -125,7 +125,6 @@ a:hover {
     background-color: white;
     z-index: 1000;
     width: 95%;
-    padding-bottom: 1px;
     padding-top: 5px;
     min-width: 230px;
 }
