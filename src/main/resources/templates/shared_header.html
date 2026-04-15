@@ -252,6 +252,55 @@
                     }
                 });
             }
+
+            const alertCounts = document.querySelectorAll('.alert-count');
+            const alertList = document.getElementById('alert-list');
+
+            if (alertCounts.length > 0 && alertList) {
+                const renderAlertas = async () => {
+                    try {
+                        const response = await fetch('/api/moderador/novos-produtores', {
+                            credentials: 'include'
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Falha ao carregar notificações');
+                        }
+
+                        const data = await response.json();
+                        const total = Number(data.total || 0);
+
+                        alertCounts.forEach((elemento) => {
+                            elemento.textContent = String(total);
+                        });
+
+                        alertList.innerHTML = '';
+
+                        if (total > 0 && Array.isArray(data.produtores)) {
+                            data.produtores.forEach((produtor) => {
+                                const item = document.createElement('li');
+                                const link = document.createElement('a');
+                                link.className = 'dropdown-item';
+                                link.href = '/produtores_pendentes';
+                                link.textContent = produtor.nome || 'Produtor pendente';
+                                item.appendChild(link);
+                                alertList.appendChild(item);
+                            });
+                        } else {
+                            const item = document.createElement('li');
+                            const span = document.createElement('span');
+                            span.className = 'dropdown-item';
+                            span.textContent = 'Sem novos cadastros';
+                            item.appendChild(span);
+                            alertList.appendChild(item);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao carregar notificações do moderador', error);
+                    }
+                };
+
+                renderAlertas();
+            }
         })();
     </script>
 </th:block>
