@@ -481,17 +481,6 @@ h2 {
 }
 
 @media (max-width: 768px) {
-    .header .nav-wrapper {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: stretch;
-    }
-
-    .header .logo,
-    .header .nav,
-    .header .auth-buttons {
-        width: 100%;
-    }
 
     .header .nav {
         display: flex;
