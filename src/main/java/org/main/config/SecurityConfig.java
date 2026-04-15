@@ -97,6 +97,7 @@ public class SecurityConfig {
                 // Recursos restringidos por perfil
                 .requestMatchers("/home_consumidor", "/home_consumidor.html").hasRole("CONSUMIDOR")
                 .requestMatchers("/home_produtor", "/home_produtor.html").hasRole("PRODUTOR")
+                .requestMatchers("/catalogo_produtor", "/catalogo_produtor.html").hasRole("PRODUTOR")
 				.requestMatchers("/cadastro_produtos", "/cadastro_produtos.html").hasRole("PRODUTOR")
 				.requestMatchers("/lista_produtos").hasRole("PRODUTOR")
                 .requestMatchers("/home_moderador", "/home_moderador.html").hasRole("MODERADOR")

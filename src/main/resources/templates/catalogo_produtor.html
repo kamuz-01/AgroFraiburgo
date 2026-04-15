@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Catálogo do Produtor - AgroFraiburgo</title>
+	<th:block th:replace="~{inicio_usuarios :: inicioStyles}"></th:block>
+</head>
+<body class="user-shell">
+	<th:block th:replace="~{shared_header :: homeHeader}"></th:block>
+
+	<main class="user-page-content">
+		<section class="section-shell container animate-in delay-2">
+			<div class="section-heading">
+				<div>
+					<h2 class="section-title">Catálogo de produtos em destaque</h2>
+					<p class="section-subtitle">Uma vitrine separada para navegar pelos produtos mais recentes dos produtores familiares.</p>
+				</div>
+			</div>
+
+			<div class="product-grid" th:if="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
+				<article class="product-card" th:each="produto, iter : ${produtosDestaque}">
+					<div class="product-visual"
+					     th:classappend="(${iter.index % 4 == 0} ? ' visual-fruit' : (${iter.index % 4 == 1} ? ' visual-dairy' : (${iter.index % 4 == 2} ? ' visual-honey' : ' visual-vegetable'))) + (${produto.imagemProduto != null and !produto.imagemProduto.isBlank()} ? ' has-photo' : '')">
+						<img class="product-photo"
+						     th:if="${produto.imagemProduto != null and !produto.imagemProduto.isBlank()}"
+						     th:src="@{|${produto.imagemProduto}|}"
+						     th:alt="${produto.nome}" />
+
+						<span class="availability">
+							<i class="fas fa-circle-check"></i>
+							<span th:text="${produto.disponivel() ? 'Disponível hoje' : 'Indisponível'}">Disponível hoje</span>
+						</span>
+						<span class="product-badge">
+							<i class="fas fa-location-dot"></i>
+							<span th:text="${produto.produtor != null ? (produto.produtor.cidade ?: 'Fraiburgo') : 'Fraiburgo'}">Fraiburgo</span>
+						</span>
+					</div>
+					<div class="product-body">
+						<h3 class="product-name" th:text="${produto.nome}">Produto</h3>
+						<p class="product-desc" th:text="${produto.descricaoCurta()}">Descrição</p>
+						<div class="product-meta-line">
+							<div class="product-meta">
+								<span>
+									<i class="fas fa-star"></i>
+									<span th:text="${#numbers.formatDecimal(produto.mediaAvaliacaoNormalizada(), 1, 1)} + ' de avaliação'">0,0 de avaliação</span>
+								</span>
+								<span>Agricultura familiar</span>
+							</div>
+							<div class="price" th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 2)} + '/' + ${produto.unidadeMedida}">R$ 0,00</div>
+						</div>
+						<div class="hero-actions" style="margin-top: 16px;">
+							<a class="mini-btn primary" th:href="'/produto/' + ${produto.id}"><i class="far fa-eye"></i> Ver detalhes</a>
+							<a href="#" class="mini-btn js-favoritar" th:attr="data-produto-id=${produto.id}">
+								<i class="far fa-bookmark"></i> <span>Salvar</span>
+							</a>
+						</div>
+					</div>
+				</article>
+			</div>
+
+			<div class="empty-state-products" th:unless="${produtosDestaque != null and !#lists.isEmpty(produtosDestaque)}">
+				<h3>Não há produtos em destaque no momento</h3>
+				<p>Assim que os produtores cadastrarem novos itens, eles aparecerão aqui.</p>
+			</div>
+		</section>
+	</main>
+</body>
+</html>

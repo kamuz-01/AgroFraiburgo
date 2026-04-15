@@ -216,6 +216,26 @@ public class TelasController {
 	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
 	    }
 	}
+
+	@GetMapping("/catalogo_produtor")
+	public String catalogoProdutor(Model model, Authentication auth) {
+	    Integer idUsuario = currentUserId(auth);
+	    if (idUsuario == null) {
+	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
+	    }
+
+	    Usuario usuario = usuarioRepository.findById(idUsuario)
+	            .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+
+	    model.addAttribute("nome", usuario.getNome());
+	    model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
+	    model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
+	    model.addAttribute("imagemCapa", usuario.getImagemCapa());
+	    model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
+
+	    return "catalogo_produtor";
+	}
 	
 	@GetMapping("/home_consumidor")
 	public String homeConsumidor(Model model, Authentication auth) {
