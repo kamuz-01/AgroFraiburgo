@@ -16,10 +16,11 @@
   <link rel="stylesheet" href="css/estilos-lista_produtos.css">
   <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
 </head>
-<body class="user-shell">
+
+<body class="user-shell lista-produtos-page">
 	<th:block th:replace="~{shared_header :: homeHeader}"></th:block>
 
-<header id="header-menu" role="banner">
+<header id="header-menu" role="banner" aria-hidden="true">
         <div class="logo">
               <a href="#" aria-label="Ir para a página inicial" class="log">
                 <svg class="logo-img" role="img"
@@ -175,12 +176,13 @@
         </nav>
     </header>
     
-<main class="container mt-4">
+<main class="container mt-4 lista-produtos-content">
   <div class="card">
     <div class="card-header bg-success text-white">
       <h4><i class="fas fa-list me-2"></i> Meus Produtos</h4>
     </div>
     <div class="card-body">
+      <div id="produtosCards" class="produtos-cards-mobile d-none"></div>
       <table id="tabelaProdutos" class="table table-striped table-bordered" style="width:100%">
         <thead>
           <tr>
@@ -268,6 +270,110 @@
 
 <script>
 $(document).ready(function () {
+  const produtosCards = $('#produtosCards');
+  const tabelaElement = $('#tabelaProdutos');
+
+  const normalizarTexto = (valor) => {
+    if (valor === null || valor === undefined) return '';
+    return String(valor);
+  };
+
+  const montarCardProduto = (produto) => {
+    const imagem = produto.imagemProduto || 'imagens-usuarios/defaults/perfil.png';
+    const preco = Number.parseFloat(produto.preco || 0).toFixed(2);
+    const estoque = produto.quantidadeEstoque ?? '-';
+    const status = normalizarTexto(produto.statusProduto).replaceAll('_', ' ');
+
+    return `
+      <article class="produto-card-mobile">
+        <div class="produto-card-mobile__media">
+          <img src="${imagem}" alt="${normalizarTexto(produto.nomeProduto)}" loading="lazy">
+        </div>
+        <div class="produto-card-mobile__body">
+          <div class="produto-card-mobile__top">
+            <div>
+              <span class="produto-card-mobile__id">#${produto.idProduto}</span>
+              <h5 class="produto-card-mobile__title">${normalizarTexto(produto.nomeProduto)}</h5>
+            </div>
+            <span class="produto-card-mobile__status">${status}</span>
+          </div>
+          <p class="produto-card-mobile__desc">${normalizarTexto(produto.descricao)}</p>
+          <div class="produto-card-mobile__meta">
+            <span><strong>Preço:</strong> R$ ${preco}</span>
+            <span><strong>Estoque:</strong> ${estoque}</span>
+          </div>
+          <div class="produto-card-mobile__actions">
+            <button class="btn btn-sm btn-primary editar" data-id="${produto.idProduto}" data-bs-toggle="tooltip" title="Editar produto">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn btn-sm btn-danger excluir" data-id="${produto.idProduto}" data-bs-toggle="tooltip" title="Excluir produto">
+              <i class="fas fa-trash-alt"></i> Excluir
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  };
+
+  const renderizarCards = (produtos) => {
+    if (!produtosCards.length) return;
+    if (!Array.isArray(produtos) || produtos.length === 0) {
+      produtosCards.html(`
+        <div class="produto-card-empty">
+          <strong>Nenhum produto encontrado</strong>
+          <span>Cadastre seu primeiro produto para vê-lo aqui.</span>
+        </div>
+      `);
+      return;
+    }
+
+    produtosCards.html(produtos.map(montarCardProduto).join(''));
+  };
+
+  const abrirEdicaoProduto = (produto) => {
+    if (!produto) return;
+
+    $('#editarIdProduto').val(produto.idProduto);
+    $('#editarNome').val(produto.nomeProduto);
+    $('#editarDescricao').val(produto.descricao);
+    $('#editarPreco').val(produto.preco);
+    $('#editarEstoque').val(produto.quantidadeEstoque);
+    $('#editarStatus').val(produto.statusProduto);
+
+    if (produto.imagemProduto) {
+      $('#previewImagem').attr('src', produto.imagemProduto).show();
+      $('#clearImage').show();
+    } else {
+      $('#previewImagem').attr('src', '').hide();
+      $('#clearImage').hide();
+    }
+
+    $('#editarImagem').val('');
+    modalEditar.show();
+  };
+
+  const confirmarExclusaoProduto = async (id) => {
+    const confirm = await Swal.fire({
+      title: "Deseja realmente excluir?",
+      text: "Esta ação não pode ser desfeita!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#dc3545"
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      await axios.delete(`/api/produtos/${id}`, { withCredentials: true });
+      Swal.fire("Excluído!", "O produto foi removido com sucesso.", "success");
+      tabela.ajax.reload();
+    } catch (error) {
+      Swal.fire("Erro", "Não foi possível excluir o produto.", "error");
+    }
+  };
+
   const tabela = $('#tabelaProdutos').DataTable({
     ajax: {
       url: '/api/produtos/me',
@@ -304,6 +410,26 @@ $(document).ready(function () {
      }
   });
 
+  tabela.on('xhr.dt', function (e, settings, json) {
+    renderizarCards(json || []);
+  });
+
+  tabela.on('draw.dt', function () {
+    if (window.matchMedia('(max-width: 767.98px)').matches) {
+      $('#tabelaProdutos_wrapper').addClass('d-none');
+      produtosCards.removeClass('d-none');
+    }
+  });
+
+  const atualizarVisibilidadeMobile = () => {
+    const isMobile = window.matchMedia('(max-width: 767.98px)').matches;
+    $('#tabelaProdutos_wrapper').toggleClass('d-none', isMobile);
+    produtosCards.toggleClass('d-none', !isMobile);
+  };
+
+  atualizarVisibilidadeMobile();
+  window.addEventListener('resize', atualizarVisibilidadeMobile);
+
   // Inicializa tooltips do Bootstrap (inclusive em conteúdo dinâmico)
   const inicializarTooltips = () => {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -322,65 +448,23 @@ $(document).ready(function () {
   inicializarTooltips();
 
   // Reativa tooltips após recarregar a tabela
-  $('#tabelaProdutos').on('draw.dt', function () {
+  tabelaElement.on('draw.dt', function () {
     inicializarTooltips();
   });
 
   // === EXCLUIR PRODUTO ===
-  $('#tabelaProdutos').on('click', '.excluir', async function () {
+  $(document).on('click', '.excluir', async function () {
     const id = $(this).data('id');
-    const confirm = await Swal.fire({
-      title: "Deseja realmente excluir?",
-      text: "Esta ação não pode ser desfeita!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sim, excluir",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#dc3545"
-    });
-
-    if (confirm.isConfirmed) {
-      try {
-    	await axios.delete(`/api/produtos/${id}`, {
-    		withCredentials: true
-    	});
-        Swal.fire("Excluído!", "O produto foi removido com sucesso.", "success");
-        tabela.ajax.reload();
-      } catch (error) {
-        Swal.fire("Erro", "Não foi possível excluir o produto.", "error");
-      }
-    }
+    await confirmarExclusaoProduto(id);
   });
 
   // === EDITAR PRODUTO ===
   let modalEditar = new bootstrap.Modal(document.getElementById('modalEditarProduto'));
 
-  $('#tabelaProdutos').on('click', '.editar', function () {
+	$(document).on('click', '.editar', function () {
 	  const id = $(this).data('id');
-	  const produto = tabela.data().toArray().find(p => p.idProduto === id);
-	  if (!produto) return;
-
-	  // Preenche os campos do modal
-	  $('#editarIdProduto').val(produto.idProduto);
-	  $('#editarNome').val(produto.nomeProduto);
-	  $('#editarDescricao').val(produto.descricao);
-	  $('#editarPreco').val(produto.preco);
-	  $('#editarEstoque').val(produto.quantidadeEstoque);
-	  $('#editarStatus').val(produto.statusProduto);
-
-	  // Mostra imagem existente no preview (não no input file!)
-	  if (produto.imagemProduto) {
-	    $('#previewImagem').attr('src', produto.imagemProduto).show();
-	    $('#clearImage').show();
-	  } else {
-	    $('#previewImagem').attr('src', '').hide();
-	    $('#clearImage').hide();
-	  }
-
-	  // Limpa o campo de upload (caso o usuário queira trocar)
-	  $('#editarImagem').val('');
-
-	  modalEditar.show();
+    const produto = tabela.data().toArray().find(p => Number(p.idProduto) === Number(id));
+	  abrirEdicaoProduto(produto);
 	});
 
   // === LIMPAR IMAGEM ===
