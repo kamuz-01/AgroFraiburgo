@@ -36,10 +36,15 @@ html, body {
     box-shadow: var(--shadow);
     width: 100%;
     max-width: 800px;
-    padding: 40px 32px;
+    padding: 40px 45px;
     position: relative;
-	margin: 20px auto;
-	margin-top: 100px;
+	margin-bottom: 24px !important;
+	margin-top: 21px !important;
+}
+
+.cadastro-moderadores-page #signupForm {
+    margin-top: 24px;
+    padding-left: 45px;
 }
 
 .header-login {
@@ -295,8 +300,14 @@ h2{
     .cadastro-moderadores-page {
         max-width: 360px;
         padding: 24px 20px;
-        margin: 15px auto;
+        margin: 16px auto 32px;
+        margin-top: 108px;
     } 
+
+    .cadastro-moderadores-page #signupForm {
+        margin-top: 20px;
+        padding-left: 8px;
+    }
 
     .header h1 {
         font-size: 24px;
