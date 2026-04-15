@@ -185,15 +185,21 @@
         (function () {
             const storageKey = 'agrofraiburgo.desktopRailCollapsed';
             const body = document.body;
+            const header = document.querySelector('.main-header');
             const rail = document.getElementById('desktopRail');
             const toggle = document.querySelector('[data-rail-toggle]');
             const accountDropdown = document.querySelector('.account-dropdown');
             const accountToggle = document.getElementById('userMenuDropdown');
             const accountPanel = accountDropdown ? accountDropdown.querySelector('.account-panel') : null;
 
-            if (!body || !rail || !toggle) {
+            if (!body || !header || !rail || !toggle) {
                 return;
             }
+
+            const syncRailOffset = () => {
+                const headerBottom = Math.ceil(header.getBoundingClientRect().bottom);
+                body.style.setProperty('--desktop-rail-top', `${headerBottom}px`);
+            };
 
             const applyState = (collapsed) => {
                 body.classList.toggle('desktop-rail-collapsed', collapsed);
@@ -203,6 +209,8 @@
 
             const savedState = window.localStorage ? window.localStorage.getItem(storageKey) : null;
             applyState(savedState === '1');
+            syncRailOffset();
+            window.addEventListener('resize', syncRailOffset);
 
             toggle.addEventListener('click', function () {
                 const nextCollapsed = !body.classList.contains('desktop-rail-collapsed');

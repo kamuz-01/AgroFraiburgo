@@ -37,6 +37,27 @@
             padding: 0 0 40px;
         }
 
+        body.detalhes-produto-page {
+            padding-top: 85px;
+        }
+
+        body.detalhes-produto-page .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            margin-bottom: 0;
+            z-index: 80;
+        }
+
+        body.detalhes-produto-page .desktop-rail {
+            top: 85px;
+        }
+
+        body.detalhes-produto-page .user-page-content {
+            padding-top: 24px;
+        }
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
@@ -340,7 +361,7 @@
         }
     </style>
 </head>
-<body class="user-shell">
+<body class="user-shell detalhes-produto-page">
     <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
 
     <div class="container user-page-content">
