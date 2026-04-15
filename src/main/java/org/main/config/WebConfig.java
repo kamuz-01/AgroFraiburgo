@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
 	}
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(@NonNull InterceptorRegistry registry) {
         registry.addInterceptor(interceptorLoggingApi);
     }
 
