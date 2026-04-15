@@ -504,6 +504,11 @@
 
         .desktop-rail {
             display: none;
+            position: fixed;
+            top: 85px;
+            left: 0;
+            width: 304px;
+            z-index: 62;
             transition: width 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
         }
 
@@ -1519,11 +1524,6 @@
 
             .desktop-rail {
                 display: block;
-                position: fixed;
-                top: 93px;
-                left: 0;
-                width: 304px;
-                z-index: 62;
             }
 
             body.user-shell.desktop-rail-collapsed .desktop-rail {
