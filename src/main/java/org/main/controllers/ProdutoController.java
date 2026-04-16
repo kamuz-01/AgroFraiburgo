@@ -1,5 +1,6 @@
 package org.main.controllers;
 
+import org.main.DTOs.ProdutoDTO;
 import org.main.models.Produto;
 import org.main.models.Produtor;
 import org.main.repository.ProdutorRepository;
@@ -64,7 +65,7 @@ public class ProdutoController {
                     imagem
             );
 
-            return ResponseEntity.ok(produto);
+            return ResponseEntity.ok(ProdutoDTO.fromEntity(produto));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -76,10 +77,10 @@ public class ProdutoController {
     
     // Lista só os produtos do produtor logado
     @GetMapping("/me")
-    public ResponseEntity<List<Produto>> listarMeusProdutos(Authentication auth) {
+    public ResponseEntity<List<ProdutoDTO>> listarMeusProdutos(Authentication auth) {
         Integer idUsuario = Integer.valueOf(auth.getName()); // seu JwtAuth coloca id como principal
         List<Produto> lista = produtoService.listarPorProdutor(idUsuario);
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.ok(lista.stream().map(ProdutoDTO::fromEntity).toList());
     }
     
     // Atualizar produto (somente dono)
@@ -100,7 +101,7 @@ public class ProdutoController {
         try {
             Produto atualizado = produtoService.atualizarProduto(
                     id, idUsuario, nomeProduto, descricao, preco, unidade, quantidade, status, imagem);
-            return ResponseEntity.ok(atualizado);
+            return ResponseEntity.ok(ProdutoDTO.fromEntity(atualizado));
         } catch (AccessDeniedException ade) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
         } catch (IllegalArgumentException e) {
@@ -122,8 +123,10 @@ public class ProdutoController {
 
     // Listagem dos produtos de um produtor
     @GetMapping("/produtor/{idProdutor}")
-    public ResponseEntity<List<Produto>> listarProdutosPorProdutor(@PathVariable Integer idProdutor) {
-        return ResponseEntity.ok(produtoService.listarPorProdutor(idProdutor));
+    public ResponseEntity<List<ProdutoDTO>> listarProdutosPorProdutor(@PathVariable Integer idProdutor) {
+        return ResponseEntity.ok(produtoService.listarPorProdutor(idProdutor).stream()
+                .map(ProdutoDTO::fromEntity)
+                .toList());
     }
     
     // API pública para listar todos os produtos

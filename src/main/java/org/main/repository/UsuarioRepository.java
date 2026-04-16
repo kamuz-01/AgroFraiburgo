@@ -3,7 +3,6 @@ package org.main.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.main.DTOs.UsuarioDTO;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
 import org.main.models.Usuario;
@@ -39,7 +38,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByOauthProviderAndOauthId(@Param("provider") String provider, @Param("oauthId") String oauthId);
     
     @Query("SELECT u FROM Usuario u WHERE u.tipoUsuario IN ('CONSUMIDOR', 'PRODUTOR')")
-    List<UsuarioDTO> findConsumidoresEProdutores();
+    List<Usuario> findConsumidoresEProdutores();
 
     @Query("""
         SELECT u

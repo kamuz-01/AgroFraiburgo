@@ -2,6 +2,7 @@ package org.main.controllers;
 
 import java.util.Map;
 
+import org.main.DTOs.UsuarioDTO;
 import org.main.enums.StatusConta;
 import org.main.services.ModeradoresService;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ModeracaoController {
     }
 
     @GetMapping("/usuarios")
-    public ResponseEntity<?> listarUsuarios() {
+    public ResponseEntity<java.util.List<UsuarioDTO>> listarUsuarios() {
         return ResponseEntity.ok(moderadoresService.listarTodosUsuarios());
     }
 

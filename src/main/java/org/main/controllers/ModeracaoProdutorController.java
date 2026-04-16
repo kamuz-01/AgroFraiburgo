@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.main.DTOs.UsuarioDTO;
 import org.main.DTOs.AlterarStatusRequest;
 import org.main.DTOs.ProdutorDTO;
 import org.main.enums.StatusConta;
@@ -209,10 +210,10 @@ public class ModeracaoProdutorController {
     // API alternativa (lista completa em JSON)
     @GetMapping("/api/moderador/produtores/pendentes")
     @ResponseBody
-    public List<Usuario> listarPendentesGet() {
+    public List<UsuarioDTO> listarPendentesGet() {
         return usuarioRepository.findByTipoUsuarioAndStatusConta(
                 TipoUsuario.PRODUTOR, StatusConta.PENDENTE
-        );
+        ).stream().map(UsuarioDTO::fromEntity).toList();
     }
 
         @GetMapping("/produtores_pendentes/{id}")

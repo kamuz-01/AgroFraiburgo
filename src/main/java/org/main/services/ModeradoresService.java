@@ -1,6 +1,7 @@
 package org.main.services;
 
 import java.util.List;
+import org.main.DTOs.UsuarioDTO;
 import org.main.DTOs.NotificacaoModeradorDTO;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
@@ -25,12 +26,13 @@ public class ModeradoresService {
     }
 
     /**
-     * Lista todos os usuários e converte cada entidade Usuario para UsuarioDTO.
+     * Lista todos os usuários não moderadores como DTOs públicos.
      */
-    public List<Usuario> listarTodosUsuarios() {
+    public List<UsuarioDTO> listarTodosUsuarios() {
         return usuarioRepository.findAll()
                 .stream()
                 .filter(u -> u.getTipoUsuario() != TipoUsuario.MODERADOR) // exclui moderadores
+                .map(UsuarioDTO::fromEntity)
                 .toList();
     }
 
@@ -58,23 +60,4 @@ public class ModeradoresService {
     public void enviarMensagemRabbit(String mensagem) {
         rabbitTemplate.convertAndSend(filaBloqueios, mensagem);
     }
-
-    /**
-     * Mapeador entidade -> DTO (ajuste conforme campos reais do seu DTO).
-     */
-    /*private UsuarioDTO toDto(Usuario u) {
-        UsuarioDTO dto = new UsuarioDTO();
-        dto.setIdUsuario(u.getIdUsuario());
-        dto.setNome(u.getNome());
-        dto.setSobrenome(u.getSobrenome());
-        dto.setCpf(u.getCpf());
-        dto.setSexo(u.getSexo());
-        // se seu DTO possuir enums semelhantes:
-        dto.setTipoUsuario(u.getTipoUsuario());
-        dto.setCriadoEm(u.getCriadoEm());
-        dto.setCidade(u.getCidade());
-        dto.setEstado(u.getEstado());
-        dto.setStatusConta(u.getStatusConta());
-        return dto;
-    }*/
 }

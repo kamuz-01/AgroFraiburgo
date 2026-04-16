@@ -1,6 +1,7 @@
 package org.main.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,10 +15,13 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
     List<Produto> findTop4ByOrderByDataCriacaoDesc();
 
+    @EntityGraph(attributePaths = "produtor")
     List<Produto> findTop4ByProdutor_IdProdutorOrderByDataCriacaoDesc(Integer idProdutor);
 
+    @EntityGraph(attributePaths = "produtor")
     List<Produto> findByProdutorIdProdutor(Integer idProdutor);
 
+    @EntityGraph(attributePaths = "produtor")
     List<Produto> findAllByProdutor_IdProdutor(Integer idProdutor);
 
     @Query("""
@@ -36,6 +40,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
                                        @Param("minPreco") Double minPreco,
                                        @Param("maxPreco") Double maxPreco);
 
+    @EntityGraph(attributePaths = "produtor")
     Optional<Produto> findByIdProdutoAndProdutor_IdProdutor(Integer idProduto, Integer idProdutor);
 
     @Transactional
