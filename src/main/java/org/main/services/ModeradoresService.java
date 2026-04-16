@@ -1,7 +1,7 @@
 package org.main.services;
 
 import java.util.List;
-import org.main.DTOs.UsuarioDTO;
+import org.main.DTOs.ModeracaoUsuarioDTO;
 import org.main.DTOs.NotificacaoModeradorDTO;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
@@ -28,11 +28,11 @@ public class ModeradoresService {
     /**
      * Lista todos os usuários não moderadores como DTOs públicos.
      */
-    public List<UsuarioDTO> listarTodosUsuarios() {
+    public List<ModeracaoUsuarioDTO> listarTodosUsuarios() {
         return usuarioRepository.findAll()
                 .stream()
                 .filter(u -> u.getTipoUsuario() != TipoUsuario.MODERADOR) // exclui moderadores
-                .map(UsuarioDTO::fromEntity)
+                .map(ModeracaoUsuarioDTO::fromEntity)
                 .toList();
     }
 

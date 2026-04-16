@@ -438,7 +438,7 @@ const table = $('#produtoresTable').DataTable({
 
                 mobilePendentesCards.innerHTML = produtores.map((produtor) => {
                     const id = produtor.idUsuario ?? produtor.id ?? '';
-                    const nomeCompleto = `${produtor.nome ?? ''} ${produtor.sobrenome ?? ''}`.trim() || `Produtor #${id}`;
+                    const nomeCompleto = produtor.nomeCompleto || `Produtor #${id}`;
                     const local = `${produtor.cidade ?? 'Fraiburgo'}, ${produtor.estado ?? 'SC'}`;
                     const cpf = produtor.cpf ?? 'CPF não informado';
                     const status = produtor.statusConta ?? 'PENDENTE';
