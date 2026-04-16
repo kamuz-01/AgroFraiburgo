@@ -27,8 +27,15 @@ html, body {
   overflow-x: hidden;
 }
 
+@media (min-width: 641px) {
+  html, body {
+    overflow-y: hidden;
+  }
+}
+
 .container {
   display: flex;
+  height: calc(100vh - 72px);
   min-height: calc(100vh - 72px);
   width: 100%;
   overflow: hidden;
@@ -368,6 +375,7 @@ p.frase-topo {
 
 .login-side {
   flex: 1;
+  height: calc(100vh - 72px);
   min-height: calc(100vh - 72px);
   background: linear-gradient(135deg, var(--light-green), #ecfdf5);
   display: flex;
@@ -379,6 +387,7 @@ p.frase-topo {
   background: white;
   padding: 35px 30px;
   margin: 0;
+  margin-top: -12px;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   width: 100%;
@@ -491,8 +500,8 @@ p.frase-topo {
 
 .btn-primary {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 13px;
+  font-size: 18px;
   border: none;
   background-color: var(--primary-green);
   color: white;
@@ -617,9 +626,10 @@ p.frase-topo {
         font-size: 24px;
     }
 
+    input[type="text"],
     input[type="email"],
     input[type="password"] {
-        font-size: 16px; /* Prevents zoom on iOS */
+      font-size: 18px; /* Prevents zoom on iOS */
     }
 }
     
@@ -642,8 +652,9 @@ p.frase-topo {
         font-size: 12px;
     }
 
+    input[type="text"],
     input[type="email"],
     input[type="password"] {
-    	font-size: 16px; /* Prevents zoom on iOS */
+  	    font-size: 20px; /* Prevents zoom on iOS */
     }
 }
