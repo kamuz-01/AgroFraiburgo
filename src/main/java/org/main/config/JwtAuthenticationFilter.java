@@ -29,6 +29,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilterErrorDispatch() {
+        return false;
+    }
+
+    @Override
     protected void doFilterInternal(@org.springframework.lang.NonNull HttpServletRequest request,
                                     @org.springframework.lang.NonNull HttpServletResponse response,
                                     @org.springframework.lang.NonNull FilterChain filterChain) throws ServletException, IOException {

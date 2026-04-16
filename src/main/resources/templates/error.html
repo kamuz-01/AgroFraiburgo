@@ -16,7 +16,7 @@
             --green-dark: #1f7f37;
             --text: #293042;
             --muted: #6b7280;
-            --surface: rgba(255, 255, 255, 0.964);
+            --surface: rgba(255, 255, 255, 0.92);
             --border: rgba(41, 48, 66, 0.08);
             --shadow: 0 22px 60px rgba(31, 127, 55, 0.12);
         }
@@ -58,14 +58,13 @@
             text-align: center;
         }
 
-        .fa-home { color: #fff; }
-
         .four_zero_four_bg {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            gap: 10px;
         }
 
         .error-image {
@@ -84,7 +83,7 @@
         }
 
         .error-code {
-            margin-top: -28px;
+            margin: 0;
             font-size: clamp(4rem, 10vw, 6rem);
             font-weight: 800;
             color: var(--green);
@@ -143,7 +142,7 @@
 
         @media (max-width: 768px) {
             .error-image {
-                max-height:180px;
+                max-height: 200px;
             }
         }
     </style>
@@ -186,7 +185,16 @@
                     </p>
 
                     <div class="actions">
-                        <a th:href="${homeUrl}" class="cta">
+                        <a sec:authorize="hasRole('CONSUMIDOR')" th:href="@{/home_consumidor}" class="cta">
+                            <i class="fas fa-home"></i> Voltar ao início
+                        </a>
+                        <a sec:authorize="hasRole('PRODUTOR')" th:href="@{/home_produtor}" class="cta">
+                            <i class="fas fa-home"></i> Voltar ao início
+                        </a>
+                        <a sec:authorize="hasRole('MODERADOR')" th:href="@{/home_moderador}" class="cta">
+                            <i class="fas fa-home"></i> Voltar ao início
+                        </a>
+                        <a sec:authorize="!isAuthenticated()" th:href="@{/}" class="cta">
                             <i class="fas fa-home"></i> Voltar ao início
                         </a>
                     </div>
