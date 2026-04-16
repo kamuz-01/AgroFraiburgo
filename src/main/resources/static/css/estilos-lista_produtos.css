@@ -31,6 +31,15 @@ body.lista-produtos-page #header-menu {
   max-width: 100%;
 }
 
+.lista-produtos-page #modalEditarProduto .modal-dialog {
+  width: min(38vw, 1080px);
+  max-width: 1080px;
+}
+
+.lista-produtos-page #modalEditarProduto .modal-content {
+  width: 100%;
+}
+
 .lista-produtos-page .modal-dialog {
   margin-left: auto;
   margin-right: auto;
@@ -154,6 +163,11 @@ body.lista-produtos-page #header-menu {
 
   .lista-produtos-page .modal-dialog {
     margin: 0.5rem;
+  }
+
+  .lista-produtos-page #modalEditarProduto .modal-dialog {
+    width: auto;
+    max-width: 100%;
   }
 
   .produto-card-mobile {
