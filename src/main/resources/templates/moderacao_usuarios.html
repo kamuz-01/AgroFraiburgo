@@ -42,6 +42,44 @@
             color: #5c6f60;
         }
 
+        .mobile-usuarios-filter {
+          display: grid;
+          gap: 8px;
+          margin-bottom: 14px;
+          padding: 14px;
+          border-radius: 18px;
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid rgba(23, 49, 31, 0.08);
+          box-shadow: 0 10px 26px rgba(18, 40, 26, 0.06);
+        }
+
+        .mobile-usuarios-filter label {
+          font-weight: 800;
+          color: #17311f;
+          font-size: 0.92rem;
+        }
+
+        .mobile-usuarios-filter input {
+          width: 100%;
+          min-width: 0;
+          border-radius: 14px;
+          border: 1px solid rgba(23, 49, 31, 0.12);
+          padding: 12px 14px;
+          font: inherit;
+          color: #17311f;
+        }
+
+        .mobile-usuarios-filter input:focus {
+          outline: none;
+          border-color: rgba(31, 122, 66, 0.38);
+          box-shadow: 0 0 0 3px rgba(31, 122, 66, 0.08);
+        }
+
+        .mobile-usuarios-filter small {
+          color: #5c6f60;
+          line-height: 1.45;
+        }
+
         .mobile-usuarios-cards {
             display: grid;
             gap: 14px;
@@ -177,6 +215,12 @@
 		<p>Na versão mobile, revise cada usuário em cards para manter a leitura rápida e as ações acessíveis.</p>
 	</div>
 
+  <div class="mobile-usuarios-filter">
+    <label for="filtroUsuariosMobile">Buscar usuário</label>
+    <input type="search" id="filtroUsuariosMobile" placeholder="Nome, sobrenome ou CPF">
+    <small>Digite para filtrar os cards no mobile.</small>
+  </div>
+
 	<div id="mobileUsuariosCards" class="mobile-usuarios-cards"></div>
 </section>
 
@@ -215,6 +259,22 @@
 let usuarioIdSelecionado; 
 let novoStatusSelecionado; 
 const mobileUsuariosCards = document.getElementById('mobileUsuariosCards');
+const filtroUsuariosMobile = document.getElementById('filtroUsuariosMobile');
+let usuariosMobileCache = [];
+
+function normalizarTexto(texto) {
+  return String(texto ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function combinarCamposUsuario(usuario) {
+  return [usuario.nome, usuario.sobrenome, usuario.cpf]
+    .filter(Boolean)
+    .join(' ');
+}
 
 function getStatusClass(status) {
 	const normalized = (status || '').toUpperCase();
@@ -250,7 +310,7 @@ function renderizarCardsUsuarios(usuarios) {
 	if (!mobileUsuariosCards) return;
 
 	if (!Array.isArray(usuarios) || usuarios.length === 0) {
-		mobileUsuariosCards.innerHTML = '<div class="mobile-usuario-card"><strong>Nenhum usuário encontrado.</strong><span class="mobile-usuario-card__meta">A lista será exibida quando houver dados disponíveis.</span></div>';
+    mobileUsuariosCards.innerHTML = '<div class="mobile-usuario-card"><strong>Nenhum usuário encontrado.</strong><span class="mobile-usuario-card__meta">A lista será exibida quando houver dados disponíveis.</span></div>';
 		return;
 	}
 
@@ -283,6 +343,28 @@ function renderizarCardsUsuarios(usuarios) {
 			</article>
 		`;
 	}).join('');
+}
+
+function aplicarFiltroUsuariosMobile() {
+  if (!mobileUsuariosCards) return;
+
+  const termo = normalizarTexto(filtroUsuariosMobile ? filtroUsuariosMobile.value : '');
+  const filtrados = usuariosMobileCache.filter((usuario) => {
+    if (!termo) return true;
+    return normalizarTexto(combinarCamposUsuario(usuario)).includes(termo);
+  });
+
+  if (filtrados.length === 0) {
+    mobileUsuariosCards.innerHTML = `
+      <div class="mobile-usuario-card">
+        <strong>Nenhum usuário encontrado.</strong>
+        <span class="mobile-usuario-card__meta">Tente buscar por nome, sobrenome ou CPF.</span>
+      </div>
+    `;
+    return;
+  }
+
+  renderizarCardsUsuarios(filtrados);
 }
 
 let tabela = $('#usuariosTable').DataTable({
@@ -328,12 +410,17 @@ let tabela = $('#usuariosTable').DataTable({
 });
 
 $.getJSON('/api/moderacao/usuarios', function (usuarios) {
-	renderizarCardsUsuarios(usuarios);
+  usuariosMobileCache = Array.isArray(usuarios) ? usuarios : [];
+  aplicarFiltroUsuariosMobile();
 }).fail(function () {
 	if (mobileUsuariosCards) {
 		mobileUsuariosCards.innerHTML = '<div class="mobile-usuario-card"><strong>Não foi possível carregar os usuários.</strong><span class="mobile-usuario-card__meta">Tente novamente em instantes.</span></div>';
 	}
 });
+
+if (filtroUsuariosMobile) {
+  filtroUsuariosMobile.addEventListener('input', aplicarFiltroUsuariosMobile);
+}
 
 // Evento ao mudar select
 $('#usuariosTable').on('change', '.acao-usuario', function () {
@@ -378,7 +465,9 @@ $('#confirmarStatus').click(function () {
 		$('#usuariosTable').DataTable().ajax.reload(null, false);
 
 		$.getJSON('/api/moderacao/usuarios', function (usuarios) {
+        usuariosMobileCache = Array.isArray(usuarios) ? usuarios : [];
 			renderizarCardsUsuarios(usuarios);
+        aplicarFiltroUsuariosMobile();
 		});
     }).fail(function (err) {
         Swal.fire('Erro', err.responseText, 'error');
