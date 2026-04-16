@@ -14,7 +14,6 @@ import org.main.models.Avaliacao;
 import org.main.models.Feira;
 import org.main.models.Produto;
 import org.main.models.Usuario;
-import org.main.models.UsuarioLogado;
 import org.main.models.FavoritoProdutorId;
 import org.main.neo4j.Neo4jInteracaoService;
 import org.main.repository.AvaliacaoRepository;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
+import org.main.web.annotation.CurrentUserId;
 
 @Controller
 public class VitrineController {
@@ -72,7 +72,7 @@ public class VitrineController {
     }
 
     @GetMapping("/inicio_usuarios")
-    public String inicioUsuarios(Model model, Authentication authentication) {
+    public String inicioUsuarios(Model model, Authentication authentication, @CurrentUserId Integer idUsuario) {
         long totalProdutoresAtivos = usuarioRepository.countByTipoUsuarioAndStatusConta(TipoUsuario.PRODUTOR, StatusConta.ATIVO);
         long totalProdutos = produtoRepository.count();
         model.addAttribute("q", "");
@@ -92,7 +92,6 @@ public class VitrineController {
         model.addAttribute("hasMoreProdutos", totalProdutos > produtosDestaque.size());
         model.addAttribute("produtoresDestaque", toProdutorCards(produtoresDestaque));
 
-        Integer idUsuario = currentUserId(authentication);
         if (idUsuario != null && isConsumidorOuModerador(authentication)) {
             List<Produto> recomendados = recomendacaoService.recomendarParaUsuario(idUsuario, 4);
             model.addAttribute("produtosRecomendados", toProdutoCards(recomendados));
@@ -120,9 +119,10 @@ public class VitrineController {
                                    @RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "9") int size,
                                    @RequestParam(required = false) String q,
-                                   Authentication authentication) {
+                                   Authentication authentication,
+                                   @CurrentUserId Integer idUsuario) {
         Page<Usuario> produtoresPage = produtoresPaginados(page, size, q);
-        applyUserShellModel(model, authentication, q);
+        applyUserShellModel(model, authentication, q, idUsuario);
         model.addAttribute("produtores", toProdutorCards(produtoresPage.getContent()));
         model.addAttribute("totalProdutores", produtoresPage.getTotalElements());
         model.addAttribute("currentPage", produtoresPage.getNumber());
@@ -151,11 +151,12 @@ public class VitrineController {
                          @RequestParam(required = false) Double minPreco,
                          @RequestParam(required = false) Double maxPreco,
                          Model model,
-                         Authentication authentication) {
+                         Authentication authentication,
+                         @CurrentUserId Integer idUsuario) {
         String termo = q == null ? "" : q.trim();
         Double precoMinimo = minPreco;
         Double precoMaximo = maxPreco;
-        applyUserShellModel(model, authentication, termo);
+        applyUserShellModel(model, authentication, termo, idUsuario);
 
         if (precoMinimo != null && precoMaximo != null && precoMinimo > precoMaximo) {
             Double temp = precoMinimo;
@@ -208,7 +209,6 @@ public class VitrineController {
         model.addAttribute("totalProdutosEncontrados", produtosEncontrados.size());
         model.addAttribute("totalProdutoresEncontrados", produtoresEncontrados.size());
 
-        Integer idUsuario = currentUserId(authentication);
         if (idUsuario != null && isConsumidorOuModerador(authentication)) {
             List<Produto> recomendados = recomendacaoService.recomendarParaUsuario(idUsuario, 4);
             model.addAttribute("produtosRecomendados", toProdutoCards(recomendados));
@@ -223,8 +223,8 @@ public class VitrineController {
     }
 
     @GetMapping("/feira")
-    public String detalhesFeira(Model model, Authentication authentication) {
-        applyUserShellModel(model, authentication, null);
+    public String detalhesFeira(Model model, Authentication authentication, @CurrentUserId Integer idUsuario) {
+        applyUserShellModel(model, authentication, null, idUsuario);
         Feira feira = feiraRepository.findFirstByStatusFeiraOrderByIdFeiraDesc(org.main.enums.StatusFeira.EM_ANDAMENTO)
                 .orElse(null);
 
@@ -242,8 +242,8 @@ public class VitrineController {
     }
 
     @GetMapping("/produtores/{id}")
-    public String perfilProdutor(@PathVariable Integer id, Model model, Authentication authentication) {
-        applyUserShellModel(model, authentication, null);
+    public String perfilProdutor(@PathVariable Integer id, Model model, Authentication authentication, @CurrentUserId Integer idUsuario) {
+        applyUserShellModel(model, authentication, null, idUsuario);
         Usuario produtor = usuarioRepository.findById(id)
                 .filter(u -> u.getTipoUsuario() == TipoUsuario.PRODUTOR)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produtor não encontrado"));
@@ -266,7 +266,6 @@ public class VitrineController {
         List<Avaliacao> avaliacoesRecentes = avaliacaoRepository.findTop10ByIdProdutorOrderByDataAvaliacaoDesc(id);
         model.addAttribute("avaliacoesRecentes", avaliacoesRecentes);
 
-        Integer idUsuario = currentUserId(authentication);
         if (idUsuario != null && isConsumidorOuModerador(authentication)) {
             boolean favoritado = false;
             try {
@@ -286,11 +285,9 @@ public class VitrineController {
     public String avaliarProdutor(Authentication auth,
                                  @PathVariable Integer id,
                                  @RequestParam("nota") Integer nota,
-                                 @RequestParam(value = "comentario", required = false) String comentario) {
-        Integer idConsumidor;
-        try {
-            idConsumidor = Integer.valueOf(auth.getName());
-        } catch (Exception ex) {
+                                 @RequestParam(value = "comentario", required = false) String comentario,
+                                 @CurrentUserId Integer idConsumidor) {
+        if (idConsumidor == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
         }
 
@@ -304,12 +301,11 @@ public class VitrineController {
     }
 
     @GetMapping("/produto/{id}")
-    public String detalhesProduto(@PathVariable Integer id, Model model, Authentication authentication) {
-        applyUserShellModel(model, authentication, null);
+    public String detalhesProduto(@PathVariable Integer id, Model model, Authentication authentication, @CurrentUserId Integer idUsuario) {
+        applyUserShellModel(model, authentication, null, idUsuario);
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
 
-        Integer idUsuario = currentUserId(authentication);
         if (idUsuario != null && isConsumidorOuModerador(authentication)) {
             neo4jInteracaoService.registrarVisualizacao(idUsuario, produto.getIdProduto());
         }
@@ -343,22 +339,6 @@ public class VitrineController {
             }
         }
         return false;
-    }
-
-    private Integer currentUserId(Authentication auth) {
-        if (auth == null || !auth.isAuthenticated()) return null;
-
-        Object principal = auth.getPrincipal();
-        if (principal instanceof UsuarioLogado u) {
-            return u.getId();
-        }
-
-        // fallback legado
-        try {
-            return Integer.valueOf(auth.getName());
-        } catch (Exception ignored) {
-            return null;
-        }
     }
 
     private String homeUrlFor(Authentication auth) {
@@ -397,8 +377,7 @@ public class VitrineController {
         return "/inicio_usuarios";
     }
 
-    private void applyUserShellModel(Model model, Authentication authentication, String q) {
-        Integer idUsuario = currentUserId(authentication);
+    private void applyUserShellModel(Model model, Authentication authentication, String q, Integer idUsuario) {
         Usuario usuario = idUsuario != null ? usuarioRepository.findById(idUsuario).orElse(null) : null;
 
         if (usuario != null) {
