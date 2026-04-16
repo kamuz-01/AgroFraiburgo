@@ -24,12 +24,12 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .container {
   display: flex;
-  height: 100vh;
+  min-height: calc(100vh - 72px);
   width: 100%;
   overflow: hidden;
 }
@@ -368,7 +368,7 @@ p.frase-topo {
 
 .login-side {
   flex: 1;
-  height: 100vh;
+  min-height: calc(100vh - 72px);
   background: linear-gradient(135deg, var(--light-green), #ecfdf5);
   display: flex;
   align-items: center;
@@ -378,7 +378,7 @@ p.frase-topo {
 .login-container {
   background: white;
   padding: 35px 30px;
-  margin-bottom: 77px;
+  margin: 0;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   width: 100%;
@@ -597,10 +597,20 @@ p.frase-topo {
 }
 
 @media (max-width: 640px) {
+
+  .container {
+    min-height: calc(100dvh - 72px);
+  }
+
+  .login-side {
+    min-height: calc(100dvh - 72px);
+    align-items: flex-start;
+    padding: 18px 0 28px;
+  }
     
     .login-container {      
         padding: 24px 20px;        
-        margin: 15px;
+    margin: 0 15px;
     }
 
     .header h1 {
@@ -614,10 +624,18 @@ p.frase-topo {
 }
     
 @media (max-width: 380px) {
+  .container {
+    min-height: calc(100dvh - 72px);
+  }
+
+  .login-side {
+    min-height: calc(100dvh - 72px);
+    padding: 12px 0 24px;
+  }
+
     .login-container {
         padding: 24px 12px;
-        margin: 15px;
-        margin-bottom: 140px;
+    margin: 0 15px;
     }
 
     .header h1 {
