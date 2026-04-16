@@ -11,16 +11,12 @@
 </head>
 <body>
     <main class="reset-shell">
-        <section class="reset-panel reset-panel--hero">
+        <section class="reset-panel">
             <span class="eyebrow">AgroFraiburgo</span>
             <h1>Recuperar senha</h1>
             <p>
                 Informe o e-mail da sua conta. Se ele estiver cadastrado, enviaremos um link para criar uma nova senha.
             </p>
-            <a class="reset-link" th:href="@{/login}">Voltar para o login</a>
-        </section>
-
-        <section class="reset-panel reset-panel--form">
             <div th:if="${mensagemSucesso}" class="alert alert-success" th:text="${mensagemSucesso}"></div>
             <div th:if="${mensagemErro}" class="alert alert-danger" th:text="${mensagemErro}"></div>
 
@@ -28,6 +24,7 @@
                 <label for="email">E-mail cadastrado</label>
                 <input type="email" id="email" name="email" placeholder="voce@exemplo.com" required>
                 <button type="submit" class="btn-primary">Enviar link de recuperação</button>
+                <a class="btn-secondary-link" th:href="@{/login}">Voltar para o login</a>
             </form>
         </section>
     </main>
