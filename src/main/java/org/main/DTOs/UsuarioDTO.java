@@ -1,7 +1,5 @@
 package org.main.DTOs;
 
-import java.time.LocalDateTime;
-
 import org.main.models.Usuario;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
@@ -25,10 +23,6 @@ public class UsuarioDTO {
 
     private String cpf;
 
-    private String sexo;
-
-    private LocalDateTime criadoEm;
-
     private TipoUsuario tipoUsuario = TipoUsuario.CONSUMIDOR;
 
 	private String cidade;
@@ -47,8 +41,6 @@ public class UsuarioDTO {
                 usuario.getNome(),
                 usuario.getSobrenome(),
                 usuario.getCpf(),
-                usuario.getSexo(),
-                usuario.getCriadoEm(),
                 usuario.getTipoUsuario(),
                 usuario.getCidade(),
                 usuario.getEstado(),
