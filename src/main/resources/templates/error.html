@@ -16,7 +16,7 @@
             --green-dark: #1f7f37;
             --text: #293042;
             --muted: #6b7280;
-            --surface: rgba(255, 255, 255, 0.92);
+            --surface: rgba(255, 255, 255, 0.964);
             --border: rgba(41, 48, 66, 0.08);
             --shadow: 0 22px 60px rgba(31, 127, 55, 0.12);
         }
@@ -36,32 +36,13 @@
             min-height: 100vh;
         }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
         .container {
-            width: min(1180px, calc(100% - 32px));
+            width: min(900px, calc(100% - 32px));
             margin: 0 auto;
         }
 
-        .text-logo-preto {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .text-logo-verde {
-            color: var(--green);
-        }
-
-        .cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(31, 127, 55, 0.12);
-        }
-
         .page_404 {
-            padding: 48px 0 32px;
+            padding: 40px 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -69,215 +50,147 @@
 
         .hero-error {
             position: relative;
-            overflow: hidden;
-            border-radius: 34px;
-            padding: 34px;
+            border-radius: 30px;
+            padding: 30px;
             background: var(--surface);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             text-align: center;
         }
 
+        .fa-home { color: #fff; }
+
         .four_zero_four_bg {
-            background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
-            min-height: 340px;
-            height: clamp(280px, 42vw, 420px);
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
-        .hero-error::before,
-        .hero-error::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(12px);
-            opacity: 0.18;
+        .error-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 260px;
+            object-fit: contain;
+            opacity: 0.9;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .hero-error::before {
-            width: 220px;
-            height: 220px;
-            right: -80px;
-            top: -80px;
-            background: rgba(40, 166, 69, 0.4);
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
         }
 
-        .hero-error::after {
-            width: 260px;
-            height: 260px;
-            left: -120px;
-            bottom: -120px;
-            background: rgba(245, 158, 11, 0.3);
-        }
-
-        .four_zero_four_bg {
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-            border-radius: 28px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(41, 48, 66, 0.06);
-            background-clip: padding-box;
-        }
-
-        .four_zero_four_bg h1 {
-            margin-top: 180px;
-            font-size: clamp(3.5rem, 10vw, 6rem);
-            line-height: 1;
-            letter-spacing: -0.08em;
-            color: rgba(41, 48, 66, 0.92);
-            text-shadow: 0 10px 24px rgba(255, 255, 255, 0.55);
+        .error-code {
+            margin-top: -28px;
+            font-size: clamp(4rem, 10vw, 6rem);
+            font-weight: 800;
+            color: var(--green);
         }
 
         .contant_box_404 {
-            position: relative;
-            z-index: 1;
-            max-width: 760px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         .h2 {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-size: 1.8rem;
             font-weight: 700;
-            margin: 0 0 14px;
-            color: var(--text);
+            margin-bottom: 10px;
         }
 
         .text-404 {
             color: var(--muted);
-            margin: 0 0 10px;
-            font-size: 1.08rem;
-            line-height: 1.7;
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
         .status-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 14px;
+            padding: 6px 14px;
             border-radius: 999px;
-            margin-bottom: 18px;
-            background: rgba(40, 166, 69, 0.10);
+            margin-bottom: 16px;
+            background: rgba(40, 166, 69, 0.1);
             color: var(--green-dark);
-            font-weight: 700;
-        }
-
-        .error-code {
-            margin: 0;
-            font-size: clamp(4.5rem, 12vw, 7rem);
-            line-height: 1;
-            letter-spacing: -0.07em;
-            color: var(--green);
-            text-shadow: 0 14px 30px rgba(40, 166, 69, 0.15);
+            font-weight: 600;
         }
 
         .actions {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 26px;
+            margin-top: 20px;
         }
 
         .cta {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            min-width: 220px;
-            padding: 14px 20px;
-            border-radius: 16px;
-            font-weight: 700;
-            border: 1px solid transparent;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .cta-primary {
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: 12px;
             background: linear-gradient(135deg, var(--green), #3bb85a);
             color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s;
         }
 
-        .cta-primary i {
-            color: #fff;
-        }
-
-        .cta-secondary {
-            background: #fff;
-            color: var(--green-dark);
-            border-color: rgba(41, 48, 66, 0.10);
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
         @media (max-width: 768px) {
-            .hero-error {
-                padding: 24px;
-            }
-
-            .four_zero_four_bg {
-                min-height: 240px;
-                height: 260px;
-                background-size: cover;
-            }
-
-            .cta {
-                min-width: 100%;
+            .error-image {
+                max-height:180px;
             }
         }
     </style>
 </head>
+
 <body>
 
 <main>
     <section class="page_404">
         <div class="container">
-            <div class="row"> 
-                <div class="col-sm-12">
-                    <div class="col-sm-10 col-sm-offset-1 text-center">
-                        
-                        <div class="four_zero_four_bg">
-                            <h1 class="error-code" th:text="${status != null ? status : 500}">500</h1>
-                        </div>
-                    
-                        <div class="contant_box_404">
-                            <div class="status-pill" th:if="${status != null and status == 404}">
-                                <i class="fas fa-location-crosshairs"></i>
-                                <span>Página não encontrada</span>
-                            </div>
-                            <div class="status-pill" th:if="${status != null and status == 503}">
-                                <i class="fas fa-triangle-exclamation"></i>
-                                <span>Aplicativo em manutenção</span>
-                            </div>
-                            <div class="status-pill" th:if="${status != null and status >= 500 and status != 503}">
-                                <i class="fas fa-bug"></i>
-                                <span>Erro interno do servidor</span>
-                            </div>
-                            <div class="status-pill" th:if="${status != null and status > 0 and status != 404 and status < 500}">
-                                <i class="fas fa-circle-info"></i>
-                                <span>Falha temporária</span>
-                            </div>
+            <div class="hero-error">
 
-                            <h3 class="h2" th:if="${status != null and status == 404}">Ops! Parece que você se perdeu no campo.</h3>
-                            <h3 class="h2" th:if="${status != null and status == 503}">Estamos em manutenção no momento.</h3>
-                            <h3 class="h2" th:if="${status != null and status >= 500 and status != 503}">Algo saiu errado no servidor.</h3>
-                            <h3 class="h2" th:if="${status != null and status > 0 and status != 404 and status < 500}">Algo não saiu como esperado.</h3>
-                            <h3 class="h2" th:unless="${status != null}">Algo não saiu como esperado.</h3>
+                <div class="four_zero_four_bg">
+                    <img src="https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif" alt="Erro" class="error-image">
+                    <h1 class="error-code" th:text="${status != null ? status : 500}">500</h1>
+                </div>
 
-                            <p class="text-404" th:if="${status != null and status == 404}">A página que você está procurando não está disponível.</p>
-                            <p class="text-404" th:if="${status != null and status == 503}">O aplicativo está temporariamente em manutenção. Tente novamente daqui a alguns minutos.</p>
-                            <p class="text-404" th:if="${status != null and status >= 500 and status != 503}">Ocorreu uma falha interna no servidor. Estamos trabalhando para resolver o problema.</p>
-                            <p class="text-404" th:if="${status != null and status > 0 and status != 404 and status < 500}">A requisição não pôde ser concluída no momento.</p>
-                            <p class="text-404" th:unless="${status != null}">A página não pôde ser carregada no momento.</p>
-                            
-                        </div>
-                        <div class="actions" th:with="homeUrl=${#authorization.expression('hasRole(''CONSUMIDOR'')') ? '/home_consumidor' : (#authorization.expression('hasRole(''PRODUTOR'')') ? '/home_produtor' : (#authorization.expression('hasRole(''MODERADOR'')') ? '/home_moderador' : '/'))}">
-                        <a th:href="${homeUrl}" class="cta cta-primary"><i class="fas fa-home"></i> Voltar para o início</a>
+                <div class="contant_box_404">
+
+                    <div class="status-pill" th:if="${status == 404}">
+                        <i class="fas fa-location-crosshairs"></i>
+                        Página não encontrada
                     </div>
+
+                    <div class="status-pill" th:if="${status == 503}">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        Aplicativo em manutenção
                     </div>
+
+                    <div class="status-pill" th:if="${status >= 500 and status != 503}">
+                        <i class="fas fa-bug"></i>
+                        Erro interno do servidor
+                    </div>
+
+                    <h3 class="h2">Algo não saiu como esperado</h3>
+
+                    <p class="text-404">
+                        Ocorreu um problema ao processar sua solicitação.
+                        Tente novamente ou volte para a página inicial.
+                    </p>
+
+                    <div class="actions">
+                        <a th:href="${homeUrl}" class="cta">
+                            <i class="fas fa-home"></i> Voltar ao início
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
