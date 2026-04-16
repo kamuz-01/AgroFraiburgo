@@ -2,6 +2,16 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="homeHeader">
+    <style>
+        .brand:hover,
+        .brand:focus,
+        .brand:focus-visible,
+        .brand:active {
+            background-color: transparent !important;
+            opacity: 1;
+            text-decoration: none;
+        }
+    </style>
     <header class="main-header">
         <div class="container header-grid">
             <a th:href="${homeUrl != null ? homeUrl : '/inicio_usuarios'}" class="brand" aria-label="AgroFraiburgo">

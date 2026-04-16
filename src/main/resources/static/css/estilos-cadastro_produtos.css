@@ -285,6 +285,7 @@ a:hover {
 
 .log:hover{
 	background-color: transparent !important;
+    opacity: 1;
 }
 
 .logo a {
