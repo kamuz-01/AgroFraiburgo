@@ -3,6 +3,7 @@ package org.main.services;
 import java.util.List;
 import org.main.DTOs.ModeracaoUsuarioDTO;
 import org.main.DTOs.NotificacaoModeradorDTO;
+import org.main.exceptions.UsuarioNaoEncontradoException;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
 import org.main.models.Usuario;
@@ -41,7 +42,7 @@ public class ModeradoresService {
      */
     public void alterarStatus(Integer id, StatusConta novoStatus, String observacao) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(UsuarioNaoEncontradoException::new);
 
         usuario.setStatusConta(novoStatus);
         usuarioRepository.save(usuario);

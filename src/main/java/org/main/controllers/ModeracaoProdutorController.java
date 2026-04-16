@@ -10,6 +10,7 @@ import java.util.Map;
 import org.main.DTOs.ProdutorPendenteDTO;
 import org.main.DTOs.AlterarStatusRequest;
 import org.main.DTOs.ProdutorDTO;
+import org.main.exceptions.ProdutorNaoEncontradoException;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
 import org.main.models.DocumentosProdutor;
@@ -122,7 +123,7 @@ public class ModeracaoProdutorController {
     public ResponseEntity<?> alterarStatus(@RequestBody AlterarStatusRequest request) {
 
         Usuario produtor = usuarioRepository.findById(request.getIdProdutor())
-                .orElseThrow(() -> new RuntimeException("Produtor não encontrado"));
+                .orElseThrow(ProdutorNaoEncontradoException::new);
 
         if ((request.getNovoStatus() == StatusConta.REJEITADO || request.getNovoStatus() == StatusConta.BLOQUEADO)
                 && (request.getObservacao() == null || request.getObservacao().isBlank())) {

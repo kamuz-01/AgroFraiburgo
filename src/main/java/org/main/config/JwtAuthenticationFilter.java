@@ -53,7 +53,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Integer uid = uidLong.intValue();
             Usuario u = usuarioRepository.findById(uid)
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + uid));
+                    .orElse(null);
+
+            if (u == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             List<GrantedAuthority> authorities = List.of(
                     new SimpleGrantedAuthority("ROLE_" + u.getTipoUsuario().name()));

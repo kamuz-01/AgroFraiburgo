@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.main.DTOs.CadastroUsuarioDTO;
 import org.main.DTOs.DocumentosProdutorDTO;
+import org.main.exceptions.UsuarioNaoEncontradoException;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
 import org.main.models.DocumentosProdutor;
@@ -76,7 +77,7 @@ public class UsuarioService {
         }
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(UsuarioNaoEncontradoException::new);
 
         if (email != null && !email.isBlank()) {
             String emailNormalizado = email.trim();

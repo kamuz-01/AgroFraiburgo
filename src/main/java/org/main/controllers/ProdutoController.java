@@ -1,6 +1,7 @@
 package org.main.controllers;
 
 import org.main.DTOs.ProdutoDTO;
+import org.main.exceptions.ProdutorNaoEncontradoException;
 import org.main.models.Produto;
 import org.main.models.Produtor;
 import org.main.repository.ProdutorRepository;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -45,15 +47,12 @@ public class ProdutoController {
             @RequestParam("status_produto") String statusProduto,
             @RequestPart("imagem_produto") MultipartFile imagem
     ) {
+        Long idUsuario = Long.parseLong(auth.getName());
+
+        Produtor produtor = produtorRepository.findById(idUsuario.intValue())
+                .orElseThrow(ProdutorNaoEncontradoException::new);
+
         try {
-            // Recupera o ID do usuário autenticado
-            Long idUsuario = Long.parseLong(auth.getName());
-
-            // Busca o produtor correspondente
-            Produtor produtor = produtorRepository.findById(idUsuario.intValue())
-                    .orElseThrow(() -> new RuntimeException("Produtor não encontrado"));
-
-            // Salva o produto
             Produto produto = produtoService.salvarProduto(
                     produtor,
                     nomeProduto,
@@ -68,8 +67,7 @@ public class ProdutoController {
             return ResponseEntity.ok(ProdutoDTO.fromEntity(produto));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
             return ResponseEntity.internalServerError()
                     .body("Erro ao cadastrar produto: " + e.getMessage());
         }
@@ -106,7 +104,7 @@ public class ProdutoController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ade.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
+        } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Erro ao atualizar produto: " + e.getMessage());
         }
     }

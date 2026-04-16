@@ -1,5 +1,6 @@
 package org.main.services;
 
+import org.main.exceptions.ProdutorNaoEncontradoException;
 import org.main.enums.TipoUsuario;
 import org.main.models.FavoritoProdutor;
 import org.main.models.FavoritoProdutorId;
@@ -38,7 +39,7 @@ public class FavoritoProdutorService {
                 .orElse(false);
 
         if (!produtorExiste) {
-            throw new IllegalArgumentException("Produtor não encontrado");
+            throw new ProdutorNaoEncontradoException();
         }
 
         FavoritoProdutorId id = new FavoritoProdutorId(idUsuario, idProdutor);

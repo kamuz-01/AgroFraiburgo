@@ -1,6 +1,8 @@
 package org.main.controllers;
 
 import org.main.DTOs.FeiraDTO;
+import org.main.exceptions.FeiraNaoEncontradaException;
+import org.main.exceptions.UsuarioNaoEncontradoException;
 import org.main.models.Feira;
 import org.main.models.Usuario;
 import org.main.repository.UsuarioRepository;
@@ -38,7 +40,7 @@ public class FeiraController {
         Integer userId = Integer.valueOf(auth.getName());
 
         Usuario usuario = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            .orElseThrow(UsuarioNaoEncontradoException::new);
 
         if (!usuario.getTipoUsuario().name().equals("MODERADOR")) {
             return ResponseEntity.status(403).build();
@@ -57,7 +59,7 @@ public class FeiraController {
         Integer userId = Integer.valueOf(auth.getName());
 
         Usuario usuario = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            .orElseThrow(UsuarioNaoEncontradoException::new);
 
         if (!usuario.getTipoUsuario().name().equals("MODERADOR")) {
             return ResponseEntity.status(403).build();
@@ -74,14 +76,14 @@ public class FeiraController {
         Integer userId = Integer.valueOf(auth.getName());
 
         Usuario usuario = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            .orElseThrow(UsuarioNaoEncontradoException::new);
 
         if (!usuario.getTipoUsuario().name().equals("MODERADOR")) {
             return ResponseEntity.status(403).build();
         }
 
         Feira feira = feiraService.buscarPorId(id)
-                .orElseThrow(() -> new RuntimeException("Feira não encontrada"));
+            .orElseThrow(FeiraNaoEncontradaException::new);
 
         return ResponseEntity.ok(FeiraDTO.fromEntity(feira));
     }

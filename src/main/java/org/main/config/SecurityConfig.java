@@ -135,7 +135,12 @@ public class SecurityConfig {
             	    .successHandler((request, response, authentication) -> {
             	        // Pega o usuário local correspondente
             	        Usuario usuarioLocal = usuarioService.buscarPorNomeLogin(authentication.getName())
-            	                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            	                .orElse(null);
+
+            	        if (usuarioLocal == null) {
+            	            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Usuário não encontrado");
+            	            return;
+            	        }
 
             	        // Gera claims com fotos e informações do usuário
             	        Map<String, Object> claims = JwtService.defaultClaims(authentication, usuarioLocal);

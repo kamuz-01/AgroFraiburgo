@@ -1,5 +1,6 @@
 package org.main.services;
 
+import org.main.exceptions.FeiraNaoEncontradaException;
 import org.main.models.Feira;
 import org.main.repository.FeiraRepository;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,6 @@ public class FeiraService {
             f.setComplemento(feiraAtualizada.getComplemento());
             f.setStatusFeira(feiraAtualizada.getStatusFeira());
             return feiraRepository.save(f);
-        }).orElseThrow(() -> new RuntimeException("Feira não encontrada"));
+        }).orElseThrow(FeiraNaoEncontradaException::new);
     }
 }

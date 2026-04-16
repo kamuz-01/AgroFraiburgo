@@ -1,5 +1,6 @@
 package org.main.services;
 
+import org.main.exceptions.ProdutoNaoEncontradoException;
 import org.main.models.FavoritoProduto;
 import org.main.models.FavoritoProdutoId;
 import org.main.neo4j.Neo4jInteracaoService;
@@ -33,7 +34,7 @@ public class FavoritoProdutoService {
         }
 
         if (!produtoRepository.existsById(idProduto)) {
-            throw new IllegalArgumentException("Produto não encontrado");
+            throw new ProdutoNaoEncontradoException();
         }
 
         FavoritoProdutoId id = new FavoritoProdutoId(idUsuario, idProduto);
