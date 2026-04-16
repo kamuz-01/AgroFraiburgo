@@ -46,29 +46,6 @@
             margin: 0 auto;
         }
 
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 20;
-            backdrop-filter: blur(18px);
-            background: rgba(248, 251, 247, 0.84);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .nav-wrapper {
-            min-height: 76px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
         .text-logo-preto {
             font-size: 1.5rem;
             font-weight: 700;
@@ -78,28 +55,6 @@
             color: var(--green);
         }
 
-        .nav-list {
-            list-style: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0;
-            margin: 0;
-        }
-
-        .nav-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid var(--border);
-            font-weight: 700;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .nav-link:hover,
         .cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 22px rgba(31, 127, 55, 0.12);
@@ -121,6 +76,18 @@
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             text-align: center;
+        }
+
+        .four_zero_four_bg {
+            background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
+            min-height: 340px;
+            height: clamp(280px, 42vw, 420px);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero-error::before,
@@ -151,22 +118,21 @@
         .four_zero_four_bg {
             position: relative;
             z-index: 1;
-            background: linear-gradient(135deg, rgba(40, 166, 69, 0.1), rgba(245, 158, 11, 0.08));
+            overflow: hidden;
             border-radius: 28px;
-            min-height: 320px;
-            display: grid;
-            place-items: center;
+            padding: 24px;
             margin-bottom: 24px;
             border: 1px solid rgba(41, 48, 66, 0.06);
+            background-clip: padding-box;
         }
 
-        .error-code {
-            margin: 0;
-            font-size: clamp(4.5rem, 12vw, 7rem);
+        .four_zero_four_bg h1 {
+            margin-top: 180px;
+            font-size: clamp(3.5rem, 10vw, 6rem);
             line-height: 1;
-            letter-spacing: -0.07em;
-            color: var(--green);
-            text-shadow: 0 14px 30px rgba(40, 166, 69, 0.15);
+            letter-spacing: -0.08em;
+            color: rgba(41, 48, 66, 0.92);
+            text-shadow: 0 10px 24px rgba(255, 255, 255, 0.55);
         }
 
         .contant_box_404 {
@@ -202,6 +168,15 @@
             font-weight: 700;
         }
 
+        .error-code {
+            margin: 0;
+            font-size: clamp(4.5rem, 12vw, 7rem);
+            line-height: 1;
+            letter-spacing: -0.07em;
+            color: var(--green);
+            text-shadow: 0 14px 30px rgba(40, 166, 69, 0.15);
+        }
+
         .actions {
             display: flex;
             justify-content: center;
@@ -228,41 +203,25 @@
             color: #fff;
         }
 
+        .cta-primary i {
+            color: #fff;
+        }
+
         .cta-secondary {
             background: #fff;
             color: var(--green-dark);
             border-color: rgba(41, 48, 66, 0.10);
         }
 
-        .footer {
-            margin-top: 0;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid var(--border);
-            padding: 22px 0;
-            text-align: center;
-            color: var(--muted);
-        }
-
         @media (max-width: 768px) {
-            .nav-wrapper {
-                flex-direction: column;
-                justify-content: center;
-                padding: 14px 0;
-            }
-
-            .nav-list {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
             .hero-error {
                 padding: 24px;
             }
 
             .four_zero_four_bg {
                 min-height: 240px;
+                height: 260px;
+                background-size: cover;
             }
 
             .cta {
@@ -273,87 +232,57 @@
 </head>
 <body>
 
-<header class="header" id="header" role="banner">
-    <div class="container">
-        <div class="nav-wrapper">
-            <div class="logo">
-                <a href="/" aria-label="Ir para a página inicial" title="Ir para a página inicial" style="text-decoration: none;">
-                    <span class="text-logo-preto">Agro<span class="text-logo-verde">Fraiburgo</span></span>
-                </a>
-            </div>
-            <nav class="nav" role="navigation">
-                <ul id="menu" class="nav-list">
-                    <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Início</a></li>
-                    <li><a href="/produtos" class="nav-link"><i class="fas fa-apple-whole"></i> Produtos</a></li>
-                    <li><a href="/feira" class="nav-link"><i class="fas fa-map-location-dot"></i> Feira</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</header>
-
 <main>
     <section class="page_404">
         <div class="container">
-            <div class="hero-error">
-                <div class="four_zero_four_bg">
-                    <h1 class="error-code" th:text="${status != null ? status : 500}">500</h1>
-                </div>
+            <div class="row"> 
+                <div class="col-sm-12">
+                    <div class="col-sm-10 col-sm-offset-1 text-center">
+                        
+                        <div class="four_zero_four_bg">
+                            <h1 class="error-code" th:text="${status != null ? status : 500}">500</h1>
+                        </div>
+                    
+                        <div class="contant_box_404">
+                            <div class="status-pill" th:if="${status != null and status == 404}">
+                                <i class="fas fa-location-crosshairs"></i>
+                                <span>Página não encontrada</span>
+                            </div>
+                            <div class="status-pill" th:if="${status != null and status == 503}">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                <span>Aplicativo em manutenção</span>
+                            </div>
+                            <div class="status-pill" th:if="${status != null and status >= 500 and status != 503}">
+                                <i class="fas fa-bug"></i>
+                                <span>Erro interno do servidor</span>
+                            </div>
+                            <div class="status-pill" th:if="${status != null and status > 0 and status != 404 and status < 500}">
+                                <i class="fas fa-circle-info"></i>
+                                <span>Falha temporária</span>
+                            </div>
 
-                <div class="contant_box_404">
-                    <div class="status-pill" th:if="${status != null and status == 503}">
-                        <i class="fas fa-triangle-exclamation"></i>
-                        <span>Aplicativo em manutenção</span>
+                            <h3 class="h2" th:if="${status != null and status == 404}">Ops! Parece que você se perdeu no campo.</h3>
+                            <h3 class="h2" th:if="${status != null and status == 503}">Estamos em manutenção no momento.</h3>
+                            <h3 class="h2" th:if="${status != null and status >= 500 and status != 503}">Algo saiu errado no servidor.</h3>
+                            <h3 class="h2" th:if="${status != null and status > 0 and status != 404 and status < 500}">Algo não saiu como esperado.</h3>
+                            <h3 class="h2" th:unless="${status != null}">Algo não saiu como esperado.</h3>
+
+                            <p class="text-404" th:if="${status != null and status == 404}">A página que você está procurando não está disponível.</p>
+                            <p class="text-404" th:if="${status != null and status == 503}">O aplicativo está temporariamente em manutenção. Tente novamente daqui a alguns minutos.</p>
+                            <p class="text-404" th:if="${status != null and status >= 500 and status != 503}">Ocorreu uma falha interna no servidor. Estamos trabalhando para resolver o problema.</p>
+                            <p class="text-404" th:if="${status != null and status > 0 and status != 404 and status < 500}">A requisição não pôde ser concluída no momento.</p>
+                            <p class="text-404" th:unless="${status != null}">A página não pôde ser carregada no momento.</p>
+                            
+                        </div>
+                        <div class="actions" th:with="homeUrl=${#authorization.expression('hasRole(''CONSUMIDOR'')') ? '/home_consumidor' : (#authorization.expression('hasRole(''PRODUTOR'')') ? '/home_produtor' : (#authorization.expression('hasRole(''MODERADOR'')') ? '/home_moderador' : '/'))}">
+                        <a th:href="${homeUrl}" class="cta cta-primary"><i class="fas fa-home"></i> Voltar para o início</a>
                     </div>
-                    <div class="status-pill" th:if="${status != null and status >= 500 and status != 503}">
-                        <i class="fas fa-bug"></i>
-                        <span>Erro interno do servidor</span>
-                    </div>
-                    <div class="status-pill" th:if="${status != null and status == 404}">
-                        <i class="fas fa-location-crosshairs"></i>
-                        <span>Página não encontrada</span>
-                    </div>
-                    <div class="status-pill" th:if="${status != null and status > 0 and status != 404 and status < 500}">
-                        <i class="fas fa-circle-info"></i>
-                        <span>Falha temporária</span>
-                    </div>
-
-                    <h3 class="h2" th:if="${status != null and status == 503}">Estamos em manutenção no momento.</h3>
-                    <h3 class="h2" th:if="${status != null and status >= 500 and status != 503}">Algo saiu errado no servidor.</h3>
-                    <h3 class="h2" th:if="${status != null and status == 404}">Ops! Parece que você se perdeu no campo.</h3>
-                    <h3 class="h2" th:if="${status != null and status > 0 and status != 404 and status < 500}">Algo não saiu como esperado.</h3>
-                    <h3 class="h2" th:unless="${status != null}">Algo não saiu como esperado.</h3>
-
-                    <p class="text-404" th:if="${status != null and status == 503}">O aplicativo está temporariamente em manutenção. Tente novamente daqui a alguns minutos.</p>
-                    <p class="text-404" th:if="${status != null and status >= 500 and status != 503}">Ocorreu uma falha interna no servidor. Estamos trabalhando para resolver o problema.</p>
-                    <p class="text-404" th:if="${status != null and status == 404}">A página que você está procurando não está disponível.</p>
-                    <p class="text-404" th:if="${status != null and status > 0 and status != 404 and status < 500}">A requisição não pôde ser concluída no momento.</p>
-                    <p class="text-404" th:unless="${status != null}">A página não pôde ser carregada no momento.</p>
-
-                    <p class="text-404" th:if="${path != null}"><strong>Caminho:</strong> <span th:text="${path}">/</span></p>
-                    <p class="text-404" th:if="${message != null and !message.isBlank()}"><strong>Detalhe:</strong> <span th:text="${message}">Mensagem</span></p>
-
-                    <div class="actions">
-                        <a sec:authorize="hasRole('CONSUMIDOR')" href="/home_consumidor" class="cta cta-primary"><i class="fas fa-home"></i> Voltar para o Início</a>
-                        <a sec:authorize="hasRole('PRODUTOR')" href="/home_produtor" class="cta cta-primary"><i class="fas fa-home"></i> Voltar para o Início</a>
-                        <a sec:authorize="hasRole('MODERADOR')" href="/home_moderador" class="cta cta-primary"><i class="fas fa-home"></i> Voltar para o Início</a>
-                        <a sec:authorize="isAnonymous()" href="/" class="cta cta-primary"><i class="fas fa-home"></i> Voltar para o Início</a>
-                        <a href="javascript:location.reload()" class="cta cta-secondary" th:if="${status != null and status >= 500}"><i class="fas fa-rotate-right"></i> Tentar novamente</a>
-                        <a href="/feira" class="cta cta-secondary"><i class="fas fa-map-location-dot"></i> Ver Feira</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
-
-<footer class="footer" role="contentinfo">
-    <div class="container">
-        <div class="footer-bottom">
-            <p>&copy; 2026 AgroFraiburgo. Todos os direitos reservados.</p>
-        </div>
-    </div>
-</footer>
 
 </body>
 </html>
