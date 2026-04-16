@@ -5,6 +5,8 @@ import org.main.services.JwtService;
 import org.main.services.UsuarioService;
 import org.main.web.annotation.CurrentUserId;
 import org.springframework.core.MethodParameter;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,16 +29,16 @@ public class CurrentUserIdArgumentResolver implements HandlerMethodArgumentResol
     }
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
+    public boolean supportsParameter(@NonNull MethodParameter parameter) {
         return parameter.hasParameterAnnotation(CurrentUserId.class)
                 && (Integer.class.equals(parameter.getParameterType()) || int.class.equals(parameter.getParameterType()));
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter,
-                                  ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(@NonNull MethodParameter parameter,
+                                  @Nullable ModelAndViewContainer mavContainer,
+                                  @NonNull NativeWebRequest webRequest,
+                                  @Nullable WebDataBinderFactory binderFactory) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             return null;
