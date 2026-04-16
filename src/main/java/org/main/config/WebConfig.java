@@ -2,12 +2,15 @@ package org.main.config;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.main.loggings.InterceptorLoggingApi;
+import org.main.web.resolver.CurrentUserIdArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.lang.NonNull;
 
@@ -15,9 +18,12 @@ import org.springframework.lang.NonNull;
 public class WebConfig implements WebMvcConfigurer {
 
     private final InterceptorLoggingApi interceptorLoggingApi;
+    private final CurrentUserIdArgumentResolver currentUserIdArgumentResolver;
 
-    public WebConfig(InterceptorLoggingApi interceptorLoggingApi) {
+    public WebConfig(InterceptorLoggingApi interceptorLoggingApi,
+                     CurrentUserIdArgumentResolver currentUserIdArgumentResolver) {
 		this.interceptorLoggingApi = interceptorLoggingApi;
+        this.currentUserIdArgumentResolver = currentUserIdArgumentResolver;
 	}
 
     @Override
@@ -33,6 +39,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
+
+	@Override
+	public void addArgumentResolvers(@NonNull List<HandlerMethodArgumentResolver> resolvers) {
+		resolvers.add(currentUserIdArgumentResolver);
+	}
     
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {

@@ -8,17 +8,14 @@ import java.time.LocalDate;
 import org.main.enums.StatusConta;
 import org.main.enums.StatusProduto;
 import org.main.enums.TipoUsuario;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.main.models.Usuario;
 import org.main.models.Produto;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.main.repository.AvaliacaoRepository;
 import org.main.repository.FavoritoProdutorRepository;
 import org.main.repository.ProdutoRepository;
 import org.main.repository.UsuarioRepository;
-import org.main.services.JwtService;
 import org.main.services.RecomendacaoService;
 import org.main.services.UsuarioService;
 import org.springframework.stereotype.Controller;
@@ -30,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.main.web.annotation.CurrentUserId;
 
 @Controller
 public class TelasController {
@@ -38,7 +36,6 @@ public class TelasController {
 	private final ProdutoRepository produtoRepository;
 	private final AvaliacaoRepository avaliacaoRepository;
 	private final FavoritoProdutorRepository favoritoProdutorRepository;
-	private final JwtService jwtService;
 	private final UsuarioService usuarioService;
 	private final RecomendacaoService recomendacaoService;
 	
@@ -47,14 +44,12 @@ public class TelasController {
 	                       ProdutoRepository produtoRepository,
 	                       AvaliacaoRepository avaliacaoRepository,
 	                       FavoritoProdutorRepository favoritoProdutorRepository,
-	                       JwtService jwtService,
 	                       RecomendacaoService recomendacaoService) {
 	    this.usuarioService = usuarioService;
 	    this.usuarioRepository = usuarioRepository;
 	    this.produtoRepository = produtoRepository;
 	    this.avaliacaoRepository = avaliacaoRepository;
 	    this.favoritoProdutorRepository = favoritoProdutorRepository;
-	    this.jwtService = jwtService;
 	    this.recomendacaoService = recomendacaoService;
 	}
 
@@ -89,23 +84,16 @@ public class TelasController {
 	}
 
 	@GetMapping("/perfil")
-	public String mostrarPerfilUsuario(Model model, Authentication auth) {
-		Integer idUsuario = currentUserId(auth);
-		if (idUsuario == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
-
-		Usuario usuario = usuarioRepository.findById(idUsuario)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+	public String mostrarPerfilUsuario(Model model, @CurrentUserId Integer idUsuario) {
+		Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
 		model.addAttribute("usuario", usuario);
-		model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+		preencherDadosUsuario(model, usuario);
 		return "perfil_usuario";
 	}
 
 	@PostMapping("/perfil")
-	public String atualizarPerfilUsuario(Authentication auth,
+	public String atualizarPerfilUsuario(@CurrentUserId Integer idUsuario,
 									@RequestParam(required = false) String nome,
 									@RequestParam(required = false) String sobrenome,
 									@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataNascimento,
@@ -117,10 +105,7 @@ public class TelasController {
 									@RequestParam(required = false) MultipartFile imagemPerfil,
 									@RequestParam(required = false) MultipartFile imagemCapa,
 									RedirectAttributes redirectAttributes) {
-		Integer idUsuario = currentUserId(auth);
-		if (idUsuario == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
+		carregarUsuarioObrigatorio(idUsuario);
 
 		try {
 			usuarioService.atualizarPerfilUsuario(idUsuario, nome, sobrenome, dataNascimento, sexo, telefone, email, cidade, estado, imagemPerfil, imagemCapa);
@@ -134,29 +119,21 @@ public class TelasController {
 		return "redirect:/perfil";
 	}
 
-	private Integer currentUserId(Authentication auth) {
-		if (auth == null) {
-			return null;
+	private Usuario carregarUsuarioObrigatorio(Integer idUsuario) {
+		if (idUsuario == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
 		}
 
-		if (auth instanceof UsernamePasswordAuthenticationToken) {
-			String principal = auth.getName();
-			if (principal != null && principal.matches("\\d+")) {
-				return Integer.valueOf(principal);
-			}
+		return usuarioRepository.findById(idUsuario)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+	}
 
-			return usuarioService.buscarPorNomeLogin(principal)
-					.map(Usuario::getIdUsuario)
-					.orElse(null);
-		}
-
-		if (auth instanceof JwtAuthenticationToken jwtAuth) {
-			String token = jwtAuth.getToken().getTokenValue();
-			Long uidLong = jwtService.extractUserId(token);
-			return uidLong != null ? uidLong.intValue() : null;
-		}
-
-		return null;
+	private void preencherDadosUsuario(Model model, Usuario usuario) {
+		model.addAttribute("nome", usuario.getNome());
+		model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
+		model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
+		model.addAttribute("imagemCapa", usuario.getImagemCapa());
+		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
 	}
 	
 	@GetMapping("/upload_documentos")
@@ -165,181 +142,43 @@ public class TelasController {
 	}
 	
 	@GetMapping("/home_produtor")
-	public String homeProdutor(Model model, Authentication auth) {
-	    
-	    if (auth == null) {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-	    }
+	public String homeProdutor(Model model, @CurrentUserId Integer idUsuario) {
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-	    Integer idUsuario = null;
+	    preencherDadosUsuario(model, usuario);
+	    addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
-	    try {
-	        if (auth instanceof UsernamePasswordAuthenticationToken) {
-	            String principal = auth.getName();
-
-	            // Se for número -> OAuth2 / idUsuario
-	            if (principal.matches("\\d+")) {
-	                idUsuario = Integer.valueOf(principal);
-
-	            // Se for texto -> login tradicional
-	            } else {
-	                idUsuario = usuarioService.buscarPorNomeLogin(principal)
-	                        .map(Usuario::getIdUsuario)
-	                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + principal));
-	            }
-
-	        } else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-	            String token = jwtAuth.getToken().getTokenValue();
-	            Long uidLong = jwtService.extractUserId(token);
-	            if (uidLong == null) {
-	                throw new RuntimeException("JWT sem uid");
-	            }
-	            idUsuario = uidLong.intValue();
-
-	        } else {
-	            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-	        }
-
-	        Usuario usuario = usuarioRepository.findById(idUsuario)
-	                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
-
-	        model.addAttribute("nome", usuario.getNome());
-	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-	        model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
-	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
-
-	        return "home_produtor";
-
-	    } catch (Exception e) {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-	    }
+	    return "home_produtor";
 	}
 
 	@GetMapping("/catalogo_produtor")
-	public String catalogoProdutor(Model model, Authentication auth) {
-	    Integer idUsuario = currentUserId(auth);
-	    if (idUsuario == null) {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-	    }
+	public String catalogoProdutor(Model model, @CurrentUserId Integer idUsuario) {
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-	    Usuario usuario = usuarioRepository.findById(idUsuario)
-	            .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
-
-	    model.addAttribute("nome", usuario.getNome());
-	    model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-	    model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-	    model.addAttribute("imagemCapa", usuario.getImagemCapa());
-	    model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 	    addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
 	    return "catalogo_produtor";
 	}
 	
 	@GetMapping("/home_consumidor")
-	public String homeConsumidor(Model model, Authentication auth) {
+	public String homeConsumidor(Model model, @CurrentUserId Integer idUsuario) {
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-	    if (auth == null) {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-	    }
+	    preencherDadosUsuario(model, usuario);
+	    addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
-	    Integer idUsuario = null;
-
-	    try {
-	        if (auth instanceof UsernamePasswordAuthenticationToken) {
-	            String principal = auth.getName();
-
-	            // Se for número -> OAuth2 / idUsuario
-	            if (principal.matches("\\d+")) {
-	                idUsuario = Integer.valueOf(principal);
-
-	            // Se for texto -> login tradicional
-	            } else {
-	                idUsuario = usuarioService.buscarPorNomeLogin(principal)
-	                        .map(Usuario::getIdUsuario)
-	                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + principal));
-	            }
-
-	        } else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-	            String token = jwtAuth.getToken().getTokenValue();
-	            Long uidLong = jwtService.extractUserId(token);
-	            if (uidLong == null) {
-	                throw new RuntimeException("JWT sem uid");
-	            }
-	            idUsuario = uidLong.intValue();
-
-	        } else {
-	            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-	        }
-
-	        Usuario usuario = usuarioRepository.findById(idUsuario)
-	                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
-
-	        model.addAttribute("nome", usuario.getNome());
-	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-	        model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
-	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
-
-	        return "home_consumidor";
-
-	    } catch (Exception e) {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-	    }
+	    return "home_consumidor";
 	}
 	
 	@GetMapping("/home_moderador")
-	public String homeModerador(Model model, Authentication auth) {
-		if (auth == null) {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-	    }
+	public String homeModerador(Model model, @CurrentUserId Integer idUsuario) {
+		Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-	    Integer idUsuario = null;
+		preencherDadosUsuario(model, usuario);
+		addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
 
-	    try {
-	        if (auth instanceof UsernamePasswordAuthenticationToken) {
-	            String principal = auth.getName();
-
-	            // Se for número -> OAuth2 / idUsuario
-	            if (principal.matches("\\d+")) {
-	                idUsuario = Integer.valueOf(principal);
-
-	            // Se for texto -> login tradicional
-	            } else {
-	                idUsuario = usuarioService.buscarPorNomeLogin(principal)
-	                        .map(Usuario::getIdUsuario)
-	                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + principal));
-	            }
-
-	        } else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-	            String token = jwtAuth.getToken().getTokenValue();
-	            Long uidLong = jwtService.extractUserId(token);
-	            if (uidLong == null) {
-	                throw new RuntimeException("JWT sem uid");
-	            }
-	            idUsuario = uidLong.intValue();
-
-	        } else {
-	            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-	        }
-
-	        Usuario usuario = usuarioRepository.findById(idUsuario)
-	                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
-
-	        model.addAttribute("nome", usuario.getNome());
-	        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-	        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-	        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-	        model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
-	        addInicioUsuariosModel(model, idUsuario, usuario.getTipoUsuario());
-
-	        return "home_moderador";
-
-	    } catch (Exception e) {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-	    }
+		return "home_moderador";
 	}
 	
 	// Logout
@@ -548,93 +387,41 @@ public class TelasController {
 	// Telas do produtor
 	//----------------------------------------------------------------------------
 	@GetMapping("/cadastro_produtos")
-	public String cadastrarProdutor(Model model, Authentication auth) {
-		
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-        }
+	public String cadastrarProdutor(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
+	    if (auth == null || !auth.isAuthenticated()) {
+	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
+	    }
 
-        // Checa direto pelas roles já definidas no filtro
-        boolean isProdutor = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_PRODUTOR"));
-        
-		Integer idUsuario = null;
-		try {
-			if (auth instanceof UsernamePasswordAuthenticationToken) {
-				String principal = auth.getName();
-				idUsuario = Integer.valueOf(principal);
-			} else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-				String token = jwtAuth.getToken().getTokenValue();
-				Long uidLong = jwtService.extractUserId(token);
-				if (uidLong == null) {
-					throw new RuntimeException("JWT sem uid");
-				}
-				idUsuario = uidLong.intValue();
-			} else {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-			}
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
+	    boolean isProdutor = auth.getAuthorities().stream()
+	            .anyMatch(a -> a.getAuthority().equals("ROLE_PRODUTOR"));
 
         if (!isProdutor) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito a moderadores");
         }
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-        model.addAttribute("nome", usuario.getNome());
-        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 
         return "cadastro_produtos";
 	}
 	
 	@GetMapping("/lista_produtos")
-	public String listagemProdutor(Model model, Authentication auth) {
-		
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-        }
+	public String listagemProdutor(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
+	    if (auth == null || !auth.isAuthenticated()) {
+	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
+	    }
 
-        // Checa direto pelas roles já definidas no filtro
-        boolean isProdutor = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_PRODUTOR"));
-        
-		Integer idUsuario = null;
-		try {
-			if (auth instanceof UsernamePasswordAuthenticationToken) {
-				String principal = auth.getName();
-				idUsuario = Integer.valueOf(principal);
-			} else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-				String token = jwtAuth.getToken().getTokenValue();
-				Long uidLong = jwtService.extractUserId(token);
-				if (uidLong == null) {
-					throw new RuntimeException("JWT sem uid");
-				}
-				idUsuario = uidLong.intValue();
-			} else {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-			}
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
+	    boolean isProdutor = auth.getAuthorities().stream()
+	            .anyMatch(a -> a.getAuthority().equals("ROLE_PRODUTOR"));
 
         if (!isProdutor) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito a moderadores");
         }
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-        model.addAttribute("nome", usuario.getNome());
-        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 
         return "lista_produtos";
 	}
@@ -643,232 +430,107 @@ public class TelasController {
     // Telas do moderador
     //----------------------------------------------------------------------------
     @GetMapping("/cadastro_moderadores")
-    public String cadastrarModerador(Model model, Authentication auth) {
+	public String cadastrarModerador(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
         }
 
-        // Checa direto pelas roles já definidas no filtro
         boolean isModerador = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"));
-        
-		Integer idUsuario = null;
-		try {
-			if (auth instanceof UsernamePasswordAuthenticationToken) {
-				String principal = auth.getName();
-				idUsuario = Integer.valueOf(principal);
-			} else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-				String token = jwtAuth.getToken().getTokenValue();
-				Long uidLong = jwtService.extractUserId(token);
-				if (uidLong == null) {
-					throw new RuntimeException("JWT sem uid");
-				}
-				idUsuario = uidLong.intValue();
-			} else {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-			}
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
 
         if (!isModerador) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito a moderadores");
         }
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-        model.addAttribute("nome", usuario.getNome());
-        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 
         return "cadastro_moderadores";
     }
     
     @GetMapping("/produtores_pendentes")
-    public String paginaPendentes(Model model, Authentication auth) {
+    public String paginaPendentes(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
         }
 
-        // 🔹 Checa direto pelas roles já definidas no filtro
         boolean isModerador = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"));
-        
-		Integer idUsuario = null;
-		try {
-			if (auth instanceof UsernamePasswordAuthenticationToken) {
-				String principal = auth.getName();
-				idUsuario = Integer.valueOf(principal);
-			} else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-				String token = jwtAuth.getToken().getTokenValue();
-				Long uidLong = jwtService.extractUserId(token);
-				if (uidLong == null) {
-					throw new RuntimeException("JWT sem uid");
-				}
-				idUsuario = uidLong.intValue();
-			} else {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-			}
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
 
         if (!isModerador) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito a moderadores");
         }
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-        model.addAttribute("nome", usuario.getNome());
-        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 
         return "produtores_pendentes";
     }
     
     @GetMapping("/listagem_feiras")
-    public String paginaFeiras(Model model, Authentication auth) {
+    public String paginaFeiras(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
         }
 
-        // Checa direto pelas roles já definidas no filtro
         boolean isModerador = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"));
-        
-		Integer idUsuario = null;
-		try {
-			if (auth instanceof UsernamePasswordAuthenticationToken) {
-				String principal = auth.getName();
-				idUsuario = Integer.valueOf(principal);
-			} else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-				String token = jwtAuth.getToken().getTokenValue();
-				Long uidLong = jwtService.extractUserId(token);
-				if (uidLong == null) {
-					throw new RuntimeException("JWT sem uid");
-				}
-				idUsuario = uidLong.intValue();
-			} else {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-			}
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
 
         if (!isModerador) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito a moderadores");
         }
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-        model.addAttribute("nome", usuario.getNome());
-        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 
         return "listagem_feiras";
     }
     
     @GetMapping("/cadastro_feira")
-    public String cadastrarFeiras(Model model, Authentication auth) {
+    public String cadastrarFeiras(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
         }
 
-        // Checa direto pelas roles já definidas no filtro
         boolean isModerador = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"));
-        
-		Integer idUsuario = null;
-		try {
-			if (auth instanceof UsernamePasswordAuthenticationToken) {
-				String principal = auth.getName();
-				idUsuario = Integer.valueOf(principal);
-			} else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-				String token = jwtAuth.getToken().getTokenValue();
-				Long uidLong = jwtService.extractUserId(token);
-				if (uidLong == null) {
-					throw new RuntimeException("JWT sem uid");
-				}
-				idUsuario = uidLong.intValue();
-			} else {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-			}
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
 
         if (!isModerador) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito a moderadores");
         }
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-        model.addAttribute("nome", usuario.getNome());
-        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 
         return "cadastro_feira";
     }
     
     @GetMapping("/administrar_usuarios")
-    public String administrarUsuarios(Model model, Authentication auth) {
+    public String administrarUsuarios(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
         if (auth == null || !auth.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
         }
 
-        // Checa direto pelas roles já definidas no filtro
         boolean isModerador = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"));
-        
-		Integer idUsuario = null;
-		try {
-			if (auth instanceof UsernamePasswordAuthenticationToken) {
-				String principal = auth.getName();
-				idUsuario = Integer.valueOf(principal);
-			} else if (auth instanceof JwtAuthenticationToken jwtAuth) {
-				String token = jwtAuth.getToken().getTokenValue();
-				Long uidLong = jwtService.extractUserId(token);
-				if (uidLong == null) {
-					throw new RuntimeException("JWT sem uid");
-				}
-				idUsuario = uidLong.intValue();
-			} else {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tipo de autenticação não suportado");
-			}
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login");
-		}
 
         if (!isModerador) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito a moderadores");
         }
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário ainda não finalizou o cadastro"));
+	    Usuario usuario = carregarUsuarioObrigatorio(idUsuario);
 
-        model.addAttribute("nome", usuario.getNome());
-        model.addAttribute("tipoUsuario", usuario.getTipoUsuario());
-        model.addAttribute("imagemPerfil", usuario.getImagemPerfil());
-        model.addAttribute("imagemCapa", usuario.getImagemCapa());
-		model.addAttribute("homeUrl", homeUrlFor(usuario.getTipoUsuario()));
+	    preencherDadosUsuario(model, usuario);
 
         return "moderacao_usuarios";
     }
 
 	@GetMapping({"/moderacao_usuarios", "/moderacao_usuarios.html"})
-	public String moderacaoUsuariosAlias(Model model, Authentication auth) {
-		return administrarUsuarios(model, auth);
+	public String moderacaoUsuariosAlias(Model model, Authentication auth, @CurrentUserId Integer idUsuario) {
+		return administrarUsuarios(model, auth, idUsuario);
 	}
 }
