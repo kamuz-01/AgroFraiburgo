@@ -103,12 +103,14 @@ public class TelasController {
 									@RequestParam(required = false) String cidade,
 									@RequestParam(required = false) String estado,
 									@RequestParam(required = false) MultipartFile imagemPerfil,
-									@RequestParam(required = false) MultipartFile imagemCapa,
+								@RequestParam(defaultValue = "false") boolean removerImagemPerfil,
+								@RequestParam(required = false) MultipartFile imagemCapa,
+								@RequestParam(defaultValue = "false") boolean removerImagemCapa,
 									RedirectAttributes redirectAttributes) {
 		carregarUsuarioObrigatorio(idUsuario);
 
 		try {
-			usuarioService.atualizarPerfilUsuario(idUsuario, nome, sobrenome, dataNascimento, sexo, telefone, email, cidade, estado, imagemPerfil, imagemCapa);
+			usuarioService.atualizarPerfilUsuario(idUsuario, nome, sobrenome, dataNascimento, sexo, telefone, email, cidade, estado, imagemPerfil, removerImagemPerfil, imagemCapa, removerImagemCapa);
 			redirectAttributes.addFlashAttribute("mensagemSucesso", "Dados atualizados com sucesso.");
 		} catch (IllegalArgumentException ex) {
 			redirectAttributes.addFlashAttribute("mensagemErro", ex.getMessage());

@@ -68,7 +68,9 @@ public class UsuarioService {
                                           String cidade,
                                           String estado,
                                           MultipartFile imagemPerfil,
-                                          MultipartFile imagemCapa) throws IOException {
+                                          boolean removerImagemPerfil,
+                                          MultipartFile imagemCapa,
+                                          boolean removerImagemCapa) throws IOException {
         if (idUsuario == null) {
             throw new IllegalArgumentException("Usuário inválido");
         }
@@ -119,6 +121,8 @@ public class UsuarioService {
             Path destino = perfilDir.resolve(perfilNome);
             Files.write(destino, imagemPerfil.getBytes());
             usuario.setImagemPerfil("/imagens-usuarios/" + idUsuario + "/imagem-perfil/" + perfilNome);
+        } else if (removerImagemPerfil) {
+            usuario.setImagemPerfil("/imagens-usuarios/defaults/imagem-perfil/perfil.png");
         }
 
         if (imagemCapa != null && !imagemCapa.isEmpty()) {
@@ -127,6 +131,8 @@ public class UsuarioService {
             Path destino = capaDir.resolve(capaNome);
             Files.write(destino, imagemCapa.getBytes());
             usuario.setImagemCapa("/imagens-usuarios/" + idUsuario + "/imagem-capa/" + capaNome);
+        } else if (removerImagemCapa) {
+            usuario.setImagemCapa("/imagens-usuarios/defaults/imagem-capa/capa.webp");
         }
 
         return usuarioRepository.save(usuario);

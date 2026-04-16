@@ -278,6 +278,67 @@ body {
     box-shadow: none;
 }
 
+.profile-upload {
+    display: grid;
+    gap: 12px;
+}
+
+.profile-upload__preview {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    border: 1px solid rgba(72, 103, 59, 0.12);
+    background: linear-gradient(145deg, rgba(132, 161, 108, 0.10), rgba(255, 255, 255, 0.92));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.profile-upload__preview--avatar {
+    width: min(100%, 280px);
+    height: 240px;
+}
+
+.profile-upload__preview--cover {
+    width: 100%;
+    height: 240px;
+}
+
+.profile-upload__preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-upload__remove {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: rgba(24, 49, 31, 0.82);
+    color: #fff;
+    opacity: 0.96;
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.18);
+    transition: transform 0.18s ease, background-color 0.18s ease;
+}
+
+.profile-upload__remove:hover {
+    transform: translateY(-1px);
+    background: rgba(72, 103, 59, 0.92);
+}
+
+.profile-upload__input.has-file {
+    border-color: var(--perfil-acento);
+}
+
+.profile-upload__remove:not(.is-visible) {
+    display: none;
+}
+
 .profile-form .form-control:focus,
 .profile-form .form-select:focus {
     border-color: var(--perfil-acento);
@@ -320,5 +381,15 @@ body {
 
     .profile-hero__stats {
         grid-template-columns: 1fr;
+    }
+
+    .profile-upload__preview--avatar {
+        width: 100%;
+        height: 200px;
+        margin: 0 auto;
+    }
+
+    .profile-upload__preview--cover {
+        height: 200px;
     }
 }

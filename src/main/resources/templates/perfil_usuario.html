@@ -118,11 +118,33 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Imagem de perfil</label>
-                            <input type="file" name="imagemPerfil" class="form-control form-control-lg" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif">
+                            <div class="profile-upload">
+                                <div class="profile-upload__preview profile-upload__preview--avatar">
+                                    <img id="previewPerfil"
+                                         th:src="${usuario.imagemPerfil != null ? usuario.imagemPerfil : '/imagens-usuarios/defaults/imagem-perfil/perfil.png'}"
+                                         alt="Pré-visualização da imagem de perfil">
+                                    <button type="button" id="removePerfil" class="profile-upload__remove" aria-label="Remover imagem de perfil" title="Remover imagem de perfil">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                                <input type="file" id="imagemPerfil" name="imagemPerfil" class="form-control form-control-lg profile-upload__input" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif">
+                                <input type="hidden" id="removerImagemPerfil" name="removerImagemPerfil" value="false">
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Imagem de capa</label>
-                            <input type="file" name="imagemCapa" class="form-control form-control-lg" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif">
+                            <div class="profile-upload">
+                                <div class="profile-upload__preview profile-upload__preview--cover">
+                                    <img id="previewCapa"
+                                         th:src="${usuario.imagemCapa != null ? usuario.imagemCapa : '/imagens-usuarios/defaults/imagem-capa/capa.webp'}"
+                                         alt="Pré-visualização da imagem de capa">
+                                    <button type="button" id="removeCapa" class="profile-upload__remove" aria-label="Remover imagem de capa" title="Remover imagem de capa">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                                <input type="file" id="imagemCapa" name="imagemCapa" class="form-control form-control-lg profile-upload__input" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif">
+                                <input type="hidden" id="removerImagemCapa" name="removerImagemCapa" value="false">
+                            </div>
                         </div>
                         <div class="col-12 d-flex flex-wrap gap-3 mt-2">
                             <button type="submit" class="btn btn-success btn-lg px-4">Salvar alterações</button>
@@ -163,11 +185,68 @@
     </main>
 
     <script>
-        const fileInputs = document.querySelectorAll('input[type="file"]');
-        fileInputs.forEach((input) => {
+        const uploadConfigs = [
+            {
+                inputId: 'imagemPerfil',
+                previewId: 'previewPerfil',
+                removeId: 'removePerfil',
+                removeFlagId: 'removerImagemPerfil',
+                fallbackSrc: '/imagens-usuarios/defaults/imagem-perfil/perfil.png'
+            },
+            {
+                inputId: 'imagemCapa',
+                previewId: 'previewCapa',
+                removeId: 'removeCapa',
+                removeFlagId: 'removerImagemCapa',
+                fallbackSrc: '/imagens-usuarios/defaults/imagem-capa/capa.webp'
+            }
+        ];
+
+        uploadConfigs.forEach(({ inputId, previewId, removeId, removeFlagId, fallbackSrc }) => {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const removeButton = document.getElementById(removeId);
+            const removeFlag = document.getElementById(removeFlagId);
+
+            if (!input || !preview || !removeButton || !removeFlag) return;
+
+            const resetToCurrent = () => {
+                input.value = '';
+                input.classList.remove('has-file');
+                removeFlag.value = 'true';
+                removeButton.classList.add('is-visible');
+                preview.dataset.current = fallbackSrc;
+                if (!preview.src || preview.src.endsWith('/')) {
+                    preview.src = fallbackSrc;
+                }
+            };
+
             input.addEventListener('change', () => {
-                input.classList.toggle('has-file', input.files.length > 0);
+                const file = input.files && input.files[0];
+                if (!file) {
+                    input.classList.remove('has-file');
+                    return;
+                }
+
+                const url = URL.createObjectURL(file);
+                preview.src = url;
+                preview.dataset.current = url;
+                preview.style.display = 'block';
+                removeButton.classList.add('is-visible');
+                removeFlag.value = 'false';
+                input.classList.add('has-file');
             });
+
+            removeButton.addEventListener('click', () => {
+                resetToCurrent();
+                preview.src = fallbackSrc;
+                preview.dataset.current = fallbackSrc;
+                preview.style.display = 'block';
+                input.classList.remove('has-file');
+            });
+
+            preview.dataset.current = preview.getAttribute('src') || fallbackSrc;
+            removeButton.classList.add('is-visible');
         });
     </script>
 </body>
