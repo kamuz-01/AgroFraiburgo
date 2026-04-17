@@ -143,6 +143,16 @@ public class JwtService {
         }
     }
 
+    public long getTokenRemainingSeconds(String token) {
+        Date expiration = extractAllClaims(token).getExpiration();
+        if (expiration == null) {
+            return -1L;
+        }
+
+        long remainingMillis = expiration.getTime() - System.currentTimeMillis();
+        return Math.max(0L, remainingMillis / 1000L);
+    }
+
     // --------------------------
     // Claims padrão a partir do Authentication (Google, Local)
     // --------------------------
@@ -204,6 +214,19 @@ public class JwtService {
     	}
 
     	return claims;
+    }
+
+    public static Map<String, Object> defaultClaimsFromUsuario(Usuario usuarioLocal, List<String> roles) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("sub", String.valueOf(usuarioLocal.getIdUsuario()));
+        claims.put("uid", usuarioLocal.getIdUsuario());
+        claims.put("roles", roles);
+        claims.put("name", usuarioLocal.getNomeLogin());
+        claims.put("email", usuarioLocal.getEmail());
+        claims.put("provider", usuarioLocal.getOauthProvider() != null ? usuarioLocal.getOauthProvider() : "local");
+        claims.put("fotoPerfil", usuarioLocal.getImagemPerfil());
+        claims.put("fotoCapa", usuarioLocal.getImagemCapa());
+        return claims;
     }
 
     // --------------------------
