@@ -188,6 +188,10 @@ Contributions são bem-vindas! Para contribuir com o projeto, siga os passos aba
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
+## Changelog
+
+Veja as notas de versão em [CHANGELOG.md](CHANGELOG.md).
+
 ## Contato
 
 - 🧑🏽‍💻 **Karli De Jesus Munoz Manzano**
