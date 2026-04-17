@@ -363,8 +363,8 @@
             loadMoreButton.addEventListener('click', async () => {
                 const nextPage = currentPage + 1;
                 loadMoreButton.disabled = true;
-                const originalText = loadMoreButton.textContent;
-                loadMoreButton.textContent = 'Carregando...';
+                const originalText = loadMoreButton.innerHTML;
+                loadMoreButton.innerHTML = '<span class="inline-loading inline-loading--light"><span class="inline-loading__spinner"></span><span>Carregando</span></span>';
 
                 try {
                     const url = new URL('/produtores/carregar-mais', window.location.origin);
@@ -390,12 +390,12 @@
                         loadMoreContainer.remove();
                     } else {
                         loadMoreButton.disabled = false;
-                        loadMoreButton.textContent = originalText;
+                        loadMoreButton.innerHTML = originalText;
                     }
                 } catch (error) {
                     console.error(error);
                     loadMoreButton.disabled = false;
-                    loadMoreButton.textContent = originalText;
+                    loadMoreButton.innerHTML = originalText;
                     alert('Não foi possível carregar mais produtores no momento.');
                 }
             });

@@ -387,6 +387,7 @@
 <script th:inline="none">
 $(document).ready(function () {
     let table = $('#feirasTable').DataTable({
+        processing: true,
         ajax: {
             url: '/api/moderador/feiras',
             dataSrc: '',

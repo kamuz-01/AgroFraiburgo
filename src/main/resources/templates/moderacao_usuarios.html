@@ -368,6 +368,7 @@ function aplicarFiltroUsuariosMobile() {
 }
 
 let tabela = $('#usuariosTable').DataTable({
+  processing: true,
     ajax: {
         url: '/api/moderacao/usuarios',
         dataSrc: '' // porque o backend retorna um array direto

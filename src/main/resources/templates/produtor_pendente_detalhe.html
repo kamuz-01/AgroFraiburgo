@@ -751,6 +751,7 @@
                 const produtorId = Number(form.dataset.produtorId);
                 const status = getSelectedStatus();
                 const textoObservacao = observacao.value.trim();
+                const originalSaveLabel = saveButton.innerHTML;
 
                 if ((status === 'REJEITADO' || status === 'BLOQUEADO') && !textoObservacao) {
                     setFeedback('Informe uma observação antes de salvar essa decisão.', 'error');
@@ -760,7 +761,7 @@
 
                 feedback.className = 'feedback';
                 saveButton.disabled = true;
-                saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                saveButton.innerHTML = '<span class="inline-loading inline-loading--light"><span class="inline-loading__spinner"></span><span>Salvando</span></span>';
 
                 try {
                     const response = await axios.post('/api/moderador/produtores/alterar-status', {
@@ -779,7 +780,7 @@
                     const mensagem = error.response?.data?.erro || error.response?.data?.message || 'Não foi possível atualizar o status.';
                     setFeedback(mensagem, 'error');
                     saveButton.disabled = false;
-                    saveButton.innerHTML = '<i class="fas fa-save"></i> Salvar decisão';
+                    saveButton.innerHTML = originalSaveLabel;
                 }
             });
         })();

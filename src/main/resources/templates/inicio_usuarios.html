@@ -836,6 +836,92 @@
             text-decoration: none !important;
         }
 
+        .dataTables_wrapper .dataTables_processing {
+            position: absolute !important;
+            inset: 50% auto auto 50% !important;
+            transform: translate(-50%, -50%);
+            margin: 0 !important;
+            min-width: min(320px, calc(100vw - 32px));
+            padding: 18px 22px 18px 60px;
+            border: 1px solid rgba(23, 49, 31, 0.12);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.94) !important;
+            color: var(--text) !important;
+            font-weight: 800;
+            text-align: left;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(14px);
+            z-index: 6;
+            font-size: 0 !important;
+            line-height: 0;
+        }
+
+        .dataTables_wrapper .dataTables_processing::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            width: 24px;
+            height: 24px;
+            margin-top: -12px;
+            border-radius: 50%;
+            border: 3px solid rgba(31, 122, 66, 0.16);
+            border-top-color: var(--primary);
+            border-right-color: #2d8c4f;
+            animation: agro-data-table-spin 0.85s linear infinite;
+        }
+
+        .dataTables_wrapper .dataTables_processing::after {
+            content: 'Carregando conteúdo';
+            display: block;
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+
+        .dataTables_wrapper .dataTables_processing > div {
+            display: none;
+        }
+
+        @keyframes agro-data-table-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .inline-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: inherit;
+            font-weight: 800;
+        }
+
+        .inline-loading__spinner {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid rgba(31, 122, 66, 0.18);
+            border-top-color: var(--primary);
+            border-right-color: #2d8c4f;
+            animation: agro-inline-spin 0.85s linear infinite;
+            flex: 0 0 auto;
+        }
+
+        .inline-loading--light .inline-loading__spinner {
+            border-color: rgba(255, 255, 255, 0.25);
+            border-top-color: #fff;
+            border-right-color: #d7f4e1;
+        }
+
+        @keyframes agro-inline-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         .mobile-alert-panel {
             position: absolute;
             left: 0;
@@ -2169,7 +2255,7 @@
                 const nextPage = currentProductPage + 1;
                 const originalLabel = btn.innerHTML;
                 btn.disabled = true;
-                btn.innerHTML = 'Carregando...';
+                btn.innerHTML = '<span class="inline-loading inline-loading--light"><span class="inline-loading__spinner"></span><span>Carregando</span></span>';
 
                 try {
                     const response = await fetch(`/inicio_usuarios/produtos/carregar-mais?page=${nextPage}&size=${productPageSize}`, {

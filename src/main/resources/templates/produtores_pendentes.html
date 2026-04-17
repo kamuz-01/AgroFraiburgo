@@ -111,6 +111,86 @@
         color: #fff;
     }
 
+    .mobile-pendente-card.is-loading {
+        position: relative;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .mobile-pendente-card.is-loading::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent 0%, rgba(31, 122, 66, 0.08) 50%, transparent 100%);
+        transform: translateX(-100%);
+        animation: mobile-pendente-shimmer 1.25s ease-in-out infinite;
+    }
+
+    .mobile-pendente-card__skeleton {
+        display: grid;
+        gap: 10px;
+    }
+
+    .mobile-pendente-card__skeleton-line {
+        height: 12px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #e9f4ec 0%, #d8eadf 50%, #e9f4ec 100%);
+        background-size: 200% 100%;
+    }
+
+    .mobile-pendente-card__skeleton-line--title {
+        width: 72%;
+        height: 16px;
+    }
+
+    .mobile-pendente-card__skeleton-line--short {
+        width: 48%;
+    }
+
+    .mobile-pendente-card__skeleton-line--button {
+        width: 58%;
+        height: 38px;
+        border-radius: 14px;
+        margin-top: 4px;
+    }
+
+    .mobile-pendente-card__loading-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: #1f7a42;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .mobile-pendente-card__loading-label::before {
+        content: '';
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid rgba(31, 122, 66, 0.18);
+        border-top-color: #1f7a42;
+        border-right-color: #2d8c4f;
+        animation: mobile-pendente-spin 0.85s linear infinite;
+    }
+
+    @keyframes mobile-pendente-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes mobile-pendente-shimmer {
+        from {
+            transform: translateX(-100%);
+        }
+        to {
+            transform: translateX(100%);
+        }
+    }
+
     @media (max-width: 991.98px) {
         .mobile-pendentes-wrap {
             display: block;
@@ -202,6 +282,26 @@
         let produtorSelecionado = null;
         let statusSelecionado = null;
         const mobilePendentesCards = document.getElementById('mobilePendentesCards');
+
+        const renderLoadingPendentesMobile = () => {
+            if (!mobilePendentesCards) {
+                return;
+            }
+
+            mobilePendentesCards.innerHTML = Array.from({ length: 3 }).map(() => `
+                <div class="mobile-pendente-card is-loading" aria-busy="true" aria-label="Carregando produtores pendentes">
+                    <div class="mobile-pendente-card__loading-label">Carregando pendências</div>
+                    <div class="mobile-pendente-card__skeleton">
+                        <div class="mobile-pendente-card__skeleton-line mobile-pendente-card__skeleton-line--title"></div>
+                        <div class="mobile-pendente-card__skeleton-line"></div>
+                        <div class="mobile-pendente-card__skeleton-line mobile-pendente-card__skeleton-line--short"></div>
+                        <div class="mobile-pendente-card__skeleton-line mobile-pendente-card__skeleton-line--button"></div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        renderLoadingPendentesMobile();
 
         // Inicializar DataTable
 const table = $('#produtoresTable').DataTable({

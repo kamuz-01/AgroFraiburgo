@@ -375,6 +375,7 @@ $(document).ready(function () {
   };
 
   const tabela = $('#tabelaProdutos').DataTable({
+    processing: true,
     ajax: {
       url: '/api/produtos/me',
       dataSrc: '',
