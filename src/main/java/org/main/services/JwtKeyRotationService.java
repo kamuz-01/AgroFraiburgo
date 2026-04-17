@@ -54,6 +54,8 @@ public class JwtKeyRotationService {
             JwtSigningKey initialKey = createKeyFromBootstrapOrRandom(true);
             log.info("JWT signing key initialized with version {}", initialKey.getKeyVersion());
         }
+
+        synchronizeKeyRetention();
     }
 
     @Scheduled(fixedDelayString = "${jwt.rotation-check-ms:3600000}")
@@ -64,6 +66,7 @@ public class JwtKeyRotationService {
         }
 
         ensureActiveKeyExists();
+        synchronizeKeyRetention();
         rotateIfDue();
         pruneExpiredKeys();
     }
@@ -86,12 +89,14 @@ public class JwtKeyRotationService {
 
     @Transactional
     public List<JwtSigningKey> findUsableKeys() {
-        return jwtSigningKeyRepository.findByExpiresAtAfterOrderByKeyVersionDesc(LocalDateTime.now());
+        return jwtSigningKeyRepository.findAll().stream()
+                .filter(this::isUsable)
+                .toList();
     }
 
     @Transactional
     public boolean isUsable(JwtSigningKey key) {
-        return key != null && key.getExpiresAt() != null && key.getExpiresAt().isAfter(LocalDateTime.now());
+        return key != null && (key.isActive() || (key.getExpiresAt() != null && key.getExpiresAt().isAfter(LocalDateTime.now())));
     }
 
     private void ensureActiveKeyExists() {
@@ -99,8 +104,8 @@ public class JwtKeyRotationService {
             return;
         }
 
-        JwtSigningKey fallback = jwtSigningKeyRepository.findByExpiresAtAfterOrderByKeyVersionDesc(LocalDateTime.now())
-                .stream()
+        JwtSigningKey fallback = jwtSigningKeyRepository.findAll().stream()
+                .filter(this::isUsable)
                 .findFirst()
                 .orElseGet(() -> createKeyFromBootstrapOrRandom(true));
 
@@ -120,6 +125,7 @@ public class JwtKeyRotationService {
         }
 
         activeKey.setActive(false);
+        activeKey.setExpiresAt(maximumRetirementTime(activeKey, LocalDateTime.now()));
         jwtSigningKeyRepository.save(activeKey);
 
         JwtSigningKey newKey = createKeyFromBootstrapOrRandom(true);
@@ -127,7 +133,7 @@ public class JwtKeyRotationService {
     }
 
     private void pruneExpiredKeys() {
-        jwtSigningKeyRepository.deleteByExpiresAtBefore(LocalDateTime.now());
+        jwtSigningKeyRepository.deleteByActiveFalseAndExpiresAtBefore(LocalDateTime.now());
     }
 
     private JwtSigningKey createKeyFromBootstrapOrRandom(boolean active) {
@@ -145,8 +151,56 @@ public class JwtKeyRotationService {
         key.setSecretBase64(secretBase64);
         key.setActive(active);
         key.setCreatedAt(LocalDateTime.now());
-        key.setExpiresAt(LocalDateTime.now().plusSeconds(accessTokenTtlSeconds));
+        key.setExpiresAt(LocalDateTime.now().plus(retentionWindow()));
         return jwtSigningKeyRepository.save(key);
+    }
+
+    // A retenção cobre o tempo em que a chave pode assinar tokens + o TTL máximo desses tokens.
+    private Duration retentionWindow() {
+        return Duration.ofMillis(rotationIntervalMs).plusSeconds(accessTokenTtlSeconds);
+    }
+
+    private LocalDateTime maximumRetirementTime(JwtSigningKey key, LocalDateTime referenceTime) {
+        LocalDateTime minimumRetirement = referenceTime.plusSeconds(accessTokenTtlSeconds);
+        if (key.getCreatedAt() != null) {
+            LocalDateTime scheduledRetirement = key.getCreatedAt().plus(retentionWindow());
+            if (scheduledRetirement.isAfter(minimumRetirement)) {
+                minimumRetirement = scheduledRetirement;
+            }
+        }
+        return minimumRetirement;
+    }
+
+    private void synchronizeKeyRetention() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime activeKeyMinimum = now.plusSeconds(accessTokenTtlSeconds);
+
+        List<JwtSigningKey> keys = jwtSigningKeyRepository.findAll();
+        boolean changed = false;
+
+        for (JwtSigningKey key : keys) {
+            if (key == null) {
+                continue;
+            }
+
+            LocalDateTime desiredExpiresAt;
+            if (key.isActive()) {
+                desiredExpiresAt = activeKeyMinimum;
+            } else if (key.getCreatedAt() != null) {
+                desiredExpiresAt = key.getCreatedAt().plus(retentionWindow());
+            } else {
+                continue;
+            }
+
+            if (key.getExpiresAt() == null || key.getExpiresAt().isBefore(desiredExpiresAt)) {
+                key.setExpiresAt(desiredExpiresAt);
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            jwtSigningKeyRepository.saveAll(keys);
+        }
     }
 
     private String normalizeBootstrapSecret(String value) {

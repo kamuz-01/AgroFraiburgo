@@ -16,7 +16,7 @@ public interface JwtSigningKeyRepository extends JpaRepository<JwtSigningKey, Lo
 
     List<JwtSigningKey> findByExpiresAtAfterOrderByKeyVersionDesc(LocalDateTime referenceTime);
 
-    long deleteByExpiresAtBefore(LocalDateTime referenceTime);
+    long deleteByActiveFalseAndExpiresAtBefore(LocalDateTime referenceTime);
 
     @Query("select coalesce(max(k.keyVersion), 0) from JwtSigningKey k")
     Integer findMaxKeyVersion();
