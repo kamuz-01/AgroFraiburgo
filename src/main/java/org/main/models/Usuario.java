@@ -3,6 +3,7 @@ package org.main.models;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.main.enums.LoginBloqueioEtapa;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
 
@@ -98,4 +99,14 @@ public class Usuario {
 	@Enumerated(EnumType.STRING)
     @Column(name = "status_conta", nullable = false)
     private StatusConta statusConta = StatusConta.ATIVO;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "login_bloqueio_etapa", nullable = false)
+    private LoginBloqueioEtapa loginBloqueioEtapa = LoginBloqueioEtapa.LIVRE;
+
+    @Column(name = "login_falhas_consecutivas", nullable = false)
+    private Integer loginFalhasConsecutivas = 0;
+
+    @Column(name = "login_bloqueado_ate")
+    private LocalDateTime loginBloqueadoAte;
 }

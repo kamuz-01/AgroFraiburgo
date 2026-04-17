@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.LockedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +18,11 @@ import java.util.Optional;
 public class UsuarioDetailsService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
+    private final LoginProtecaoService loginProtecaoService;
 
-    public UsuarioDetailsService(UsuarioRepository usuarioRepository) {
+    public UsuarioDetailsService(UsuarioRepository usuarioRepository, LoginProtecaoService loginProtecaoService) {
         this.usuarioRepository = usuarioRepository;
+        this.loginProtecaoService = loginProtecaoService;
     }
 
     @Override
@@ -34,10 +37,22 @@ public class UsuarioDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Usuário não encontrado: " + login);
         }
 
-        // Verifica status da conta
         if (usuario.getStatusConta() == StatusConta.PENDENTE) {
             throw new UsernameNotFoundException("Conta pendente de aprovação");
         }
+
+        if (usuario.getStatusConta() == StatusConta.REJEITADO) {
+            throw new LockedException("Conta rejeitada");
+        }
+
+        if (usuario.getStatusConta() == StatusConta.BLOQUEADO) {
+            throw new LockedException("Conta bloqueada");
+        }
+
+        loginProtecaoService.mensagemBloqueioAtual(usuario)
+                .ifPresent(mensagem -> {
+                    throw new LockedException(mensagem);
+                });
 
         String role = "ROLE_" + usuario.getTipoUsuario().name();
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
@@ -53,6 +68,14 @@ public class UsuarioDetailsService implements UserDetailsService {
 
         if (usuario.getStatusConta() == StatusConta.PENDENTE) {
             throw new UsernameNotFoundException("Conta pendente de aprovação");
+        }
+
+        if (usuario.getStatusConta() == StatusConta.REJEITADO) {
+            throw new LockedException("Conta rejeitada");
+        }
+
+        if (usuario.getStatusConta() == StatusConta.BLOQUEADO) {
+            throw new LockedException("Conta bloqueada");
         }
 
         String role = "ROLE_" + usuario.getTipoUsuario().name();

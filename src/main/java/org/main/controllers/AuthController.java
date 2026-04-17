@@ -1,19 +1,24 @@
 package org.main.controllers;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.main.DTOs.LoginRequest;
 import org.main.enums.StatusConta;
 import org.main.models.Usuario;
 import org.main.services.JwtService;
+import org.main.services.LoginRateLimitService;
+import org.main.services.LoginProtecaoService;
 import org.main.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,13 +38,19 @@ public class AuthController {
     private final UsuarioService usuarioService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final LoginProtecaoService loginProtecaoService;
+    private final LoginRateLimitService loginRateLimitService;
 
     public AuthController(UsuarioService usuarioService,
                           JwtService jwtService,
-                          AuthenticationManager authenticationManager) {
+                          AuthenticationManager authenticationManager,
+                          LoginProtecaoService loginProtecaoService,
+                          LoginRateLimitService loginRateLimitService) {
         this.usuarioService = usuarioService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.loginProtecaoService = loginProtecaoService;
+        this.loginRateLimitService = loginRateLimitService;
     }
 
     @Value("${jwt.access-token-ttl-seconds}")
@@ -65,11 +76,24 @@ public class AuthController {
     // Login tradicional
     // --------------------------
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request,
+                                   HttpServletRequest httpRequest,
+                                   HttpServletResponse response) {
+        String ip = extrairIpCliente(httpRequest);
+
+        var bloqueioIpAtual = loginRateLimitService.verificarBloqueio(ip);
+        if (bloqueioIpAtual.isPresent()) {
+            var bloqueio = bloqueioIpAtual.get();
+            return ResponseEntity.status(bloqueio.status())
+                    .header(HttpHeaders.RETRY_AFTER, String.valueOf(bloqueio.retryAfterSeconds()))
+                    .body(Map.of("error", bloqueio.message()));
+        }
+
         // Primeiro checa se o usuário existe e se está pendente
         Optional<Usuario> usuarioOpt = usuarioService.buscarPorNomeLogin(request.getNomeLogin());
         if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(404).body(Map.of(
+            loginRateLimitService.registrarFalha(ip, request.getNomeLogin());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
                     "error", "Usuário ou senha inválidos!"
             ));
         }
@@ -81,11 +105,59 @@ public class AuthController {
             ));
         }
 
+        if (usuario.getStatusConta() == StatusConta.REJEITADO) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                    "error", "Sua conta foi rejeitada e não pode acessar a aplicação."
+            ));
+        }
+
+        loginProtecaoService.mensagemBloqueioAtual(usuario).ifPresent(mensagem -> {
+            loginRateLimitService.registrarFalha(ip, request.getNomeLogin());
+            throw new org.springframework.security.authentication.LockedException(mensagem);
+        });
+
         // Autentica no Spring Security
-        Authentication auth = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getNomeLogin(), request.getSenha())
-        );
+        Authentication auth;
+        try {
+            auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getNomeLogin(), request.getSenha())
+            );
+        } catch (org.springframework.security.authentication.LockedException e) {
+            loginRateLimitService.registrarFalha(ip, request.getNomeLogin());
+            return ResponseEntity.status(HttpStatus.LOCKED).body(Map.of(
+                    "error", e.getMessage()
+            ));
+        } catch (AuthenticationException e) {
+            var falhaUsuario = loginProtecaoService.registrarFalha(request.getNomeLogin());
+            var falhaIp = loginRateLimitService.registrarFalha(ip, request.getNomeLogin());
+
+            if (falhaUsuario.isPresent() && falhaUsuario.get().bloqueado()) {
+            return ResponseEntity.status(HttpStatus.LOCKED).body(Map.of(
+                "error", falhaUsuario.get().mensagem()
+            ));
+            }
+
+            if (falhaIp.isPresent()) {
+            var bloqueio = falhaIp.get();
+            return ResponseEntity.status(bloqueio.status())
+                .header(HttpHeaders.RETRY_AFTER, String.valueOf(bloqueio.retryAfterSeconds()))
+                .body(Map.of("error", bloqueio.message()));
+            }
+
+            if (falhaUsuario.isPresent() && falhaUsuario.get().aviso()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "error", falhaUsuario.get().mensagem()
+            ));
+            }
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "error", "Usuário ou senha inválidos!"
+            ));
+        }
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+        loginRateLimitService.registrarSucesso(ip);
+        loginProtecaoService.registrarSucesso(usuario);
 
         // Gera JWT com UID do usuário
         String jwt = jwtService.generateToken(JwtService.defaultClaims(auth, usuario));
@@ -112,6 +184,20 @@ public class AuthController {
                 "message", "Login realizado com sucesso!",
                 "tipoUsuario", tipoUsuario
         ));
+    }
+
+    private String extrairIpCliente(HttpServletRequest request) {
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return forwardedFor.split(",")[0].trim();
+        }
+
+        String realIp = request.getHeader("X-Real-IP");
+        if (realIp != null && !realIp.isBlank()) {
+            return realIp.trim();
+        }
+
+        return request.getRemoteAddr();
     }
 
     // --------------------------

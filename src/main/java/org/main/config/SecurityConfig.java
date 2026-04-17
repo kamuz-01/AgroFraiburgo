@@ -3,6 +3,7 @@ package org.main.config;
 import java.util.Map;
 import org.main.models.Usuario;
 import org.main.services.JwtService;
+import org.main.services.LoginProtecaoService;
 import org.main.services.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +43,9 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, JwtService jwtService, JwtAuthenticationFilter jwtAuthFilter,
-                                    JwtRefreshFilter jwtRefreshFilter, UsuarioService usuarioService) throws Exception {
+                                    JwtRefreshFilter jwtRefreshFilter, UsuarioService usuarioService,
+                                    LoginProtecaoService loginProtecaoService,
+                                    CustomAuthFailureHandler customAuthFailureHandler) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
@@ -130,7 +133,7 @@ public class SecurityConfig {
             // Login formulário tradicional
             .formLogin(form -> form
             	    .loginPage("/login.html")
-            	    .failureHandler(new CustomAuthFailureHandler())
+                    .failureHandler(customAuthFailureHandler)
             	    .permitAll()
             	    .successHandler((request, response, authentication) -> {
             	        // Pega o usuário local correspondente
@@ -141,6 +144,8 @@ public class SecurityConfig {
             	            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Usuário não encontrado");
             	            return;
             	        }
+
+                        loginProtecaoService.registrarSucesso(usuarioLocal);
 
             	        // Gera claims com fotos e informações do usuário
             	        Map<String, Object> claims = JwtService.defaultClaims(authentication, usuarioLocal);
