@@ -4,6 +4,7 @@ import java.util.Map;
 import org.main.models.Usuario;
 import org.main.services.JwtService;
 import org.main.services.LoginProtecaoService;
+import org.main.services.LoginRateLimitService;
 import org.main.services.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -45,6 +47,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http, JwtService jwtService, JwtAuthenticationFilter jwtAuthFilter,
                                     JwtRefreshFilter jwtRefreshFilter, UsuarioService usuarioService,
                                     LoginProtecaoService loginProtecaoService,
+                                    LoginRateLimitService loginRateLimitService,
                                     CustomAuthFailureHandler customAuthFailureHandler) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -136,6 +139,8 @@ public class SecurityConfig {
                     .failureHandler(customAuthFailureHandler)
             	    .permitAll()
             	    .successHandler((request, response, authentication) -> {
+                        String ip = extrairIpCliente(request);
+
             	        // Pega o usuário local correspondente
             	        Usuario usuarioLocal = usuarioService.buscarPorNomeLogin(authentication.getName())
             	                .orElse(null);
@@ -145,6 +150,7 @@ public class SecurityConfig {
             	            return;
             	        }
 
+                        loginRateLimitService.registrarSucesso(ip);
                         loginProtecaoService.registrarSucesso(usuarioLocal);
 
             	        // Gera claims com fotos e informações do usuário
@@ -184,6 +190,8 @@ public class SecurityConfig {
             .oauth2Login(oauth -> oauth
             	    .loginPage("/login.html")
             	    .successHandler((request, response, authentication) -> {
+                        String ip = extrairIpCliente(request);
+
             	        if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
             	            String provider = oauthToken.getAuthorizedClientRegistrationId();
             	            Map<String, Object> attributes = oauthToken.getPrincipal().getAttributes();
@@ -203,6 +211,8 @@ public class SecurityConfig {
             	            cookie.setMaxAge((int) jwtTtl);
             	            cookie.setAttribute("SameSite", "Lax");
             	            response.addCookie(cookie);
+
+                            loginRateLimitService.registrarSucesso(ip);
             	            response.sendRedirect("/home_consumidor");
             	        }
             	    })
@@ -223,5 +233,19 @@ public class SecurityConfig {
             return "/home_moderador";
         }
         return "/pagina_inicial.html"; // fallback padrão
+    }
+
+    private String extrairIpCliente(HttpServletRequest request) {
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return forwardedFor.split(",")[0].trim();
+        }
+
+        String realIp = request.getHeader("X-Real-IP");
+        if (realIp != null && !realIp.isBlank()) {
+            return realIp.trim();
+        }
+
+        return request.getRemoteAddr();
     }
 }
