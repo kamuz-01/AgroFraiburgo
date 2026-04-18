@@ -204,11 +204,9 @@ if ('serviceWorker' in navigator) {
             }, 2000);
 
           } catch (err) {
-            console.error("Erro de login:", err.response?.data || err.message);
-
             Swal.fire({
               icon: "error",
-              title: "Erro de login",
+              title: "Usuário ou senha incorretos",
               text: err.response?.data?.error || "Falha no login",
               confirmButtonText: "Tentar novamente"
             });

@@ -51,7 +51,7 @@ public class JwtKeyRotationService {
         }
 
         if (jwtSigningKeyRepository.count() == 0) {
-            JwtSigningKey initialKey = createKeyFromBootstrapOrRandom(true);
+            JwtSigningKey initialKey = createKey(true, true);
             log.info("JWT signing key initialized with version {}", initialKey.getKeyVersion());
         }
 
@@ -107,7 +107,7 @@ public class JwtKeyRotationService {
         JwtSigningKey fallback = jwtSigningKeyRepository.findAll().stream()
                 .filter(this::isUsable)
                 .findFirst()
-                .orElseGet(() -> createKeyFromBootstrapOrRandom(true));
+                .orElseGet(() -> createKey(true, false));
 
         if (!fallback.isActive()) {
             fallback.setActive(true);
@@ -117,7 +117,7 @@ public class JwtKeyRotationService {
 
     private void rotateIfDue() {
         JwtSigningKey activeKey = jwtSigningKeyRepository.findFirstByActiveTrueOrderByKeyVersionDesc()
-                .orElseGet(() -> createKeyFromBootstrapOrRandom(true));
+                .orElseGet(() -> createKey(true, false));
 
         long ageMs = Duration.between(activeKey.getCreatedAt(), LocalDateTime.now()).toMillis();
         if (ageMs < rotationIntervalMs) {
@@ -128,7 +128,7 @@ public class JwtKeyRotationService {
         activeKey.setExpiresAt(maximumRetirementTime(activeKey, LocalDateTime.now()));
         jwtSigningKeyRepository.save(activeKey);
 
-        JwtSigningKey newKey = createKeyFromBootstrapOrRandom(true);
+        JwtSigningKey newKey = createKey(true, false);
         log.info("JWT signing key rotated from version {} to {}", activeKey.getKeyVersion(), newKey.getKeyVersion());
     }
 
@@ -136,11 +136,10 @@ public class JwtKeyRotationService {
         jwtSigningKeyRepository.deleteByActiveFalseAndExpiresAtBefore(LocalDateTime.now());
     }
 
-    private JwtSigningKey createKeyFromBootstrapOrRandom(boolean active) {
-        String secretBase64 = normalizeBootstrapSecret(bootstrapSecret);
+    private JwtSigningKey createKey(boolean active, boolean useBootstrapSecret) {
+        String secretBase64 = useBootstrapSecret ? normalizeBootstrapSecret(bootstrapSecret) : null;
         if (secretBase64 == null) {
-            SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-            secretBase64 = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            secretBase64 = generateRandomSecretBase64();
         }
 
         Integer maxVersion = jwtSigningKeyRepository.findMaxKeyVersion();
@@ -153,6 +152,11 @@ public class JwtKeyRotationService {
         key.setCreatedAt(LocalDateTime.now());
         key.setExpiresAt(LocalDateTime.now().plus(retentionWindow()));
         return jwtSigningKeyRepository.save(key);
+    }
+
+    private String generateRandomSecretBase64() {
+        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
     }
 
     // A retenção cobre o tempo em que a chave pode assinar tokens + o TTL máximo desses tokens.

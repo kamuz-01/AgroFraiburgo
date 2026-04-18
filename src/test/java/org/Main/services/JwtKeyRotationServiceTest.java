@@ -8,6 +8,7 @@ import org.main.services.JwtKeyRotationService;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,5 +78,38 @@ class JwtKeyRotationServiceTest {
         assertThat(staleInactiveKey.getExpiresAt()).isAfter(now);
         verify(jwtSigningKeyRepository).saveAll(anyList());
         verify(jwtSigningKeyRepository).deleteByActiveFalseAndExpiresAtBefore(any());
+    }
+
+    @Test
+    void rotacaoNaoDeveReutilizarBootstrapSecret() {
+        String bootstrapSecret = "NW/ytddjtVgIxDGDv5QWcUY0UMdSKhi8QJySFerRgjo=";
+        ReflectionTestUtils.setField(service, "bootstrapSecret", bootstrapSecret);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        JwtSigningKey activeKey = new JwtSigningKey();
+        activeKey.setKeyVersion(2);
+        activeKey.setSecretBase64(bootstrapSecret);
+        activeKey.setActive(true);
+        activeKey.setCreatedAt(now.minusHours(25));
+        activeKey.setExpiresAt(now.minusHours(1));
+
+        List<JwtSigningKey> savedKeys = new ArrayList<>();
+
+        when(jwtSigningKeyRepository.findFirstByActiveTrueOrderByKeyVersionDesc()).thenReturn(Optional.of(activeKey));
+        when(jwtSigningKeyRepository.findAll()).thenReturn(List.of(activeKey));
+        when(jwtSigningKeyRepository.findMaxKeyVersion()).thenReturn(2);
+        when(jwtSigningKeyRepository.save(any(JwtSigningKey.class))).thenAnswer(invocation -> {
+            JwtSigningKey savedKey = invocation.getArgument(0);
+            savedKeys.add(savedKey);
+            return savedKey;
+        });
+        when(jwtSigningKeyRepository.deleteByActiveFalseAndExpiresAtBefore(any())).thenReturn(0L);
+
+        service.rotateAndPruneKeys();
+
+        assertThat(savedKeys).hasSize(2);
+        assertThat(savedKeys.get(0).getSecretBase64()).isEqualTo(bootstrapSecret);
+        assertThat(savedKeys.get(1).getSecretBase64()).isNotEqualTo(bootstrapSecret);
     }
 }

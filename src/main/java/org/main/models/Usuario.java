@@ -3,6 +3,7 @@ package org.main.models;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.UpdateTimestamp;
 import org.main.enums.LoginBloqueioEtapa;
 import org.main.enums.StatusConta;
 import org.main.enums.TipoUsuario;
@@ -71,6 +72,7 @@ public class Usuario {
     @Column(name = "criado_em", updatable = false, insertable = false)
     private LocalDateTime criadoEm;
 
+    @UpdateTimestamp
     @Column(name = "atualizado_em", insertable = false)
     private LocalDateTime atualizadoEm;
     
