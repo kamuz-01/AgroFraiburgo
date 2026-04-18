@@ -78,7 +78,7 @@ Navegador moderno com suporte a HTML5 para renderização das páginas Thymeleaf
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/AgroFraiburgo.git
+git clone https://github.com/kamuz-01/AgroFraiburgo.git
 cd AgroFraiburgo
 ```
 
