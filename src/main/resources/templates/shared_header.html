@@ -11,6 +11,65 @@
             opacity: 1;
             text-decoration: none;
         }
+
+        .desktop-rail-collapsed .rail-section {
+            overflow: visible;
+        }
+
+        body.user-shell.desktop-rail-collapsed {
+            overflow-x: hidden;
+        }
+
+        .tooltip-rail {
+            position: fixed;
+            z-index: 10050;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            min-height: 36px;
+            max-width: min(280px, calc(100vw - 24px));
+            border-radius: 14px;
+            background: linear-gradient(135deg, #17311f 0%, #245c34 100%);
+            color: #f7fbf4;
+            font-size: 0.82rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: 0.01em;
+            box-shadow: 0 18px 34px rgba(18, 40, 26, 0.24);
+            border: 1px solid rgba(242, 169, 59, 0.35);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-50%) translateX(-8px) scale(0.98);
+            transition: opacity 0.14s ease, transform 0.14s ease;
+            visibility: hidden;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .tooltip-rail::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: var(--tooltip-arrow-left, -8px);
+            right: var(--tooltip-arrow-right, auto);
+            transform: translateY(-50%);
+            border-width: 8px 8px 8px 0;
+            border-style: solid;
+            border-color: var(--tooltip-arrow-border, transparent rgba(36, 92, 52, 0.96) transparent transparent);
+        }
+
+        .tooltip-rail.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0) scale(1);
+        }
+
+        @media (max-width: 1359px) {
+            .tooltip-rail {
+                display: none !important;
+            }
+        }
     </style>
     <header class="main-header">
         <div class="container header-grid">
@@ -66,14 +125,14 @@
                     <span class="rail-kicker">Menu lateral</span>
                     <strong th:text="${tipoUsuario != null ? tipoUsuario : 'Acesso rápido'}">Acesso rápido</strong>
                 </div>
-                <button class="rail-toggle rail-toggle-fab" type="button" aria-label="Exibir ou esconder menu lateral" aria-controls="desktopRail" aria-expanded="true" data-rail-toggle>
+                <button class="rail-toggle rail-toggle-fab" type="button" aria-label="Exibir ou esconder menu lateral" aria-controls="desktopRail" aria-expanded="true" data-rail-toggle data-tooltip="Esconder menu lateral">
                     <i class="fas fa-xmark rail-toggle-open"></i>
                     <i class="fas fa-bars rail-toggle-closed"></i>
                 </button>
             </div>
 
             <details class="rail-section" th:if="${tipoUsuario.name() == 'CONSUMIDOR'}">
-                <summary>
+                <summary data-tooltip="Explorar produtores, feira e produtos" aria-label="Explorar produtores, feira e produtos">
                     <span class="rail-icon"><i class="fas fa-compass"></i></span>
                     <span class="rail-summary-text">
                         <strong>Explorar</strong>
@@ -82,13 +141,13 @@
                     <i class="fas fa-chevron-down rail-caret"></i>
                 </summary>
                 <div class="rail-links">
-                    <a href="/produtores"><i class="fas fa-users"></i> Produtores</a>
-                    <a href="/feira"><i class="fas fa-map-location-dot"></i> Feira</a>
+                    <a href="/produtores" data-tooltip="Ver produtores" aria-label="Ver produtores"><i class="fas fa-users"></i> Produtores</a>
+                    <a href="/feira" data-tooltip="Ver feira em andamento" aria-label="Ver feira em andamento"><i class="fas fa-map-location-dot"></i> Feira</a>
                 </div>
             </details>
 
             <details class="rail-section" th:if="${tipoUsuario.name() == 'PRODUTOR'}">
-                <summary>
+                <summary data-tooltip="Gerenciar cadastro e vendas" aria-label="Gerenciar cadastro e vendas">
                     <span class="rail-icon"><i class="fas fa-seedling"></i></span>
                     <span class="rail-summary-text">
                         <strong>Produção</strong>
@@ -97,13 +156,13 @@
                     <i class="fas fa-chevron-down rail-caret"></i>
                 </summary>
                 <div class="rail-links">
-                    <a href="/cadastro_produtos"><i class="fas fa-plus-circle"></i> Cadastrar produto</a>
-                    <a href="/lista_produtos"><i class="fas fa-clipboard-list"></i> Administrar produtos</a>
+                    <a href="/cadastro_produtos" data-tooltip="Cadastrar novo produto" aria-label="Cadastrar novo produto"><i class="fas fa-plus-circle"></i> Cadastrar produto</a>
+                    <a href="/lista_produtos" data-tooltip="Administrar produtos cadastrados" aria-label="Administrar produtos cadastrados"><i class="fas fa-clipboard-list"></i> Administrar produtos</a>
                 </div>
             </details>
 
             <details class="rail-section rail-alert-section" th:if="${tipoUsuario.name() == 'MODERADOR'}">
-                <summary id="alertDropdown" class="rail-alert-summary" aria-label="Abrir notificações">
+                <summary id="alertDropdown" class="rail-alert-summary" data-tooltip="Ver notificações e cadastros pendentes" aria-label="Ver notificações e cadastros pendentes">
                     <span class="rail-icon rail-alert-icon">
                         <i class="fas fa-bell"></i>
                         <span class="badge rounded-pill bg-danger alert-count" id="alert-count">0</span>
@@ -115,12 +174,12 @@
                     <i class="fas fa-chevron-down rail-caret"></i>
                 </summary>
                 <ul class="rail-list" id="alert-list" aria-labelledby="alertDropdown">
-                    <li><span class="dropdown-item">Sem novos cadastros</span></li>
+                    <li><span class="dropdown-item" data-tooltip="Sem novos cadastros" aria-label="Sem novos cadastros">Sem novos cadastros</span></li>
                 </ul>
             </details>
 
             <details class="rail-section" th:if="${tipoUsuario.name() == 'MODERADOR'}">
-                <summary>
+                <summary data-tooltip="Ferramentas administrativas" aria-label="Ferramentas administrativas">
                     <span class="rail-icon"><i class="fas fa-shield-halved"></i></span>
                     <span class="rail-summary-text">
                         <strong>Moderação</strong>
@@ -129,10 +188,10 @@
                     <i class="fas fa-chevron-down rail-caret"></i>
                 </summary>
                 <div class="rail-links">
-                    <a href="/cadastro_moderadores"><i class="fas fa-user-plus"></i> Cadastrar moderador</a>
-                    <a href="/cadastro_feira"><i class="fas fa-map-location-dot"></i> Cadastrar feira</a>
-                    <a href="/listagem_feiras"><i class="fas fa-clipboard-list"></i> Consultar feira</a>
-                    <a href="/administrar_usuarios"><i class="fas fa-users-gear"></i> Administrar usuários</a>
+                    <a href="/cadastro_moderadores" data-tooltip="Cadastrar moderador" aria-label="Cadastrar moderador"><i class="fas fa-user-plus"></i> Cadastrar moderador</a>
+                    <a href="/cadastro_feira" data-tooltip="Cadastrar feira" aria-label="Cadastrar feira"><i class="fas fa-map-location-dot"></i> Cadastrar feira</a>
+                    <a href="/listagem_feiras" data-tooltip="Consultar feiras" aria-label="Consultar feiras"><i class="fas fa-clipboard-list"></i> Consultar feira</a>
+                    <a href="/administrar_usuarios" data-tooltip="Administrar usuários" aria-label="Administrar usuários"><i class="fas fa-users-gear"></i> Administrar usuários</a>
                 </div>
             </details>
         </div>
@@ -196,20 +255,107 @@
             const accountDropdown = document.querySelector('.account-dropdown');
             const accountToggle = document.getElementById('userMenuDropdown');
             const accountPanel = accountDropdown ? accountDropdown.querySelector('.account-panel') : null;
+            let tooltipElement = document.getElementById('railTooltip');
 
             if (!body || !header || !rail || !toggle) {
                 return;
             }
+
+            if (!tooltipElement) {
+                tooltipElement = document.createElement('div');
+                tooltipElement.id = 'railTooltip';
+                tooltipElement.className = 'tooltip-rail';
+                tooltipElement.setAttribute('role', 'tooltip');
+                tooltipElement.setAttribute('aria-hidden', 'true');
+                document.body.appendChild(tooltipElement);
+            }
+
+            let tooltipTarget = null;
+            let tooltipHideTimer = null;
 
             const syncRailOffset = () => {
                 const headerBottom = Math.ceil(header.getBoundingClientRect().bottom);
                 body.style.setProperty('--desktop-rail-top', `${headerBottom}px`);
             };
 
+            const placeTooltip = (target) => {
+                if (!tooltipElement || !target) {
+                    return;
+                }
+
+                const rect = target.getBoundingClientRect();
+                const tooltipRect = tooltipElement.getBoundingClientRect();
+                const gap = 14;
+                const viewportPadding = 12;
+
+                let left = rect.right + gap;
+                let top = rect.top + (rect.height / 2);
+
+                if (left + tooltipRect.width > window.innerWidth - viewportPadding) {
+                    left = Math.max(viewportPadding, rect.left - gap - tooltipRect.width);
+                }
+
+                if (top + tooltipRect.height / 2 > window.innerHeight - viewportPadding) {
+                    top = window.innerHeight - viewportPadding - (tooltipRect.height / 2);
+                }
+
+                if (top - tooltipRect.height / 2 < viewportPadding) {
+                    top = viewportPadding + (tooltipRect.height / 2);
+                }
+
+                tooltipElement.style.left = `${left}px`;
+                tooltipElement.style.top = `${top}px`;
+
+                if (left < rect.left) {
+                    tooltipElement.style.setProperty('--tooltip-arrow-left', 'auto');
+                    tooltipElement.style.setProperty('--tooltip-arrow-right', '-8px');
+                    tooltipElement.style.setProperty('--tooltip-arrow-border', 'transparent transparent transparent rgba(36, 92, 52, 0.96)');
+                } else {
+                    tooltipElement.style.setProperty('--tooltip-arrow-left', '-8px');
+                    tooltipElement.style.setProperty('--tooltip-arrow-right', 'auto');
+                    tooltipElement.style.setProperty('--tooltip-arrow-border', 'transparent rgba(36, 92, 52, 0.96) transparent transparent');
+                }
+            };
+
+            const hideTooltip = () => {
+                if (!tooltipElement) {
+                    return;
+                }
+
+                tooltipElement.classList.remove('is-visible');
+                tooltipElement.setAttribute('aria-hidden', 'true');
+                tooltipTarget = null;
+            };
+
+            const showTooltip = (target) => {
+                if (!body.classList.contains('desktop-rail-collapsed')) {
+                    return;
+                }
+
+                const tooltipText = target?.getAttribute('data-tooltip');
+                if (!tooltipText) {
+                    return;
+                }
+
+                if (tooltipHideTimer) {
+                    window.clearTimeout(tooltipHideTimer);
+                    tooltipHideTimer = null;
+                }
+
+                tooltipTarget = target;
+                tooltipElement.textContent = tooltipText;
+                tooltipElement.setAttribute('aria-hidden', 'false');
+                tooltipElement.classList.add('is-visible');
+                placeTooltip(target);
+            };
+
             const applyState = (collapsed) => {
                 body.classList.toggle('desktop-rail-collapsed', collapsed);
                 toggle.setAttribute('aria-expanded', String(!collapsed));
-                toggle.title = collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral';
+                toggle.setAttribute('data-tooltip', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+                if (!collapsed) {
+                    hideTooltip();
+                }
             };
 
             const savedState = window.localStorage ? window.localStorage.getItem(storageKey) : null;
@@ -223,6 +369,26 @@
 
                 if (window.localStorage) {
                     window.localStorage.setItem(storageKey, nextCollapsed ? '1' : '0');
+                }
+            });
+
+            const tooltipTargets = rail.querySelectorAll('[data-tooltip]');
+            tooltipTargets.forEach((target) => {
+                target.addEventListener('mouseenter', () => showTooltip(target));
+                target.addEventListener('focus', () => showTooltip(target));
+                target.addEventListener('mouseleave', () => hideTooltip());
+                target.addEventListener('blur', () => hideTooltip());
+            });
+
+            window.addEventListener('scroll', () => {
+                if (tooltipTarget) {
+                    placeTooltip(tooltipTarget);
+                }
+            }, true);
+
+            window.addEventListener('resize', () => {
+                if (tooltipTarget) {
+                    placeTooltip(tooltipTarget);
                 }
             });
 
@@ -259,6 +425,7 @@
                 document.addEventListener('keydown', function (event) {
                     if (event.key === 'Escape') {
                         closeAccountMenu();
+                        hideTooltip();
                     }
                 });
             }
@@ -293,6 +460,8 @@
                                 link.className = 'dropdown-item';
                                 link.href = '/produtores_pendentes';
                                 link.textContent = produtor.nome || 'Produtor pendente';
+                                link.setAttribute('data-tooltip', produtor.nome || 'Produtor pendente');
+                                link.setAttribute('aria-label', produtor.nome || 'Produtor pendente');
                                 item.appendChild(link);
                                 alertList.appendChild(item);
                             });
@@ -301,6 +470,8 @@
                             const span = document.createElement('span');
                             span.className = 'dropdown-item';
                             span.textContent = 'Sem novos cadastros';
+                            span.setAttribute('data-tooltip', 'Sem novos cadastros');
+                            span.setAttribute('aria-label', 'Sem novos cadastros');
                             item.appendChild(span);
                             alertList.appendChild(item);
                         }
