@@ -3,12 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- JQuery -->
-	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
  	<!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- DataTables CSS -->
-    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <!-- Font Awesome para ícones -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 	<!-- Google Fonts -->
@@ -17,11 +13,17 @@
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="css/estilos-home_moderador.css">
     <link rel="icon" href="imagens/favicon.png" type="image/x-icon">
-<title>Lista de produtores pendentes</title>
+<title>Produtores pendentes</title>
 <style>
     .mobile-pendentes-wrap {
-        display: none;
+        display: block;
         padding: 0 14px 28px;
+    }
+
+    .pendentes-page-shell {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 24px 32px;
     }
 
     .mobile-pendentes-head {
@@ -45,6 +47,7 @@
     .mobile-pendentes-cards {
         display: grid;
         gap: 14px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .mobile-pendente-card {
@@ -82,6 +85,46 @@
         color: #5c6f60;
         font-size: 0.92rem;
         line-height: 1.5;
+    }
+
+    .pendentes-toolbar {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding: 16px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(23, 49, 31, 0.08);
+        box-shadow: 0 14px 30px rgba(18, 40, 26, 0.08);
+    }
+
+    .pendentes-toolbar .form-label {
+        color: #17311f;
+        margin-bottom: 0;
+    }
+
+    .pendentes-toolbar .input-group-text,
+    .pendentes-toolbar .form-control,
+    .pendentes-toolbar .btn {
+        border-radius: 14px;
+    }
+
+    .pendentes-toolbar .form-control:focus {
+        box-shadow: 0 0 0 0.18rem rgba(31, 122, 66, 0.12);
+        border-color: #1f7a42;
+    }
+
+    .pendentes-resumo {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: #5c6f60;
+        font-size: 0.9rem;
+        flex-wrap: wrap;
+    }
+
+    .pendentes-resumo strong {
+        color: #17311f;
     }
 
     .mobile-pendente-card__status {
@@ -176,6 +219,12 @@
         animation: mobile-pendente-spin 0.85s linear infinite;
     }
 
+    .lupa{
+        background-color: #5c6f60;
+        color: whitesmoke;
+        font-weight: bolder;
+    }
+
     @keyframes mobile-pendente-spin {
         to {
             transform: rotate(360deg);
@@ -195,99 +244,85 @@
         .mobile-pendentes-wrap {
             display: block;
         }
+
+        .mobile-pendentes-cards {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .mobile-pendentes-cards {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 </head>
 <body class="user-shell">
    <th:block th:replace="~{shared_header :: homeHeader}"></th:block>
 
-    <div class="container-fluid d-none d-lg-block">
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">
-                            <i class="fas fa-users-cog me-2"></i>
-                            Lista de produtores pendentes
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <table id="produtoresTable" class="table table-striped table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>ID Documento</th>
-                                    <th>CPF</th>
-                                    <th>Doc. Identidade</th>
-                                    <th>Comp. Residência</th>
-                                    <th>Decl. PRONAF</th>
-                                    <th>Cert. Orgânico</th>
-                                    <th>Código Rastreab.</th>
-                                    <th>Inscr. Estadual</th>
-                                    <th>Alvará Sanitário</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+    <div class="container-fluid pendentes-page-shell">
+        <section class="mobile-pendentes-wrap px-0">
+            <div class="mobile-pendentes-head">
+                <h2>Produtores pendentes</h2>
+                <p>Filtre por CPF e abra a análise do cadastro.</p>
+            </div>
+
+            <div class="pendentes-toolbar">
+                <label for="filtroCpf" class="form-label">Buscar por CPF</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                    <input id="filtroCpf" type="search" class="form-control" placeholder="Digite o CPF para filtrar" inputmode="numeric" autocomplete="off">
+                    <button class="btn btn-outline-secondary lupa" type="button" id="limparFiltroCpf">Limpar</button>
+                </div>
+                <div class="pendentes-resumo">
+                    <span id="pendentesResumo">Carregando pendências...</span>
+                    <strong id="pendentesAtivos"></strong>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <section class="container-fluid mobile-pendentes-wrap d-lg-none">
-        <div class="mobile-pendentes-head">
-            <h2>Produtores pendentes</h2>
-            <p>Toque em um card para abrir a tela de análise dos documentos enviados.</p>
-        </div>
-
-        <div id="mobilePendentesCards" class="mobile-pendentes-cards"></div>
-    </section>
-    
-    <!-- Modal para Confirmação de Status -->
-    <div class="modal fade" id="statusModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmar Alteração de Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Deseja alterar o status do produtor <strong id="produtorNome"></strong> para <strong id="novoStatus"></strong>?</p>
-                    <div class="mb-3" id="observacaoDiv" style="display: none;">
-                        <label class="form-label">Observação (opcional):</label>
-                        <textarea class="form-control" id="observacao" rows="3" placeholder="Digite uma observação sobre a decisão..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="confirmarStatus">Confirmar</button>
-                </div>
-            </div>
-        </div>
+            <div id="mobilePendentesCards" class="mobile-pendentes-cards"></div>
+        </section>
     </div>
     
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script th:inline="none">
-    $(document).ready(function() {
-        let produtorSelecionado = null;
-        let statusSelecionado = null;
-        const mobilePendentesCards = document.getElementById('mobilePendentesCards');
+    document.addEventListener('DOMContentLoaded', () => {
+        const cardsContainer = document.getElementById('mobilePendentesCards');
+        const filtroCpf = document.getElementById('filtroCpf');
+        const limparFiltroCpf = document.getElementById('limparFiltroCpf');
+        const pendentesResumo = document.getElementById('pendentesResumo');
+        const pendentesAtivos = document.getElementById('pendentesAtivos');
 
-        const renderLoadingPendentesMobile = () => {
-            if (!mobilePendentesCards) {
+        let todosProdutores = [];
+
+        const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[character]));
+
+        const apenasDigitos = (value) => String(value ?? '').replace(/\D/g, '');
+
+        const formatarCpf = (value) => {
+            const digits = apenasDigitos(value);
+            if (digits.length !== 11) {
+                return value ? String(value) : '';
+            }
+
+            return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        };
+
+        const renderLoadingCards = () => {
+            if (!cardsContainer) {
                 return;
             }
 
-            mobilePendentesCards.innerHTML = Array.from({ length: 3 }).map(() => `
+            cardsContainer.innerHTML = Array.from({ length: 3 }).map(() => `
                 <div class="mobile-pendente-card is-loading" aria-busy="true" aria-label="Carregando produtores pendentes">
                     <div class="mobile-pendente-card__loading-label">Carregando pendências</div>
                     <div class="mobile-pendente-card__skeleton">
@@ -300,355 +335,93 @@
             `).join('');
         };
 
-        renderLoadingPendentesMobile();
-
-        // Inicializar DataTable
-const table = $('#produtoresTable').DataTable({
-    processing: true,
-    serverSide: true, // 🔹 ativa paginação/filtros do DataTables no servidor
-    ajax: {
-        url: '/moderador/produtores/listar',
-        type: 'POST',
-        contentType: "application/json",
-        data: function(d) {
-            return JSON.stringify(d);
-        },
-        dataSrc: "data"
-    },
-    columns: [
-        { data: 'id', width: '50px' },
-        { data: 'idDocumento', width: '90px' },
-        { 
-            data: 'cpf',
-            render: function(data) {
-                return data ? data.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : '';
-            }
-        },
-        {
-            data: 'documentoIdentidade',
-            render: function(data, type, row) {
-                return criarBotaoDownload('documento_identidade', row.id, data);
-            },
-            orderable: false
-        },
-        {
-            data: 'comprovanteResidencia',
-            render: function(data, type, row) {
-                return criarBotaoDownload('comprovante_residencia', row.id, data);
-            },
-            orderable: false
-        },
-        {
-            data: 'declaracaoPronaf',
-            render: function(data, type, row) {
-                return criarBotaoDownload('declaracao_pronaf', row.id, data);
-            },
-            orderable: false
-        },
-        {
-            data: 'certificadoProducaoOrganica',
-            render: function(data, type, row) {
-                return criarBotaoDownload('certificado_producao_organica', row.id, data);
-            },
-            orderable: false
-        },
-        { 
-			data: 'codigoRastreabilidade',
-            render: function(data, type, row) {
-                return criarBotaoDownload('codigo_rastreabilidade', row.id, data);
-            },
-            orderable: false 
-		},
-        { 
-			data: 'numeroInscricaoEstadual',
-            render: function(data, type, row) {
-                return criarBotaoDownload('numero_inscricao_estadual', row.id, data);
-            },
-            orderable: false 
-			
-        },
-        {
-            data: 'alvaraSanitario',
-            render: function(data, type, row) {
-                return criarBotaoDownload('alvara_sanitario', row.id, data);
-            },
-            orderable: false
-        },
-        {
-            data: 'statusConta',
-            render: function(data) {
-                return criarBadgeStatus(data);
-            }
-        },
-        {
-            data: null,
-            render: function(data, type, row) {
-                return criarDropdownStatus(row);
-            },
-            orderable: false,
-            width: '70px'
-        }
-    ],
-    order: [[0, 'desc']],
-    pageLength: 25,
-    language: {
-        url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json'
-    },
-    responsive: true,
-    scrollX: true
-});
-
-        // Função para criar botão de download
-        function criarBotaoDownload(tipoDocumento, produtorId, nomeArquivo) {
-            if (!nomeArquivo) {
-                return '<span class="text-muted"><i class="fas fa-minus"></i> Não enviado</span>';
-            }
-            
-            return `
-                <button class="btn btn-sm btn-outline-primary download-btn" 
-                        data-tipo="${tipoDocumento}" 
-                        data-produtor="${produtorId}"
-                        title="Baixar ${nomeArquivo}">
-                    <i class="fas fa-download me-1"></i>
-                    ${nomeArquivo.length > 20 ? nomeArquivo.substring(0, 20) + '...' : nomeArquivo}
-                </button>
-            `;
-        }
-
-        // Função para criar badge de status
-        function criarBadgeStatus(status) {
-            const statusConfig = {
-                'PENDENTE': { class: 'bg-warning text-dark', icon: 'clock' },
-                'ATIVO': { class: 'bg-success', icon: 'check-circle' },
-                'REJEITADO': { class: 'bg-danger', icon: 'times-circle' },
-                'BLOQUEADO': { class: 'bg-secondary', icon: 'ban' }
-            };
-            
-            const config = statusConfig[status] || { class: 'bg-secondary', icon: 'question' };
-            
-            return `
-                <span class="badge ${config.class}">
-                    <i class="fas fa-${config.icon} me-1"></i>
-                    ${status}
-                </span>
-            `;
-        }
-
-        // Função para criar dropdown de status
-        function criarDropdownStatus(row) {
-            const statusAtual = row.statusConta;
-            const statusOptions = [
-                { value: 'PENDENTE', label: 'Pendente', icon: 'clock', class: 'text-warning' },
-                { value: 'ATIVO', label: 'Ativo', icon: 'check-circle', class: 'text-success' },
-                { value: 'REJEITADO', label: 'Rejeitado', icon: 'times-circle', class: 'text-danger' },
-                { value: 'BLOQUEADO', label: 'Bloqueado', icon: 'ban', class: 'text-secondary' }
-            ];
-
-            let options = statusOptions
-                .filter(opt => opt.value !== statusAtual)
-                .map(opt => `
-                    <li>
-                        <a class="dropdown-item status-option" 
-                           href="#" 
-                           data-status="${opt.value}" 
-                           data-produtor-id="${row.id}"
-                           data-produtor-nome="${row.nome || 'Produtor #' + row.id}">
-                            <i class="fas fa-${opt.icon} me-2 ${opt.class}"></i>
-                            ${opt.label}
-                        </a>
-                    </li>
-                `).join('');
-
-            return `
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                            type="button" 
-                            data-bs-toggle="dropdown">
-                        <i class="fas fa-edit me-1"></i>
-                        Alterar
-                    </button>
-                    <ul class="dropdown-menu">
-                        ${options}
-                    </ul>
+        const renderEmptyState = (message) => {
+            cardsContainer.innerHTML = `
+                <div class="mobile-pendente-card">
+                    <div class="mobile-pendente-card__name">${escapeHtml(message)}</div>
+                    <div class="mobile-pendente-card__meta">Tente ajustar o CPF informado ou volte mais tarde.</div>
                 </div>
             `;
-        }
+        };
 
-        // Event handler para downloads
-		$('#produtoresTable').on('click', '.download-btn', async function () {
-		    const tipo = $(this).data('tipo');
-		    const produtorId = $(this).data('produtor');
-		
-		    const downloadUrl = `/api/moderador/produtores/${produtorId}/documento/${tipo}/download`;
-		
-		    try {
-		        const response = await fetch(downloadUrl, {
-		            method: 'GET',
-		            credentials: 'include' // 🔹 garante envio do cookie AF_AUTH
-		        });
-		
-		        if (!response.ok) {
-		            throw new Error(`Erro ${response.status} ao baixar o arquivo`);
-		        }
-		
-		        // extrair nome sugerido no header Content-Disposition
-		        const contentDisposition = response.headers.get("Content-Disposition");
-		        let filename = "documento.pdf";
-		        if (contentDisposition && contentDisposition.includes("filename=")) {
-		            filename = contentDisposition.split("filename=")[1].replace(/"/g, '');
-		        }
-		
-		        // converter para blob e forçar download
-		        const blob = await response.blob();
-		        const url = window.URL.createObjectURL(blob);
-		
-		        const a = document.createElement("a");
-		        a.href = url;
-		        a.download = filename;
-		        document.body.appendChild(a);
-		        a.click();
-		        a.remove();
-		
-		        window.URL.revokeObjectURL(url);
-		    } catch (err) {
-		        mostrarNotificacao("Erro ao baixar documento: " + err.message, "danger");
-		    }
-		});
+        const renderCards = () => {
+            const filtro = apenasDigitos(filtroCpf?.value);
+            const filtrados = filtro
+                ? todosProdutores.filter((produtor) => apenasDigitos(produtor.cpf).includes(filtro))
+                : todosProdutores;
 
-        async function carregarPendentesMobile() {
-            if (!mobilePendentesCards) {
+            if (pendentesResumo) {
+                pendentesResumo.textContent = filtro
+                    ? `Mostrando ${filtrados.length} de ${todosProdutores.length} pendentes para o CPF pesquisado.`
+                    : `Total de ${todosProdutores.length} produtores pendentes.`;
+            }
+
+            if (pendentesAtivos) {
+                pendentesAtivos.textContent = filtro ? `CPF: ${filtroCpf.value.trim()}` : '';
+            }
+
+            if (!cardsContainer) {
                 return;
             }
 
-            try {
-                const response = await axios.get('/api/moderador/produtores/pendentes', { withCredentials: true });
-                const produtores = response.data || [];
+            if (!filtrados.length) {
+                renderEmptyState(filtro ? 'Nenhum produtor encontrado' : 'Nenhum produtor pendente');
+                return;
+            }
 
-                if (!produtores.length) {
-                    mobilePendentesCards.innerHTML = `
-                        <div class="mobile-pendente-card">
-                            <div class="mobile-pendente-card__name">Nenhum produtor pendente</div>
-                            <div class="mobile-pendente-card__meta">Assim que houver novos cadastros, eles aparecerão aqui.</div>
-                        </div>
-                    `;
-                    return;
-                }
+            cardsContainer.innerHTML = filtrados.map((produtor) => {
+                const id = produtor.idUsuario ?? produtor.id ?? '';
+                const nomeCompleto = produtor.nomeCompleto || `Produtor #${id}`;
+                const cpfFormatado = formatarCpf(produtor.cpf);
+                const local = `${produtor.cidade ?? 'Fraiburgo'}, ${produtor.estado ?? 'SC'}`;
+                const status = produtor.statusConta ?? 'PENDENTE';
 
-                mobilePendentesCards.innerHTML = produtores.map((produtor) => {
-                    const id = produtor.idUsuario ?? produtor.id ?? '';
-                    const nomeCompleto = produtor.nomeCompleto || `Produtor #${id}`;
-                    const local = `${produtor.cidade ?? 'Fraiburgo'}, ${produtor.estado ?? 'SC'}`;
-                    const cpf = produtor.cpf ?? 'CPF não informado';
-                    const status = produtor.statusConta ?? 'PENDENTE';
-
-                    return `
-                        <a class="mobile-pendente-card" href="/produtores_pendentes/${id}">
-                            <div class="mobile-pendente-card__header">
-                                <div>
-                                    <div class="mobile-pendente-card__name">${nomeCompleto}</div>
-                                    <div class="mobile-pendente-card__meta">${local}</div>
-                                </div>
-                                <span class="mobile-pendente-card__status">${status}</span>
+                return `
+                    <a class="mobile-pendente-card" href="/produtores_pendentes/${id}">
+                        <div class="mobile-pendente-card__header">
+                            <div>
+                                <div class="mobile-pendente-card__name">${escapeHtml(nomeCompleto)}</div>
+                                <div class="mobile-pendente-card__meta">CPF: ${escapeHtml(cpfFormatado)}</div>
                             </div>
-                            <div class="mobile-pendente-card__meta">${cpf}</div>
-                            <span class="mobile-pendente-card__action">
-                                <i class="fas fa-folder-open"></i>
-                                Abrir análise
-                            </span>
-                        </a>
-                    `;
-                }).join('');
-            } catch (error) {
-                mobilePendentesCards.innerHTML = `
-                    <div class="mobile-pendente-card">
-                        <div class="mobile-pendente-card__name">Erro ao carregar pendências</div>
-                        <div class="mobile-pendente-card__meta">Atualize a página para tentar novamente.</div>
-                    </div>
+                            <span class="mobile-pendente-card__status">${escapeHtml(status)}</span>
+                        </div>
+                        <div class="mobile-pendente-card__meta">${escapeHtml(local)}</div>
+                        <span class="mobile-pendente-card__action">
+                            <i class="fas fa-folder-open"></i>
+                            Abrir análise
+                        </span>
+                    </a>
                 `;
-                console.error('Erro ao carregar pendências no mobile', error);
+            }).join('');
+        };
+
+        const carregarPendentes = async () => {
+            try {
+                renderLoadingCards();
+                const response = await axios.get('/api/moderador/produtores/pendentes', { withCredentials: true });
+                todosProdutores = Array.isArray(response.data) ? response.data : [];
+                renderCards();
+            } catch (error) {
+                console.error('Erro ao carregar pendências', error);
+                renderEmptyState('Erro ao carregar pendências');
+                if (pendentesResumo) {
+                    pendentesResumo.textContent = 'Atualize a página para tentar novamente.';
+                }
             }
-        }
+        };
 
-        carregarPendentesMobile();
+        filtroCpf?.addEventListener('input', renderCards);
 
-        // Event handler para alteração de status
-        $('#produtoresTable').on('click', '.status-option', function(e) {
-		    e.preventDefault();
-		            
-		    produtorSelecionado = $(this).data('produtor-id');
-		    statusSelecionado = $(this).data('status');
-		    const produtorNome = $(this).data('produtor-nome');
-		    
-		    $('#produtorNome').text(produtorNome);
-		    $('#novoStatus').text(statusSelecionado);
-		    
-		    if (statusSelecionado === 'REJEITADO' || statusSelecionado === 'BLOQUEADO') {
-		        $('#observacaoDiv').show();
-		    } else {
-		        $('#observacaoDiv').hide();
-		    }
-		    
-		    $('#statusModal').modal('show');
-		});
-
-        // Confirmar alteração de status
-		$('#confirmarStatus').click(function() {
-		    const observacao = $('#observacao').val().trim();
-		
-		    // 🔹 valida obrigatoriedade
-		    if ((statusSelecionado === 'REJEITADO' || statusSelecionado === 'BLOQUEADO') && observacao === "") {
-		        $('#observacao').addClass('is-invalid');
-		        return;
-		    } else {
-		        $('#observacao').removeClass('is-invalid');
-		    }
-		
-		    $.ajax({
-		        url: "/api/moderador/produtores/alterar-status",
-		        method: "POST",
-		        contentType: "application/json",
-		        data: JSON.stringify({
-		            idProdutor: produtorSelecionado,
-		            novoStatus: statusSelecionado,
-		            observacao: observacao
-		        }),
-		        success: function(res) {
-		            Swal.fire({
-		                icon: 'success',
-		                title: 'Sucesso!',
-		                text: res.mensagem,
-		                confirmButtonColor: '#3085d6',
-		                confirmButtonText: 'OK'
-		            }).then(() => {
-		                $('#statusModal').modal('hide');
-		                $('#produtoresTable').DataTable().ajax.reload(null, false);
-		            });
-		        },
-		        error: function(err) {
-		            Swal.fire({
-		                icon: 'error',
-		                title: 'Erro!',
-		                text: err.responseJSON?.erro || "Erro ao atualizar status",
-		                confirmButtonColor: '#d33',
-		                confirmButtonText: 'OK'
-		            });
-		        }
-		    });
-		    
-		 // Quando o modal for fechado, limpa campo e erro visual
-		    $('#statusModal').on('hidden.bs.modal', function () {
-		        $('#observacao').val('').removeClass('is-invalid');
-		        $('#observacaoErro').hide();
-		    });
-		});
-
-        // Remove erro assim que o moderador digita algo
-        $('#observacao').on('input', function() {
-            if ($(this).val().trim() !== "") {
-                $(this).removeClass('is-invalid');
-                $('#observacaoErro').hide();
+        limparFiltroCpf?.addEventListener('click', () => {
+            if (filtroCpf) {
+                filtroCpf.value = '';
+                filtroCpf.focus();
             }
+
+            renderCards();
         });
+
+        carregarPendentes();
     });
 </script>
 
