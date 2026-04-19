@@ -89,15 +89,11 @@ public class ModeracaoProdutorController {
                     .stream()
                     .findFirst()
                     .orElse(null);
-            Integer avaliacoesRecebidas = produtorRepository.findById(u.getIdUsuario())
-                .map(Produtor::getAvaliacoesRecebidas)
-                .orElse(0);
 
             return new ProdutorDTO(
                     u.getIdUsuario(),
                     u.getNome() + " " + u.getSobrenome(),
                     u.getCpf(),
-                avaliacoesRecebidas,
                     doc != null ? doc.getIdDocumento() : null,
                     doc != null ? doc.getDocumentoIdentidade() : null,
                     doc != null ? doc.getComprovanteResidencia() : null,
