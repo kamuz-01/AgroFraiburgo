@@ -49,9 +49,29 @@ public class SecurityConfig {
                                     LoginProtecaoService loginProtecaoService,
                                     LoginRateLimitService loginRateLimitService,
                                     CustomAuthFailureHandler customAuthFailureHandler) throws Exception {
+        String contentSecurityPolicy = "default-src 'self'; "
+                + "base-uri 'self'; "
+                + "object-src 'none'; "
+                + "frame-ancestors 'self'; "
+                + "form-action 'self'; "
+                + "img-src 'self' data: https:; "
+                + "font-src 'self' https: data:; "
+                + "style-src 'self' 'unsafe-inline' https:; "
+                + "script-src 'self' 'unsafe-inline' https:; "
+                + "connect-src 'self' https:;";
+
         http
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
+            .headers(headers -> headers
+                .contentSecurityPolicy(csp -> csp.policyDirectives(contentSecurityPolicy))
+                .frameOptions(frame -> frame.sameOrigin())
+                .contentTypeOptions(Customizer.withDefaults())
+                .httpStrictTransportSecurity(hsts -> hsts
+                    .includeSubDomains(true)
+                    .preload(true)
+                    .maxAgeInSeconds(31536000))
+            )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(jwtRefreshFilter, JwtAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
