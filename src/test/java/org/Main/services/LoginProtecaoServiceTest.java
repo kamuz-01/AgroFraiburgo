@@ -131,7 +131,7 @@ class LoginProtecaoServiceTest {
     }
 
     @Test
-    void registrarSucessoDeveLimparFalhasSemMudarOEstagio() {
+    void registrarSucessoDeveLimparFalhasEVoltarOEstagioParaLivre() {
         Usuario usuario = usuarioAtivo();
         usuario.setLoginBloqueioEtapa(LoginBloqueioEtapa.BLOQUEIO_12H);
         usuario.setLoginFalhasConsecutivas(2);
@@ -139,7 +139,7 @@ class LoginProtecaoServiceTest {
 
         loginProtecaoService.registrarSucesso(usuario);
 
-        assertThat(usuario.getLoginBloqueioEtapa()).isEqualTo(LoginBloqueioEtapa.BLOQUEIO_12H);
+        assertThat(usuario.getLoginBloqueioEtapa()).isEqualTo(LoginBloqueioEtapa.LIVRE);
         assertThat(usuario.getLoginFalhasConsecutivas()).isZero();
         assertThat(usuario.getLoginBloqueadoAte()).isNull();
         verify(usuarioRepository).save(usuario);

@@ -135,6 +135,7 @@ public class LoginProtecaoService {
             return;
         }
 
+        usuario.setLoginBloqueioEtapa(LoginBloqueioEtapa.LIVRE);
         usuario.setLoginFalhasConsecutivas(0);
         usuario.setLoginBloqueadoAte(null);
         usuarioRepository.save(usuario);
