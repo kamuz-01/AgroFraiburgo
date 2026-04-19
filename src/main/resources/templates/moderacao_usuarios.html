@@ -24,6 +24,33 @@
             padding: 0 14px 28px;
         }
 
+        .card-body .dataTables_wrapper {
+          width: 100%;
+        }
+
+        .card-body .dataTables_wrapper .row {
+          width: 100%;
+          margin-left: 0;
+          margin-right: 0;
+          --bs-gutter-x: 0;
+        }
+
+        .card-body .dataTables_wrapper .row > * {
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        .card-body table.dataTable {
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        .usuarios-moderacao-layout {
+            margin-top: 25px !important;
+            margin-bottom: 50px !important;
+            width: 100% !important;
+        }
+
         .mobile-usuarios-head {
             display: grid;
             gap: 6px;
@@ -180,7 +207,7 @@
 </head>
 <body class="user-shell">
 	<th:block th:replace="~{shared_header :: homeHeader}"></th:block>
-  <div class="container-fluid d-none d-lg-block">
+  <div class="container-fluid usuarios-moderacao-layout d-none d-lg-block">
   <div class="row">
     <div class="col-12">
       <div class="card shadow">
@@ -369,6 +396,7 @@ function aplicarFiltroUsuariosMobile() {
 
 let tabela = $('#usuariosTable').DataTable({
   processing: true,
+  autoWidth: false,
     ajax: {
         url: '/api/moderacao/usuarios',
         dataSrc: '' // porque o backend retorna um array direto
