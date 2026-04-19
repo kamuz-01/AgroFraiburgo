@@ -382,28 +382,44 @@ public class UsuarioService {
                     String nomeCompleto = (String) attributes.get("name");
                     String email = (String) attributes.get("email");
 
-                    if (email == null || email.isBlank()) {
-                        email = provider + "_" + oauthId + "@noemail.com";
+                    if (email != null) {
+                        email = email.trim();
                     }
 
                     String nome = null;
                     String sobrenome = null;
-                    if (nomeCompleto != null) {
-                        String[] partes = nomeCompleto.split(" ", 2);
+                    if (nomeCompleto != null && !nomeCompleto.isBlank()) {
+                        String[] partes = nomeCompleto.trim().split(" ", 2);
                         nome = partes[0];
                         if (partes.length > 1) sobrenome = partes[1];
                     }
 
-                    Usuario u = new Usuario();
-                    u.setNome(nome);
-                    u.setSobrenome(sobrenome);
+                    Usuario usuarioExistente = null;
+                    if (email != null && !email.isBlank()) {
+                        usuarioExistente = usuarioRepository.findByEmail(email).orElse(null);
+                    }
+
+                    Usuario u = usuarioExistente != null ? usuarioExistente : new Usuario();
+                    if (nome != null && (u.getNome() == null || u.getNome().isBlank())) {
+                        u.setNome(nome);
+                    } else if (u.getNome() == null || u.getNome().isBlank()) {
+                        u.setNome(provider + "_" + oauthId);
+                    }
+                    if (sobrenome != null && (u.getSobrenome() == null || u.getSobrenome().isBlank())) {
+                        u.setSobrenome(sobrenome);
+                    }
+                    if (email == null || email.isBlank()) {
+                        email = provider + "_" + oauthId + "@noemail.com";
+                    }
                     u.setEmail(email);
                     u.setOauthProvider(provider);
                     u.setOauthId(oauthId);
-                    u.setTipoUsuario(TipoUsuario.CONSUMIDOR);
-                    u.setNome(nome != null ? nome : provider + "_" + oauthId);
+                    if (u.getTipoUsuario() == null) {
+                        u.setTipoUsuario(TipoUsuario.CONSUMIDOR);
+                    }
+
                     try {
-                        u = usuarioRepository.save(u);
+                        u = usuarioRepository.saveAndFlush(u);
                         Path baseUsuario = BASE_DIR.resolve(String.valueOf(u.getIdUsuario()));
                         Path perfilDir = baseUsuario.resolve("imagem-perfil");
                         Path capaDir = baseUsuario.resolve("imagem-capa");
@@ -439,13 +455,15 @@ public class UsuarioService {
                         u.setImagemPerfil("/imagens-usuarios/defaults/imagem-perfil/perfil.png");
                         u.setImagemCapa("/imagens-usuarios/defaults/imagem-capa/capa.webp");
                     }
-                    
+
                     u = usuarioRepository.saveAndFlush(u);
 
-                 // Envia e-mail de boas-vindas após cadastro via OAuth2
-                 emailBoasVindasService.enviarEmailBoasVindas(u);
+                    if (usuarioExistente == null) {
+                        // Envia e-mail de boas-vindas apenas no primeiro cadastro via OAuth2
+                        emailBoasVindasService.enviarEmailBoasVindas(u);
+                    }
 
-                 return u;
+                    return u;
                 });
     }
     

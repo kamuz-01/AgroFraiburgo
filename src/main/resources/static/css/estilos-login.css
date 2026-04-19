@@ -551,6 +551,7 @@ p.frase-topo {
   align-items: center;
   gap: 5px;
   justify-content: center;
+  text-decoration: none;
 }
 
 .google-btn {
@@ -558,6 +559,7 @@ p.frase-topo {
   margin-right: 8px;
   transition: background-color 0.3s, border-color 0.3s;
   border-color: #ccc;
+  color: #4a4a4a;
 }
 
 .google-btn:hover{

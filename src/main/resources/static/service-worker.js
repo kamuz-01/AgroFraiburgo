@@ -1,5 +1,5 @@
 // Alterar o nome do cache para forçar atualização
-const CACHE_NAME = 'agrofraiburgo-cache-v6'; // incrementado para v6
+const CACHE_NAME = 'agrofraiburgo-cache-v1'; // incrementado para v1
 
 const URLS_TO_CACHE = [
   '/',
@@ -29,6 +29,16 @@ const AUTHENTICATED_PATHS = [
   '/home_produtor.html',
   '/home_moderador'
 ];
+
+const OAUTH2_PATH_PREFIXES = [
+  '/oauth2/',
+  '/login/oauth2/'
+];
+
+function usaCredenciais(url) {
+  return AUTHENTICATED_PATHS.includes(url.pathname)
+    || url.pathname.startsWith('/api/');
+}
 
 // Instala o service worker e adiciona arquivos no cache
 self.addEventListener('install', event => {
@@ -72,8 +82,19 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return;
+  }
+
   if (request.method !== 'GET') {
     event.respondWith(fetch(request));
+    return;
+  }
+
+  if (OAUTH2_PATH_PREFIXES.some(prefix => url.pathname.startsWith(prefix))) {
+    event.respondWith(
+      fetch(request, { credentials: 'include', redirect: 'follow' })
+    );
     return;
   }
 
@@ -100,7 +121,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.match(request)
         .then(cachedResponse => {
-          return cachedResponse || fetch(request, { credentials: 'omit' })
+          return cachedResponse || fetch(request, { credentials: usaCredenciais(url) ? 'include' : 'omit' })
             .then(networkResponse => {
               if (networkResponse && networkResponse.status === 200) {
                 return caches.open(CACHE_NAME).then(cache => {
