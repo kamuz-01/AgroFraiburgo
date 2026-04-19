@@ -260,4 +260,5 @@ a:hover {
 .container-fluid{
 	margin-top: 25px !important;
 	margin-bottom: 50px !important;
+    width: 80% !important;
 }

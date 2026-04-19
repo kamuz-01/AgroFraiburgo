@@ -180,7 +180,7 @@
 </head>
 <body class="user-shell">
 	<th:block th:replace="~{shared_header :: homeHeader}"></th:block>
-   <div class="container-fluid d-none d-lg-block">
+  <div class="container-fluid d-none d-lg-block">
   <div class="row">
     <div class="col-12">
       <div class="card shadow">
@@ -374,14 +374,14 @@ let tabela = $('#usuariosTable').DataTable({
         dataSrc: '' // porque o backend retorna um array direto
     },
     columns: [
-        { data: 'idUsuario' },
-        { data: 'nome' },
-        { data: 'sobrenome' },
-        { data: 'cpf' },
-        { data: 'tipoUsuario' },
-        { data: 'cidade' },
-        { data: 'estado' },
-        { data: 'statusConta' },
+        { data: 'idUsuario', width: '5%' },
+        { data: 'nome', width: '8%' },
+        { data: 'sobrenome', width: '7%' },
+        { data: 'cpf', width: '7%' },
+        { data: 'tipoUsuario', width: '10%' },
+        { data: 'cidade', width: '8%' },
+        { data: 'estado', width: '6%' },
+        { data: 'statusConta', width: '7%' },
         {
             data: null,
             render: function (data, type, row) {
@@ -402,7 +402,7 @@ let tabela = $('#usuariosTable').DataTable({
                         ${options}
                     </select>
                 `;
-            }
+            }, width: '7%'
         }
     ],
     language: {
