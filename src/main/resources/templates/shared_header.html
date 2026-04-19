@@ -459,7 +459,7 @@
                                 const link = document.createElement('a');
                                 link.className = 'dropdown-item';
                                 link.href = '/produtores_pendentes';
-                                link.textContent = produtor.nome || 'Produtor pendente';
+                                link.innerHTML = `<i class="fas fa-user me-2"></i><span>${produtor.nome || 'Produtor pendente'}</span>`;
                                 link.setAttribute('data-tooltip', produtor.nome || 'Produtor pendente');
                                 link.setAttribute('aria-label', produtor.nome || 'Produtor pendente');
                                 item.appendChild(link);
