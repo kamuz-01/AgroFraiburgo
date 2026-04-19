@@ -48,6 +48,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping
 public class ModeracaoProdutorController {
 
+    private static final Path DOCS_DIR = Path.of(System.getProperty("user.dir"), "documentos-produtores").normalize();
+
     private final UsuarioRepository usuarioRepository;
     private final DocumentosProdutorRepository documentosProdutorRepository;
 	private final ProdutorRepository produtorRepository;
@@ -324,6 +326,10 @@ public class ModeracaoProdutorController {
 
         // 🔹 Monta o caminho absoluto real
         Path caminhoArquivo = Path.of(System.getProperty("user.dir")).resolve(relativo).normalize();
+
+        if (!caminhoArquivo.startsWith(DOCS_DIR)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Documento não encontrado.");
+        }
 
         if (!Files.exists(caminhoArquivo)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Arquivo não encontrado.");

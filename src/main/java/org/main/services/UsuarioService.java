@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import org.main.DTOs.CadastroUsuarioDTO;
 import org.main.DTOs.DocumentosProdutorDTO;
 import org.main.exceptions.UsuarioNaoEncontradoException;
@@ -118,7 +119,7 @@ public class UsuarioService {
 
         if (imagemPerfil != null && !imagemPerfil.isEmpty()) {
             UploadFileValidator.FileTypeInfo perfilInfo = UploadFileValidator.validarImagem(imagemPerfil, "A imagem de perfil");
-            String perfilNome = "perfil_" + System.currentTimeMillis() + perfilInfo.extension();
+            String perfilNome = gerarNomeArquivoSeguro("perfil", perfilInfo.extension());
             Path destino = perfilDir.resolve(perfilNome);
             Files.write(destino, imagemPerfil.getBytes());
             usuario.setImagemPerfil("/imagens-usuarios/" + idUsuario + "/imagem-perfil/" + perfilNome);
@@ -128,7 +129,7 @@ public class UsuarioService {
 
         if (imagemCapa != null && !imagemCapa.isEmpty()) {
             UploadFileValidator.FileTypeInfo capaInfo = UploadFileValidator.validarImagem(imagemCapa, "A imagem de capa");
-            String capaNome = "capa_" + System.currentTimeMillis() + capaInfo.extension();
+            String capaNome = gerarNomeArquivoSeguro("capa", capaInfo.extension());
             Path destino = capaDir.resolve(capaNome);
             Files.write(destino, imagemCapa.getBytes());
             usuario.setImagemCapa("/imagens-usuarios/" + idUsuario + "/imagem-capa/" + capaNome);
@@ -228,7 +229,7 @@ public class UsuarioService {
 
         // Upload imagem perfil
         if (dto.getImagemPerfil() != null && !dto.getImagemPerfil().isEmpty()) {
-            String perfilNome = "perfil_" + System.currentTimeMillis() + ".png";
+            String perfilNome = gerarNomeArquivoSeguro("perfil", "png");
             Path destino = perfilDir.resolve(perfilNome);
             dto.getImagemPerfil().transferTo(destino.toFile());
             salvo.setImagemPerfil("/imagens-usuarios/" + salvo.getIdUsuario() + "/imagem-perfil/" + perfilNome);
@@ -238,7 +239,7 @@ public class UsuarioService {
 
         // Upload imagem capa
         if (dto.getImagemCapa() != null && !dto.getImagemCapa().isEmpty()) {
-            String capaNome = "capa_" + System.currentTimeMillis() + ".png";
+            String capaNome = gerarNomeArquivoSeguro("capa", "png");
             Path destino = capaDir.resolve(capaNome);
             dto.getImagemCapa().transferTo(destino.toFile());
             salvo.setImagemCapa("/imagens-usuarios/" + salvo.getIdUsuario() + "/imagem-capa/" + capaNome);
@@ -252,43 +253,43 @@ public class UsuarioService {
 
         if (documentos.getDocIdentidade() != null && !documentos.getDocIdentidade().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getDocIdentidade(), "O documento de identidade");
-            String fileName = "identidade_" + System.currentTimeMillis() + ".pdf";
+            String fileName = gerarNomeArquivoSeguro("identidade", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getDocIdentidade().getBytes());
             doc.setDocumentoIdentidade("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getComprovanteResidencia() != null && !documentos.getComprovanteResidencia().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getComprovanteResidencia(), "O comprovante de residência");
-            String fileName = "residencia_" + System.currentTimeMillis() + ".pdf";
+            String fileName = gerarNomeArquivoSeguro("residencia", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getComprovanteResidencia().getBytes());
             doc.setComprovanteResidencia("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getCadastroAgriculturaFamiliar() != null && !documentos.getCadastroAgriculturaFamiliar().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getCadastroAgriculturaFamiliar(), "O cadastro de agricultura familiar");
-            String fileName = "pronaf_" + System.currentTimeMillis() + ".pdf";
+            String fileName = gerarNomeArquivoSeguro("pronaf", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getCadastroAgriculturaFamiliar().getBytes());
             doc.setDeclaracaoPronaf("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getCertificadoOrganico() != null && !documentos.getCertificadoOrganico().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getCertificadoOrganico(), "O certificado orgânico");
-            String fileName = "organico_" + System.currentTimeMillis() + ".pdf";
+            String fileName = gerarNomeArquivoSeguro("organico", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getCertificadoOrganico().getBytes());
             doc.setCertificadoOrganico("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getCodigoRastreabilidade() != null && !documentos.getCodigoRastreabilidade().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getCodigoRastreabilidade(), "O código de rastreabilidade");
-            String fileName = "rastreabilidade_" + System.currentTimeMillis() + ".pdf";
+            String fileName = gerarNomeArquivoSeguro("rastreabilidade", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getCodigoRastreabilidade().getBytes());
             doc.setCodigoRastreabilidade("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getInscricaoEstadual() != null && !documentos.getInscricaoEstadual().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getInscricaoEstadual(), "A inscrição estadual");
-            String fileName = "inscricao_" + System.currentTimeMillis() + ".pdf";
+            String fileName = gerarNomeArquivoSeguro("inscricao", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getInscricaoEstadual().getBytes());
             doc.setNumeroInscricaoEstadual("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
         if (documentos.getAlvaraSanitario() != null && !documentos.getAlvaraSanitario().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getAlvaraSanitario(), "O alvará sanitário");
-            String fileName = "alvara_" + System.currentTimeMillis() + ".pdf";
+            String fileName = gerarNomeArquivoSeguro("alvara", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getAlvaraSanitario().getBytes());
             doc.setAlvaraSanitario("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
         }
@@ -344,7 +345,7 @@ public class UsuarioService {
 
         if (dto.getImagemPerfil() != null && !dto.getImagemPerfil().isEmpty()) {
             UploadFileValidator.FileTypeInfo perfilInfo = UploadFileValidator.validarImagem(dto.getImagemPerfil(), "A imagem de perfil");
-            String perfilNome = "perfil_" + System.currentTimeMillis() + perfilInfo.extension();
+            String perfilNome = gerarNomeArquivoSeguro("perfil", perfilInfo.extension());
             Path destino = perfilDir.resolve(perfilNome);
             Files.write(destino, dto.getImagemPerfil().getBytes());
             salvo.setImagemPerfil("/imagens-usuarios/" + salvo.getIdUsuario() + "/imagem-perfil/" + perfilNome);
@@ -354,13 +355,18 @@ public class UsuarioService {
 
         if (dto.getImagemCapa() != null && !dto.getImagemCapa().isEmpty()) {
             UploadFileValidator.FileTypeInfo capaInfo = UploadFileValidator.validarImagem(dto.getImagemCapa(), "A imagem de capa");
-            String capaNome = "capa_" + System.currentTimeMillis() + capaInfo.extension();
+            String capaNome = gerarNomeArquivoSeguro("capa", capaInfo.extension());
             Path destino = capaDir.resolve(capaNome);
             Files.write(destino, dto.getImagemCapa().getBytes());
             salvo.setImagemCapa("/imagens-usuarios/" + salvo.getIdUsuario() + "/imagem-capa/" + capaNome);
         } else {
             salvo.setImagemCapa("/imagens-usuarios/defaults/imagem-capa/capa.webp");
         }
+    }
+
+    private String gerarNomeArquivoSeguro(String prefixo, String extensao) {
+        String sufixo = extensao.startsWith(".") ? extensao : "." + extensao;
+        return prefixo + "_" + UUID.randomUUID().toString().replace("-", "") + sufixo;
     }
 
     // Login via OAuth2
