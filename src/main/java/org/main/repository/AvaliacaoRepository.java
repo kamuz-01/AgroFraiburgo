@@ -29,6 +29,16 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
     @Query("select avg(a.nota) from Avaliacao a where a.idProdutor = :idProdutor")
     Double buscarMediaPorProdutor(@Param("idProdutor") Integer idProdutor);
 
+    @Query("""
+        select a.idProdutor as idProdutor,
+               avg(a.nota) as media,
+               count(distinct a.idConsumidor) as totalUsuarios
+        from Avaliacao a
+        where a.idProdutor in :idsProdutores
+        group by a.idProdutor
+        """)
+    List<ProdutorRatingResumo> buscarRatingsPorProdutores(@Param("idsProdutores") List<Integer> idsProdutores);
+
     @Query("select a.idProdutor as idProdutor, avg(a.nota) as media, count(distinct a.idConsumidor) as totalUsuarios " +
            "from Avaliacao a group by a.idProdutor order by avg(a.nota) desc, count(distinct a.idConsumidor) desc")
     List<ProdutorRatingResumo> listarTopProdutores(Pageable pageable);

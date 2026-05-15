@@ -7,13 +7,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import jakarta.transaction.Transactional;
 import org.main.models.Produto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
 
+    @EntityGraph(attributePaths = "produtor")
     List<Produto> findTop4ByOrderByDataCriacaoDesc();
+
+    @Override
+    @EntityGraph(attributePaths = "produtor")
+    Page<Produto> findAll(Pageable pageable);
 
     @EntityGraph(attributePaths = "produtor")
     List<Produto> findTop4ByProdutor_IdProdutorOrderByDataCriacaoDesc(Integer idProdutor);
@@ -24,6 +32,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
     @EntityGraph(attributePaths = "produtor")
     List<Produto> findAllByProdutor_IdProdutor(Integer idProdutor);
 
+    @EntityGraph(attributePaths = "produtor")
     @Query("""
         SELECT p
         FROM Produto p
@@ -36,9 +45,13 @@ public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
           AND (:maxPreco IS NULL OR p.preco <= :maxPreco)
         ORDER BY p.dataCriacao DESC
         """)
-    List<Produto> buscarPorTermoEPreco(@Param("termo") String termo,
+    Page<Produto> buscarPorTermoEPreco(@Param("termo") String termo,
                                        @Param("minPreco") Double minPreco,
-                                       @Param("maxPreco") Double maxPreco);
+                                       @Param("maxPreco") Double maxPreco,
+                                       Pageable pageable);
+
+    @EntityGraph(attributePaths = "produtor")
+    Optional<Produto> findById(Integer idProduto);
 
     @EntityGraph(attributePaths = "produtor")
     Optional<Produto> findByIdProdutoAndProdutor_IdProdutor(Integer idProduto, Integer idProdutor);

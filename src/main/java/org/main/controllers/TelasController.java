@@ -2,6 +2,8 @@ package org.main.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Objects;
 import java.time.LocalDate;
 
@@ -240,12 +242,17 @@ public class TelasController {
 
 	private List<ProdutoCard> toProdutoCards(List<Produto> produtos) {
 		List<ProdutoCard> cards = new ArrayList<>();
+		List<Integer> idsProdutores = idsProdutoresDosProdutos(produtos);
+		Map<Integer, Usuario> produtoresPorId = usuariosPorId(idsProdutores);
+		Map<Integer, RatingStats> ratingsPorProdutor = ratingsPorProdutorIds(idsProdutores);
+
 		for (Produto produto : produtos) {
 			if (produto == null) continue;
 			Integer idProdutor = produto.getProdutor() != null ? produto.getProdutor().getIdProdutor() : null;
-			Usuario produtor = (idProdutor != null) ? usuarioRepository.findById(idProdutor).orElse(null) : null;
-
-			RatingStats rating = (idProdutor != null) ? ratingForProdutor(idProdutor) : RatingStats.vazio();
+			Usuario produtor = idProdutor != null ? produtoresPorId.get(idProdutor) : null;
+			RatingStats rating = idProdutor != null
+					? ratingsPorProdutor.getOrDefault(idProdutor, RatingStats.vazio())
+					: RatingStats.vazio();
 
 			cards.add(new ProdutoCard(
 					produto.getIdProduto(),
@@ -265,10 +272,14 @@ public class TelasController {
 
 	private List<ProdutorCard> toProdutorCards(List<Usuario> produtores) {
 		List<ProdutorCard> cards = new ArrayList<>();
+		List<Integer> idsProdutores = idsUsuarios(produtores);
+		Map<Integer, RatingStats> ratingsPorProdutor = ratingsPorProdutorIds(idsProdutores);
+		Map<Integer, Long> favoritosPorProdutor = favoritosPorProdutorIds(idsProdutores);
+
 		for (Usuario usuario : produtores) {
 			if (usuario == null) continue;
-			RatingStats rating = ratingForProdutor(usuario.getIdUsuario());
-			long totalFavoritos = favoritoProdutorRepository.countFavoritosPorProdutor(usuario.getIdUsuario());
+			RatingStats rating = ratingsPorProdutor.getOrDefault(usuario.getIdUsuario(), RatingStats.vazio());
+			long totalFavoritos = favoritosPorProdutor.getOrDefault(usuario.getIdUsuario(), 0L);
 			cards.add(new ProdutorCard(
 					usuario.getIdUsuario(),
 					usuario.getNome(),
@@ -291,6 +302,70 @@ public class TelasController {
 		long total = avaliacaoRepository.contarConsumidoresDistintosPorProdutor(idProdutor);
 		Double media = avaliacaoRepository.buscarMediaPorProdutor(idProdutor);
 		return new RatingStats(media, total);
+	}
+
+	private List<Integer> idsProdutoresDosProdutos(List<Produto> produtos) {
+		if (produtos == null || produtos.isEmpty()) {
+			return List.of();
+		}
+
+		return produtos.stream()
+				.filter(Objects::nonNull)
+				.map(Produto::getProdutor)
+				.filter(Objects::nonNull)
+				.map(produtor -> produtor.getIdProdutor())
+				.filter(Objects::nonNull)
+				.distinct()
+				.toList();
+	}
+
+	private List<Integer> idsUsuarios(List<Usuario> usuarios) {
+		if (usuarios == null || usuarios.isEmpty()) {
+			return List.of();
+		}
+
+		return usuarios.stream()
+				.filter(Objects::nonNull)
+				.map(Usuario::getIdUsuario)
+				.filter(Objects::nonNull)
+				.distinct()
+				.toList();
+	}
+
+	private Map<Integer, Usuario> usuariosPorId(List<Integer> idsUsuarios) {
+		if (idsUsuarios == null || idsUsuarios.isEmpty()) {
+			return Map.of();
+		}
+
+		Map<Integer, Usuario> usuarios = new HashMap<>();
+		usuarioRepository.findAllById(idsUsuarios).forEach(usuario -> usuarios.put(usuario.getIdUsuario(), usuario));
+		return usuarios;
+	}
+
+	private Map<Integer, RatingStats> ratingsPorProdutorIds(List<Integer> idsProdutores) {
+		if (idsProdutores == null || idsProdutores.isEmpty()) {
+			return Map.of();
+		}
+
+		Map<Integer, RatingStats> ratings = new HashMap<>();
+		avaliacaoRepository.buscarRatingsPorProdutores(idsProdutores).forEach(resumo -> {
+			long total = resumo.getTotalUsuarios() == null ? 0L : resumo.getTotalUsuarios();
+			ratings.put(resumo.getIdProdutor(), new RatingStats(resumo.getMedia(), total));
+		});
+		return ratings;
+	}
+
+	private Map<Integer, Long> favoritosPorProdutorIds(List<Integer> idsProdutores) {
+		if (idsProdutores == null || idsProdutores.isEmpty()) {
+			return Map.of();
+		}
+
+		Map<Integer, Long> favoritos = new HashMap<>();
+		favoritoProdutorRepository.contarFavoritosPorProdutores(idsProdutores).forEach(resumo -> {
+			long total = resumo.getTotalFavoritos() == null ? 0L : resumo.getTotalFavoritos();
+			favoritos.put(resumo.getIdProdutor(), total);
+		});
+		return favoritos;
 	}
 
 	private String iniciais(String nome, String sobrenome) {
