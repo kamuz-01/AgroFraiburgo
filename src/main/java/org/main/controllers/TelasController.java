@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.time.LocalDate;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.main.enums.StatusConta;
 import org.main.enums.StatusProduto;
 import org.main.enums.TipoUsuario;
@@ -185,7 +187,18 @@ public class TelasController {
 	
 	// Logout
     @GetMapping("/logout")
-    public String logout() {
+    public String logout(HttpServletResponse response) {
+        Cookie authCookie = new Cookie("AF_AUTH", "");
+        authCookie.setHttpOnly(true);
+        authCookie.setPath("/");
+        authCookie.setMaxAge(0);
+        response.addCookie(authCookie);
+
+        Cookie csrfCookie = new Cookie("XSRF-TOKEN", "");
+        csrfCookie.setPath("/");
+        csrfCookie.setMaxAge(0);
+        response.addCookie(csrfCookie);
+
         return "redirect:/login?logout=true";
     }
 

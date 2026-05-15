@@ -2179,6 +2179,7 @@
             </div>
         </footer>
 
+        <script src="/js/csrf.js"></script>
         <script th:inline="javascript">
             let currentProductPage = /*[[${currentProductPage}]]*/ 0;
             const productPageSize = /*[[${pageSizeProdutos}]]*/ 4;
@@ -2321,9 +2322,9 @@
                 try {
                     const res = await fetch(`/api/favoritos/produtos/${productId}/toggle`, {
                         method: 'POST',
-                        headers: {
+                        headers: window.csrfHeaders({
                             'Accept': 'application/json'
-                        }
+                        })
                     });
 
                     if (res.status === 401) {

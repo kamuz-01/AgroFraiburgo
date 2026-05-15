@@ -280,6 +280,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/csrf.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
    <script th:inline="none"> 
@@ -485,9 +486,14 @@ $('#confirmarStatus').click(function () {
         return;
     }
 
-    $.post(`/api/moderacao/usuarios/${usuarioIdSelecionado}/status`, {
-        novoStatus: novoStatusSelecionado,
-        observacao: observacao
+    $.ajax({
+        url: `/api/moderacao/usuarios/${usuarioIdSelecionado}/status`,
+        method: 'POST',
+        headers: window.csrfHeaders(),
+        data: {
+            novoStatus: novoStatusSelecionado,
+            observacao: observacao
+        }
     }).done(function (res) {
         Swal.fire('Sucesso', res.message, 'success');
         $('#statusModal').modal('hide');

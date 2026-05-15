@@ -367,6 +367,7 @@
         </div>
     </div>
 
+    <script src="/js/csrf.js"></script>
     <script>
         document.addEventListener('click', async function (e) {
             const btn = e.target.closest('.js-favoritar-produtor');
@@ -380,9 +381,9 @@
             try {
                 const res = await fetch(`/api/favoritos/produtores/${produtorId}/toggle`, {
                     method: 'POST',
-                    headers: {
+                    headers: window.csrfHeaders({
                         'Accept': 'application/json'
-                    }
+                    })
                 });
 
                 if (res.status === 401) {

@@ -1,6 +1,7 @@
 package org.main.config;
 
 import java.util.Map;
+import java.io.IOException;
 import org.main.models.Usuario;
 import org.main.services.JwtService;
 import org.main.services.LoginProtecaoService;
@@ -19,7 +20,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,8 +68,14 @@ public class SecurityConfig {
                 + "script-src 'self' 'unsafe-inline' https:; "
                 + "connect-src 'self' https:;";
 
+        CsrfTokenRequestAttributeHandler csrfRequestHandler = new CsrfTokenRequestAttributeHandler();
+        csrfRequestHandler.setCsrfRequestAttributeName("_csrf");
+
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrfTokenRequestHandler(csrfRequestHandler)
+            )
             .cors(Customizer.withDefaults())
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp.policyDirectives(contentSecurityPolicy))
@@ -72,6 +86,7 @@ public class SecurityConfig {
                     .preload(true)
                     .maxAgeInSeconds(31536000))
             )
+            .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(jwtRefreshFilter, JwtAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
@@ -267,5 +282,18 @@ public class SecurityConfig {
         }
 
         return request.getRemoteAddr();
+    }
+
+    private static final class CsrfCookieFilter extends OncePerRequestFilter {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        FilterChain filterChain) throws ServletException, IOException {
+            CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+            if (csrfToken != null) {
+                csrfToken.getToken();
+            }
+            filterChain.doFilter(request, response);
+        }
     }
 }
