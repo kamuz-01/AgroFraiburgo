@@ -251,23 +251,6 @@ public class AuthController {
 
         Map<String, Object> profile = fbResponse.getBody();
 
-        // Extrai url da foto e coloca num campo "fotoPerfil" (seu JwtService já entende isso)
-        if (profile != null) {
-            Object pictureObj = profile.get("picture");
-            if (pictureObj instanceof Map<?, ?> pictureMap) {
-                Object dataObj = pictureMap.get("data");
-                if (dataObj instanceof Map<?, ?> dataMap) {
-                    Object urlObj = dataMap.get("url");
-                    if (urlObj instanceof String fotoUrl && !fotoUrl.isBlank()) {
-                        profile.put("fotoPerfil", fotoUrl);
-                    }
-                    // (opcional) se quiser logar tamanho retornado:
-                    // profile.put("fotoWidth", dataMap.get("width"));
-                    // profile.put("fotoHeight", dataMap.get("height"));
-                }
-            }
-        }
-
         if (profile != null && profile.containsKey("id")) {
             Usuario u = usuarioService.processOAuthPostLogin("facebook", profile);
 

@@ -169,14 +169,10 @@ public class JwtService {
             claims.put("email", oauthUser.getAttribute("email"));
             claims.put("provider", ((OAuth2AuthenticationToken) authentication)
                     .getAuthorizedClientRegistrationId());
-            claims.put("fotoPerfil", oauthUser.getAttribute("picture"));
-            claims.put("fotoCapa", oauthUser.getAttribute("cover")); // caso exista
         } else if (authentication.getPrincipal() instanceof User user) {
             claims.put("name", user.getUsername());
             claims.put("email", usuarioLocal.getEmail());
             claims.put("provider", "local");
-            claims.put("fotoPerfil", usuarioLocal.getImagemPerfil());
-            claims.put("fotoCapa", usuarioLocal.getImagemCapa());
         }
 
         return claims;
@@ -194,25 +190,6 @@ public class JwtService {
     	claims.put("email", profile.get("email"));
     	claims.put("provider", profile.getOrDefault("provider", "facebook"));
 
-     // Extrai foto de perfil
-    	Object pictureObj = profile.get("picture");
-    	if (pictureObj instanceof Map pictureMap) {
-    		Object dataObj = pictureMap.get("data");
-    		if (dataObj instanceof Map dataMap) {
-    			claims.put("fotoPerfil", dataMap.get("url"));
-    		}
-    	} else if (pictureObj instanceof String url) {
-    		claims.put("fotoPerfil", url);
-    	}
-
-     // Extrai foto de capa
-    	Object coverObj = profile.get("cover");
-    	if (coverObj instanceof Map coverMap) {
-    		claims.put("fotoCapa", coverMap.get("source"));
-    	} else if (coverObj instanceof String url) {
-    		claims.put("fotoCapa", url);
-    	}
-
     	return claims;
     }
 
@@ -224,8 +201,6 @@ public class JwtService {
         claims.put("name", usuarioLocal.getNomeLogin());
         claims.put("email", usuarioLocal.getEmail());
         claims.put("provider", usuarioLocal.getOauthProvider() != null ? usuarioLocal.getOauthProvider() : "local");
-        claims.put("fotoPerfil", usuarioLocal.getImagemPerfil());
-        claims.put("fotoCapa", usuarioLocal.getImagemCapa());
         return claims;
     }
 
