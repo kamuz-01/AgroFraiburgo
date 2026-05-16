@@ -13,7 +13,23 @@ public interface RecuperacaoSenhaTokenRepository extends JpaRepository<Recuperac
 
     Optional<RecuperacaoSenhaToken> findByTokenAndUsadoEmIsNullAndExpiraEmAfter(String token, LocalDateTime agora);
 
+    boolean existsByUsuario_IdUsuarioAndCriadoEmAfter(Integer idUsuario, LocalDateTime depoisDe);
+
+    long countByUsuario_IdUsuarioAndCriadoEmAfter(Integer idUsuario, LocalDateTime depoisDe);
+
+    long countByIpAddressAndCriadoEmAfter(String ipAddress, LocalDateTime depoisDe);
+
     @Modifying
     @Query("delete from RecuperacaoSenhaToken t where t.usuario.idUsuario = :idUsuario")
     void deleteAllByUsuarioId(@Param("idUsuario") Integer idUsuario);
+
+    @Modifying
+    @Query("""
+        update RecuperacaoSenhaToken t
+        set t.usadoEm = :agora
+        where t.usuario.idUsuario = :idUsuario
+          and t.usadoEm is null
+        """)
+    int marcarTokensAtivosComoUsados(@Param("idUsuario") Integer idUsuario,
+                                     @Param("agora") LocalDateTime agora);
 }

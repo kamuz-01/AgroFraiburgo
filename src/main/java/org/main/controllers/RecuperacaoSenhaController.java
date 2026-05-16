@@ -35,7 +35,7 @@ public class RecuperacaoSenhaController {
                     .replaceQuery(null)
                     .build()
                     .toUriString();
-            recuperacaoSenhaService.solicitarRecuperacaoSenha(email, baseUrl);
+            recuperacaoSenhaService.solicitarRecuperacaoSenha(email, baseUrl, extrairIpCliente(request));
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Se o e-mail estiver cadastrado, você receberá instruções para redefinir a senha.");
         } catch (IllegalArgumentException ex) {
             redirectAttributes.addFlashAttribute("mensagemErro", ex.getMessage());
@@ -65,5 +65,19 @@ public class RecuperacaoSenhaController {
             redirectAttributes.addFlashAttribute("mensagemErro", ex.getMessage());
             return "redirect:/redefinir_senha?token=" + token;
         }
+    }
+
+    private String extrairIpCliente(HttpServletRequest request) {
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return forwardedFor.split(",")[0].trim();
+        }
+
+        String realIp = request.getHeader("X-Real-IP");
+        if (realIp != null && !realIp.isBlank()) {
+            return realIp.trim();
+        }
+
+        return request.getRemoteAddr();
     }
 }

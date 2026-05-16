@@ -7,6 +7,7 @@ import org.main.models.RecuperacaoSenhaToken;
 import org.main.models.Usuario;
 import org.main.repository.RecuperacaoSenhaTokenRepository;
 import org.main.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,41 +22,102 @@ public class RecuperacaoSenhaService {
     private final RecuperacaoSenhaTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final int intervaloMinimoEmailMinutos;
+    private final int maxSolicitacoesEmail;
+    private final int janelaEmailMinutos;
+    private final int maxSolicitacoesIp;
+    private final int janelaIpMinutos;
 
     public RecuperacaoSenhaService(UsuarioRepository usuarioRepository,
                                    RecuperacaoSenhaTokenRepository tokenRepository,
                                    PasswordEncoder passwordEncoder,
-                                   EmailService emailService) {
+                                   EmailService emailService,
+                                   @Value("${app.security.password-reset.email-min-interval-minutes:2}") int intervaloMinimoEmailMinutos,
+                                   @Value("${app.security.password-reset.email.max-attempts:5}") int maxSolicitacoesEmail,
+                                   @Value("${app.security.password-reset.email.window-minutes:60}") int janelaEmailMinutos,
+                                   @Value("${app.security.password-reset.ip.max-attempts:10}") int maxSolicitacoesIp,
+                                   @Value("${app.security.password-reset.ip.window-minutes:15}") int janelaIpMinutos) {
         this.usuarioRepository = usuarioRepository;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.intervaloMinimoEmailMinutos = intervaloMinimoEmailMinutos;
+        this.maxSolicitacoesEmail = maxSolicitacoesEmail;
+        this.janelaEmailMinutos = janelaEmailMinutos;
+        this.maxSolicitacoesIp = maxSolicitacoesIp;
+        this.janelaIpMinutos = janelaIpMinutos;
     }
 
     @Transactional
-    public void solicitarRecuperacaoSenha(String email, String baseUrl) {
+    public void solicitarRecuperacaoSenha(String email, String baseUrl, String ipAddress) {
         if (!StringUtils.hasText(email)) {
             throw new IllegalArgumentException("Informe um e-mail válido.");
         }
 
         String emailNormalizado = email.trim();
+        String ipNormalizado = normalizarIp(ipAddress);
+        LocalDateTime agora = LocalDateTime.now();
+
+        if (ipAtingiuLimite(ipNormalizado, agora)) {
+            return;
+        }
+
         Usuario usuario = usuarioRepository.findByEmail(emailNormalizado).orElse(null);
         if (usuario == null) {
             return;
         }
 
-        tokenRepository.deleteAllByUsuarioId(usuario.getIdUsuario());
+        if (usuarioAtingiuLimite(usuario.getIdUsuario(), agora)) {
+            return;
+        }
+
+        tokenRepository.marcarTokensAtivosComoUsados(usuario.getIdUsuario(), agora);
 
         RecuperacaoSenhaToken token = new RecuperacaoSenhaToken();
         token.setUsuario(usuario);
         token.setToken(UUID.randomUUID().toString());
-        token.setExpiraEm(LocalDateTime.now().plusMinutes(MINUTOS_EXPIRACAO_TOKEN));
+        token.setExpiraEm(agora.plusMinutes(MINUTOS_EXPIRACAO_TOKEN));
+        token.setIpAddress(ipNormalizado);
         tokenRepository.save(token);
 
         String link = montarLink(baseUrl, token.getToken());
         String corpoHtml = construirEmailHtml(usuario, link);
 
         emailService.enviarEmailHtml(usuario.getEmail(), "Recuperação de senha - AgroFraiburgo", corpoHtml);
+    }
+
+    private boolean ipAtingiuLimite(String ipAddress, LocalDateTime agora) {
+        if (!StringUtils.hasText(ipAddress)) {
+            return false;
+        }
+
+        long solicitacoes = tokenRepository.countByIpAddressAndCriadoEmAfter(
+                ipAddress,
+                agora.minusMinutes(janelaIpMinutos));
+        return solicitacoes >= maxSolicitacoesIp;
+    }
+
+    private boolean usuarioAtingiuLimite(Integer idUsuario, LocalDateTime agora) {
+        boolean solicitouRecentemente = tokenRepository.existsByUsuario_IdUsuarioAndCriadoEmAfter(
+                idUsuario,
+                agora.minusMinutes(intervaloMinimoEmailMinutos));
+        if (solicitouRecentemente) {
+            return true;
+        }
+
+        long solicitacoesNaJanela = tokenRepository.countByUsuario_IdUsuarioAndCriadoEmAfter(
+                idUsuario,
+                agora.minusMinutes(janelaEmailMinutos));
+        return solicitacoesNaJanela >= maxSolicitacoesEmail;
+    }
+
+    private String normalizarIp(String ipAddress) {
+        if (!StringUtils.hasText(ipAddress)) {
+            return null;
+        }
+
+        String normalizado = ipAddress.trim();
+        return normalizado.length() <= 45 ? normalizado : normalizado.substring(0, 45);
     }
 
     @Transactional

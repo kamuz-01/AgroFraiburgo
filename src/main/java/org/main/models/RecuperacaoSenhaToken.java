@@ -39,6 +39,9 @@ public class RecuperacaoSenhaToken {
     @Column(name = "usado_em")
     private LocalDateTime usadoEm;
 
+    @Column(name = "ip_address", length = 45)
+    private String ipAddress;
+
     @Column(name = "criado_em", updatable = false)
     private LocalDateTime criadoEm;
 

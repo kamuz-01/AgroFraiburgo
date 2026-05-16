@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 17/04/2026 às 20:14
+-- Tempo de geração: 16/05/2026 às 19:48
 -- Versão do servidor: 8.4.7
 -- Versão do PHP: 8.2.12
 
@@ -174,7 +174,8 @@ INSERT INTO `flyway_schema_history` (`installed_rank`, `version`, `description`,
 (1, '0', '<< Flyway Baseline >>', 'BASELINE', '<< Flyway Baseline >>', NULL, 'root', '2026-04-11 01:30:58', 0, 1),
 (2, '20260410.1', 'create favoritos produtores', 'SQL', 'V20260410.1__create_favoritos_produtores.sql', 112464567, 'root', '2026-04-11 01:30:59', 389, 1),
 (3, '20260412.1', 'create recuperacao senha tokens', 'SQL', 'V20260412.1__create_recuperacao_senha_tokens.sql', 783629996, 'root', '2026-04-12 23:22:46', 756, 1),
-(4, '20260413.1', 'create jwt signing keys', 'SQL', 'V20260413.1__create_jwt_signing_keys.sql', -1485197154, 'root', '2026-04-13 16:53:47', 1022, 1);
+(4, '20260413.1', 'create jwt signing keys', 'SQL', 'V20260413.1__create_jwt_signing_keys.sql', -1485197154, 'root', '2026-04-13 16:53:47', 1022, 1),
+(5, '20260417.1', 'add login bruteforce protection', 'SQL', 'V20260417.1__add_login_bruteforce_protection.sql', 383133279, 'root', '2026-04-17 18:40:36', 518, 0);
 
 -- --------------------------------------------------------
 
@@ -217,6 +218,13 @@ CREATE TABLE `login_ip_rate_limits` (
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `versao` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Despejando dados para a tabela `login_ip_rate_limits`
+--
+
+INSERT INTO `login_ip_rate_limits` (`id_login_ip_rate_limit`, `ip_address`, `tentativas_na_janela`, `janela_inicio`, `bloqueado_ate`, `criado_em`, `atualizado_em`, `versao`) VALUES
+(13, '0:0:0:0:0:0:0:1', 0, NULL, NULL, '2026-04-18 17:00:27', '2026-04-19 12:11:45', 9);
 
 -- --------------------------------------------------------
 
@@ -291,7 +299,7 @@ CREATE TABLE `produtos` (
 --
 
 INSERT INTO `produtos` (`id_produto`, `id_produtor`, `nome_produto`, `descricao`, `preco`, `unidade_medida`, `quantidade_estoque`, `status_produto`, `imagem_produto`, `data_criacao`, `data_atualizacao`) VALUES
-(3, 23, 'Pêssego', 'Fresco, natural, do seu jeito', 6, 'kg', 250, 'COM_ESTOQUE', '/imagens-usuarios/23/produtos/1759864944571_nisonco-pr-and-seo-H4QpChoce7I-u.png', '2025-10-07 16:22:25', '2025-10-07 16:22:25'),
+(3, 23, 'Pêssego', 'Fresco, natural, do seu jeito', 6, 'kg', 250, 'COM_ESTOQUE', '/imagens-usuarios/23/produtos/1759864944571_nisonco-pr-and-seo-H4QpChoce7I-u.png', '2025-10-07 16:22:25', '2026-05-15 17:31:10'),
 (4, 23, 'Uva de mesa', 'As melhores uvas do mundo', 10, 'kg', 250, 'COM_ESTOQUE', '/imagens-usuarios/23/produtos/1759869628668_tipos-de-uvas-mais-vendidas-no-v.png', '2025-10-07 17:40:29', '2025-10-07 17:40:29');
 
 --
@@ -320,15 +328,17 @@ CREATE TABLE `recuperacao_senha_tokens` (
   `token` varchar(64) NOT NULL,
   `expira_em` datetime NOT NULL,
   `usado_em` datetime DEFAULT NULL,
-  `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ip_address` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `recuperacao_senha_tokens`
 --
 
-INSERT INTO `recuperacao_senha_tokens` (`id_token`, `id_usuario`, `token`, `expira_em`, `usado_em`, `criado_em`) VALUES
-(4, 11, '63bf6faa-c58d-4ecf-83bf-0e299ee60670', '2026-04-12 22:04:22', NULL, '2026-04-12 21:04:22');
+INSERT INTO `recuperacao_senha_tokens` (`id_token`, `id_usuario`, `token`, `expira_em`, `usado_em`, `criado_em`, `ip_address`) VALUES
+(4, 11, '63bf6faa-c58d-4ecf-83bf-0e299ee60670', '2026-04-12 22:04:22', '2026-05-16 14:44:55', '2026-04-12 21:04:22', NULL),
+(5, 11, '51a6fafe-8f25-4df4-a1c6-42540a2b271a', '2026-05-16 15:44:55', NULL, '2026-05-16 14:44:55', '0:0:0:0:0:0:0:1');
 
 -- --------------------------------------------------------
 
@@ -369,11 +379,11 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id_usuario`, `nome_usuario`, `sobrenome_usuario`, `cpf_usuario`, `data_nascimento`, `sexo`, `telefone`, `email`, `nome_login`, `senha`, `tipo_usuario`, `oauth_provider`, `oauth_id`, `criado_em`, `atualizado_em`, `status_conta`, `imagem_perfil`, `imagem_capa`, `cidade`, `estado`, `login_bloqueio_etapa`, `login_falhas_consecutivas`, `login_bloqueado_ate`) VALUES
 (6, 'Jesús', 'Muñoz', NULL, NULL, NULL, NULL, 'jesusvzlanz@gmail.com', NULL, NULL, 'CONSUMIDOR', 'google', '118299944397952644508', '2025-08-28 11:11:47', '2025-10-03 23:29:09', 'ATIVO', '/imagens-usuarios/6/imagem-perfil/perfil.png', '/imagens-usuarios/defaults/imagem-capa/capa.webp', NULL, NULL, 'LIVRE', 0, NULL),
 (7, 'Jesus', 'Muñoz', NULL, NULL, NULL, NULL, 'carlos-raul19630@hotmail.com', NULL, NULL, 'CONSUMIDOR', 'facebook', '10230259903385789', '2025-08-28 11:12:20', '2025-10-03 23:31:33', 'ATIVO', '/imagens-usuarios/7/imagem-perfil/perfil.png', '/imagens-usuarios/defaults/imagem-capa/capa.webp', NULL, NULL, 'LIVRE', 0, NULL),
-(11, 'Pedro', 'Pérez', '04904699068', '2007-01-01', 'Masculino', '11111111111', 'kamuz01@yahoo.com', 'pedro', '$2a$10$3JpCUzGm4MkjxJjqjqRz/eRG3dmSaPVcuje8ci3F0/dBs.hoYjdVi', 'CONSUMIDOR', NULL, NULL, '2025-09-09 16:30:51', '2026-04-12 20:49:57', 'ATIVO', '/imagens-usuarios/11/imagem-perfil/perfil_1757446251436.png', '/imagens-usuarios/11/imagem-capa/capa_1757446251443.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
-(12, 'Jose', 'Torres', '24654075038', '2007-01-30', 'Masculino', '22222222222', 'jose@email.com', 'jose', '$2a$10$DwQhT8t7xu4OW5852Xua7OAtn1XShtocbUDnPP9ScYtxBcBzxkeOu', 'CONSUMIDOR', NULL, NULL, '2025-09-09 17:06:36', '2025-10-03 23:34:03', 'ATIVO', '/imagens-usuarios/12/imagem-perfil/perfil_1757448396543.png', '/imagens-usuarios/12/imagem-capa/capa_1757448396548.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
+(11, 'Pedro', 'Pérez', '04904699068', '2007-01-01', 'Masculino', '11111111111', 'pedro@yahoo.com', 'pedro', '$2a$10$3JpCUzGm4MkjxJjqjqRz/eRG3dmSaPVcuje8ci3F0/dBs.hoYjdVi', 'CONSUMIDOR', NULL, NULL, '2025-09-09 16:30:51', '2026-05-16 14:46:45', 'ATIVO', '/imagens-usuarios/11/imagem-perfil/perfil_1757446251436.png', '/imagens-usuarios/11/imagem-capa/capa_1757446251443.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
+(12, 'Jose', 'Torres', '24654075038', '2007-01-30', 'Masculino', '22222222222', 'jose@email.com', 'jose', '$2a$10$DwQhT8t7xu4OW5852Xua7OAtn1XShtocbUDnPP9ScYtxBcBzxkeOu', 'CONSUMIDOR', NULL, NULL, '2025-09-09 17:06:36', '2026-04-18 17:01:43', 'ATIVO', '/imagens-usuarios/12/imagem-perfil/perfil_1757448396543.png', '/imagens-usuarios/12/imagem-capa/capa_1757448396548.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
 (13, 'Juan', 'Diaz', '73466525098', '1998-07-21', 'Masculino', '33333333333', 'juan@mail.com', 'juan', '$2a$10$2tSHFVPPl6S/yExmfWe2Ue9wB/fzcDFNkWdQfsZTM.CnbbeXeKLUG', 'CONSUMIDOR', NULL, NULL, '2025-09-09 17:48:49', '2025-09-09 17:48:50', 'ATIVO', '/imagens-usuarios/13/imagem-perfil/perfil_1757450929622.png', '/imagens-usuarios/13/imagem-capa/capa_1757450929627.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
 (19, 'Marta', 'Colomina', '60260312002', '2007-01-01', 'Feminino', '55555555555', 'marta@email.com', 'marta', '$2a$10$ybsm1hnC1XyKvv7uR5eXDO1C8rJVvuR4UlIejz/8dVbtVm3JQgn9W', 'CONSUMIDOR', NULL, NULL, '2025-09-10 17:28:00', '2025-10-03 23:36:36', 'ATIVO', '/imagens-usuarios/19/imagem-perfil/perfil_1757536080088.png', '/imagens-usuarios/19/imagem-capa/capa_1757536080109.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
-(23, 'Antonia', 'Palacios', '36277330020', '2007-01-01', 'Feminino', '66666666666', 'antonia@email.com', 'antonia', '$2a$10$PF4s6TNND3tBr6gRM2GPb.6UkEniFU/cOqkaPajM2hWD7z97mkqRe', 'PRODUTOR', NULL, NULL, '2025-09-11 11:27:30', '2025-10-06 11:00:17', 'ATIVO', '/imagens-usuarios/23/imagem-perfil/perfil_1757600850694.png', '/imagens-usuarios/23/imagem-capa/capa_1757600850703.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
+(23, 'Antonia', 'Palacios', '36277330020', '2007-01-01', 'Feminino', '66666666666', 'antonia@email.com', 'antonia', '$2a$10$PF4s6TNND3tBr6gRM2GPb.6UkEniFU/cOqkaPajM2hWD7z97mkqRe', 'PRODUTOR', NULL, NULL, '2025-09-11 11:27:30', '2026-04-19 12:25:47', 'ATIVO', '/imagens-usuarios/23/imagem-perfil/perfil_1757600850694.png', '/imagens-usuarios/23/imagem-capa/capa_1757600850703.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
 (24, 'Xavier', 'Machado', '03714918000', '2000-12-25', 'Masculino', '10101010101', 'xavier@email.com', 'xavier', '$2a$10$Y4x66GlSF65cb6Rbt8O92OMcfCG/QsuBC7GHV4kHVNfen7BoRfgRi', 'MODERADOR', NULL, NULL, '2025-09-24 16:50:30', '2025-09-24 16:50:30', 'ATIVO', '/imagens-usuarios/24/imagem-perfil/perfil_foto.png', '/imagens-usuarios/24/imagem-capa/capa_imagem.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
 (25, 'Damian', 'Ferreira', '47018602041', '2005-09-03', 'Masculino', '34567567456', 'damian@email.com', 'damian', '$2a$10$vjQtQeHcMXaD7w8wJCn9sOiFZFtfcy0Tee0Cy8rCnG/Fni6r8xIYe', 'MODERADOR', NULL, NULL, '2025-10-03 18:30:28', '2025-10-03 18:30:28', 'ATIVO', '/imagens-usuarios/25/imagem-perfil/perfil_1759527028287.png', '/imagens-usuarios/25/imagem-capa/capa_1759527028293.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL),
 (26, 'Petra', 'Morales', '71795012048', '1990-11-14', 'Feminino', '56784567894', 'petra@mail.com', 'petra', '$2a$10$Kgb2qU1OXtymq4mt3bRv3e5y6ixZfPcJ5WTlDB9C9qKg1FrZHNi36', 'PRODUTOR', NULL, NULL, '2025-10-08 10:48:59', '2025-10-09 14:38:43', 'PENDENTE', '/imagens-usuarios/26/imagem-perfil/perfil_1759931339212.png', '/imagens-usuarios/26/imagem-capa/capa_1759931339223.png', 'Fraiburgo', 'SC', 'LIVRE', 0, NULL);
@@ -537,7 +547,9 @@ ALTER TABLE `produtos`
 ALTER TABLE `recuperacao_senha_tokens`
   ADD PRIMARY KEY (`id_token`),
   ADD UNIQUE KEY `uk_recuperacao_senha_token` (`token`),
-  ADD KEY `idx_recuperacao_senha_id_usuario` (`id_usuario`);
+  ADD KEY `idx_recuperacao_senha_id_usuario` (`id_usuario`),
+  ADD KEY `idx_recuperacao_senha_usuario_criado` (`id_usuario`,`criado_em`),
+  ADD KEY `idx_recuperacao_senha_ip_criado` (`ip_address`,`criado_em`);
 
 --
 -- Índices de tabela `usuarios`
@@ -581,7 +593,7 @@ ALTER TABLE `jwt_signing_keys`
 -- AUTO_INCREMENT de tabela `login_ip_rate_limits`
 --
 ALTER TABLE `login_ip_rate_limits`
-  MODIFY `id_login_ip_rate_limit` bigint NOT NULL AUTO_INCREMENT;
+  MODIFY `id_login_ip_rate_limit` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
@@ -593,7 +605,7 @@ ALTER TABLE `produtos`
 -- AUTO_INCREMENT de tabela `recuperacao_senha_tokens`
 --
 ALTER TABLE `recuperacao_senha_tokens`
-  MODIFY `id_token` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_token` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
