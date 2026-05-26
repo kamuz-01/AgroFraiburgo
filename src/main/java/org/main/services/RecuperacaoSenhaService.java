@@ -31,6 +31,7 @@ public class RecuperacaoSenhaService {
     private final int janelaEmailMinutos;
     private final int maxSolicitacoesIp;
     private final int janelaIpMinutos;
+    private final long tempoMinimoRespostaMillis;
 
     public RecuperacaoSenhaService(UsuarioRepository usuarioRepository,
                                    RecuperacaoSenhaTokenRepository tokenRepository,
@@ -40,7 +41,8 @@ public class RecuperacaoSenhaService {
                                    @Value("${app.security.password-reset.email.max-attempts:5}") int maxSolicitacoesEmail,
                                    @Value("${app.security.password-reset.email.window-minutes:60}") int janelaEmailMinutos,
                                    @Value("${app.security.password-reset.ip.max-attempts:10}") int maxSolicitacoesIp,
-                                   @Value("${app.security.password-reset.ip.window-minutes:15}") int janelaIpMinutos) {
+                                   @Value("${app.security.password-reset.ip.window-minutes:15}") int janelaIpMinutos,
+                                   @Value("${app.security.password-reset.min-response-millis:500}") long tempoMinimoRespostaMillis) {
         this.usuarioRepository = usuarioRepository;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
@@ -50,6 +52,7 @@ public class RecuperacaoSenhaService {
         this.janelaEmailMinutos = janelaEmailMinutos;
         this.maxSolicitacoesIp = maxSolicitacoesIp;
         this.janelaIpMinutos = janelaIpMinutos;
+        this.tempoMinimoRespostaMillis = Math.max(0, tempoMinimoRespostaMillis);
     }
 
     @Transactional
@@ -58,38 +61,55 @@ public class RecuperacaoSenhaService {
             throw new IllegalArgumentException("Informe um e-mail válido.");
         }
 
-        String emailNormalizado = email.trim();
-        String ipNormalizado = normalizarIp(ipAddress);
-        LocalDateTime agora = LocalDateTime.now();
+        long inicio = System.nanoTime();
+        try {
+            String emailNormalizado = email.trim();
+            String ipNormalizado = normalizarIp(ipAddress);
+            LocalDateTime agora = LocalDateTime.now();
 
-        if (ipAtingiuLimite(ipNormalizado, agora)) {
-            return;
+            if (ipAtingiuLimite(ipNormalizado, agora)) {
+                return;
+            }
+
+            Usuario usuario = usuarioRepository.findByEmail(emailNormalizado).orElse(null);
+            if (usuario == null) {
+                executarTrabalhoFicticio(baseUrl);
+                return;
+            }
+
+            if (usuarioAtingiuLimite(usuario.getIdUsuario(), agora)) {
+                executarTrabalhoFicticio(baseUrl);
+                return;
+            }
+
+            tokenRepository.marcarTokensAtivosComoUsados(usuario.getIdUsuario(), agora);
+
+            String tokenBruto = UUID.randomUUID().toString();
+
+            RecuperacaoSenhaToken token = new RecuperacaoSenhaToken();
+            token.setUsuario(usuario);
+            token.setToken(hashToken(tokenBruto));
+            token.setExpiraEm(agora.plusMinutes(MINUTOS_EXPIRACAO_TOKEN));
+            token.setIpAddress(ipNormalizado);
+            tokenRepository.save(token);
+
+            String link = montarLink(baseUrl, tokenBruto);
+            String corpoHtml = construirEmailHtml(usuario, link);
+
+            emailService.enqueueEmail(usuario.getEmail(), "Recuperação de senha - AgroFraiburgo", corpoHtml);
+        } finally {
+            aguardarTempoMinimo(inicio);
         }
+    }
 
-        Usuario usuario = usuarioRepository.findByEmail(emailNormalizado).orElse(null);
-        if (usuario == null) {
-            return;
-        }
+    private void executarTrabalhoFicticio(String baseUrl) {
+        String tokenFicticio = UUID.randomUUID().toString();
+        hashToken(tokenFicticio);
 
-        if (usuarioAtingiuLimite(usuario.getIdUsuario(), agora)) {
-            return;
-        }
-
-        tokenRepository.marcarTokensAtivosComoUsados(usuario.getIdUsuario(), agora);
-
-        String tokenBruto = UUID.randomUUID().toString();
-
-        RecuperacaoSenhaToken token = new RecuperacaoSenhaToken();
-        token.setUsuario(usuario);
-        token.setToken(hashToken(tokenBruto));
-        token.setExpiraEm(agora.plusMinutes(MINUTOS_EXPIRACAO_TOKEN));
-        token.setIpAddress(ipNormalizado);
-        tokenRepository.save(token);
-
-        String link = montarLink(baseUrl, tokenBruto);
-        String corpoHtml = construirEmailHtml(usuario, link);
-
-        emailService.enviarEmailHtml(usuario.getEmail(), "Recuperação de senha - AgroFraiburgo", corpoHtml);
+        Usuario usuarioFicticio = new Usuario();
+        usuarioFicticio.setNome("");
+        String linkFicticio = montarLink(baseUrl, tokenFicticio);
+        construirEmailHtml(usuarioFicticio, linkFicticio);
     }
 
     private boolean ipAtingiuLimite(String ipAddress, LocalDateTime agora) {
@@ -124,6 +144,24 @@ public class RecuperacaoSenhaService {
 
         String normalizado = ipAddress.trim();
         return normalizado.length() <= 45 ? normalizado : normalizado.substring(0, 45);
+    }
+
+    private void aguardarTempoMinimo(long inicioNanos) {
+        if (tempoMinimoRespostaMillis <= 0) {
+            return;
+        }
+
+        long decorridoMillis = (System.nanoTime() - inicioNanos) / 1_000_000;
+        long restanteMillis = tempoMinimoRespostaMillis - decorridoMillis;
+        if (restanteMillis <= 0) {
+            return;
+        }
+
+        try {
+            Thread.sleep(restanteMillis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Transactional

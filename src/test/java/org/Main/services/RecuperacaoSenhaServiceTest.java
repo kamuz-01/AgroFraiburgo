@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +47,8 @@ class RecuperacaoSenhaServiceTest {
                 5,
                 60,
                 10,
-                15);
+                15,
+                0);
     }
 
     @Test
@@ -65,7 +67,7 @@ class RecuperacaoSenhaServiceTest {
         verify(tokenRepository).save(tokenCaptor.capture());
 
         var corpoCaptor = org.mockito.ArgumentCaptor.forClass(String.class);
-        verify(emailService).enviarEmailHtml(eq("ana@email.com"), eq("Recuperação de senha - AgroFraiburgo"), corpoCaptor.capture());
+        verify(emailService).enqueueEmail(eq("ana@email.com"), eq("Recuperação de senha - AgroFraiburgo"), corpoCaptor.capture());
 
         String tokenBruto = extrairTokenDoEmail(corpoCaptor.getValue());
         String tokenPersistido = tokenCaptor.getValue().getToken();
@@ -85,6 +87,16 @@ class RecuperacaoSenhaServiceTest {
         verify(tokenRepository).findByTokenAndUsadoEmIsNullAndExpiraEmAfter(
                 eq(sha256Hex(tokenBruto)),
                 any(LocalDateTime.class));
+    }
+
+    @Test
+    void solicitarRecuperacaoSenhaComEmailInexistenteNaoDeveEnviarEmail() {
+        when(usuarioRepository.findByEmail("naoexiste@email.com")).thenReturn(Optional.empty());
+
+        service.solicitarRecuperacaoSenha("naoexiste@email.com", "https://agro.test", "10.0.0.1");
+
+        verify(emailService, never()).enqueueEmail(any(), any(), any());
+        verify(emailService, never()).enviarEmailHtml(any(), any(), any());
     }
 
     private String extrairTokenDoEmail(String corpoHtml) {
