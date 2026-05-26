@@ -241,6 +241,14 @@ public class UsuarioService {
         Files.createDirectories(capaDir);
         Files.createDirectories(docsDir);
 
+        validarDocumentoObrigatorio(documentos.getDocIdentidade(), "Documento de identidade é obrigatório");
+        validarDocumentoObrigatorio(documentos.getComprovanteResidencia(), "Comprovante de residência é obrigatório");
+        validarDocumentoObrigatorio(documentos.getCadastroAgriculturaFamiliar(), "CAF/DAP é obrigatório");
+        validarDocumentoObrigatorio(documentos.getCertificadoOrganico(), "Certificado de orgânicos é obrigatório");
+        validarDocumentoObrigatorio(documentos.getCodigoRastreabilidade(), "Código de rastreabilidade é obrigatório");
+        validarDocumentoObrigatorio(documentos.getInscricaoEstadual(), "Inscrição estadual é obrigatório");
+        validarDocumentoObrigatorio(documentos.getAlvaraSanitario(), "Alvará sanitário é obrigatório");
+
         // Upload imagem perfil
         if (dto.getImagemPerfil() != null && !dto.getImagemPerfil().isEmpty()) {
             String perfilNome = gerarNomeArquivoSeguro("perfil", "png");
@@ -269,43 +277,43 @@ public class UsuarioService {
             UploadFileValidator.validarPdf(documentos.getDocIdentidade(), "O documento de identidade");
             String fileName = gerarNomeArquivoSeguro("identidade", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getDocIdentidade().getBytes());
-            doc.setDocumentoIdentidade("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
+            doc.setDocumentoIdentidade(caminhoDocumentoBanco(salvo.getIdUsuario(), fileName));
         }
         if (documentos.getComprovanteResidencia() != null && !documentos.getComprovanteResidencia().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getComprovanteResidencia(), "O comprovante de residência");
             String fileName = gerarNomeArquivoSeguro("residencia", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getComprovanteResidencia().getBytes());
-            doc.setComprovanteResidencia("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
+            doc.setComprovanteResidencia(caminhoDocumentoBanco(salvo.getIdUsuario(), fileName));
         }
         if (documentos.getCadastroAgriculturaFamiliar() != null && !documentos.getCadastroAgriculturaFamiliar().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getCadastroAgriculturaFamiliar(), "O cadastro de agricultura familiar");
             String fileName = gerarNomeArquivoSeguro("pronaf", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getCadastroAgriculturaFamiliar().getBytes());
-            doc.setDeclaracaoPronaf("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
+            doc.setDeclaracaoPronaf(caminhoDocumentoBanco(salvo.getIdUsuario(), fileName));
         }
         if (documentos.getCertificadoOrganico() != null && !documentos.getCertificadoOrganico().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getCertificadoOrganico(), "O certificado orgânico");
             String fileName = gerarNomeArquivoSeguro("organico", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getCertificadoOrganico().getBytes());
-            doc.setCertificadoOrganico("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
+            doc.setCertificadoOrganico(caminhoDocumentoBanco(salvo.getIdUsuario(), fileName));
         }
         if (documentos.getCodigoRastreabilidade() != null && !documentos.getCodigoRastreabilidade().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getCodigoRastreabilidade(), "O código de rastreabilidade");
             String fileName = gerarNomeArquivoSeguro("rastreabilidade", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getCodigoRastreabilidade().getBytes());
-            doc.setCodigoRastreabilidade("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
+            doc.setCodigoRastreabilidade(caminhoDocumentoBanco(salvo.getIdUsuario(), fileName));
         }
         if (documentos.getInscricaoEstadual() != null && !documentos.getInscricaoEstadual().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getInscricaoEstadual(), "A inscrição estadual");
             String fileName = gerarNomeArquivoSeguro("inscricao", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getInscricaoEstadual().getBytes());
-            doc.setNumeroInscricaoEstadual("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
+            doc.setNumeroInscricaoEstadual(caminhoDocumentoBanco(salvo.getIdUsuario(), fileName));
         }
         if (documentos.getAlvaraSanitario() != null && !documentos.getAlvaraSanitario().isEmpty()) {
             UploadFileValidator.validarPdf(documentos.getAlvaraSanitario(), "O alvará sanitário");
             String fileName = gerarNomeArquivoSeguro("alvara", "pdf");
             Files.write(docsDir.resolve(fileName), documentos.getAlvaraSanitario().getBytes());
-            doc.setAlvaraSanitario("/documentos-produtores/" + salvo.getIdUsuario() + "/" + fileName);
+            doc.setAlvaraSanitario(caminhoDocumentoBanco(salvo.getIdUsuario(), fileName));
         }
 
         documentosProdutorRepository.save(doc);
@@ -381,6 +389,18 @@ public class UsuarioService {
     private String gerarNomeArquivoSeguro(String prefixo, String extensao) {
         String sufixo = extensao.startsWith(".") ? extensao : "." + extensao;
         return prefixo + "_" + UUID.randomUUID().toString().replace("-", "") + sufixo;
+    }
+
+    private String caminhoDocumentoBanco(Integer idUsuario, String nomeArquivo) {
+        String caminho = "/documentos-produtores/" + idUsuario + "/" + nomeArquivo;
+        DocumentosProdutor.validarCaminhoDocumento(caminho);
+        return caminho;
+    }
+
+    private void validarDocumentoObrigatorio(MultipartFile documento, String mensagem) {
+        if (documento == null || documento.isEmpty()) {
+            throw new IllegalArgumentException(mensagem);
+        }
     }
 
     // Login via OAuth2

@@ -21,7 +21,8 @@ public class DocumentosProdutorDTO {
 
     @NotNull(message = "Certificado de orgânicos é obrigatório")   
     private MultipartFile certificadoOrganico;
-    
+
+    @NotNull(message = "Código de rastreabilidade é obrigatório")
     private MultipartFile codigoRastreabilidade;
     
     @NotNull(message = "Inscrição estadual é obrigatório")

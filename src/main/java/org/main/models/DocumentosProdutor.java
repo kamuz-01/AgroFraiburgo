@@ -3,6 +3,7 @@ package org.main.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,7 +31,7 @@ public class DocumentosProdutor {
     @Column(name = "certificado_producao_organica", nullable = false)
     private String certificadoOrganico;
 
-    @Column(name = "codigo_rastreabilidade")
+    @Column(name = "codigo_rastreabilidade", nullable = false)
     private String codigoRastreabilidade;
 
     @Column(name = "numero_inscricao_estadual", nullable = false)
@@ -41,4 +42,42 @@ public class DocumentosProdutor {
 
     @Column(name = "data_envio", nullable = false, updatable = false)
     private LocalDateTime dataEnvio = LocalDateTime.now();
+
+    @PrePersist
+    @PreUpdate
+    private void validarCaminhosDocumentos() {
+        validarCaminhoDocumentoObrigatorio(documentoIdentidade);
+        validarCaminhoDocumentoObrigatorio(comprovanteResidencia);
+        validarCaminhoDocumentoObrigatorio(declaracaoPronaf);
+        validarCaminhoDocumentoObrigatorio(certificadoOrganico);
+        validarCaminhoDocumentoObrigatorio(codigoRastreabilidade);
+        validarCaminhoDocumentoObrigatorio(numeroInscricaoEstadual);
+        validarCaminhoDocumentoObrigatorio(alvaraSanitario);
+    }
+
+    public static void validarCaminhoDocumentoObrigatorio(String caminhoBanco) {
+        if (caminhoBanco == null || caminhoBanco.isBlank()) {
+            throw new IllegalArgumentException("Documento obrigatório não informado.");
+        }
+        validarCaminhoDocumento(caminhoBanco);
+    }
+
+    public static void validarCaminhoDocumento(String caminhoBanco) {
+        if (caminhoBanco == null || caminhoBanco.isBlank()) {
+            return;
+        }
+
+        String relativo = caminhoBanco.startsWith("/") ? caminhoBanco.substring(1) : caminhoBanco;
+        if (Path.of(relativo).isAbsolute()) {
+            throw new IllegalArgumentException("Caminho de documento inválido.");
+        }
+
+        Path raizProjeto = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize();
+        Path docsDir = raizProjeto.resolve("documentos-produtores").normalize();
+        Path caminhoArquivo = raizProjeto.resolve(relativo).normalize();
+
+        if (!caminhoArquivo.startsWith(docsDir)) {
+            throw new IllegalArgumentException("Caminho de documento inválido.");
+        }
+    }
 }
