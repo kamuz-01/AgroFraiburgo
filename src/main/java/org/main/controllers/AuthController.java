@@ -23,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -35,22 +36,28 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    private static final String LOGIN_INVALIDO_MESSAGE = "Usuário ou senha inválidos!";
+    private static final String DUMMY_PASSWORD_HASH = "$2a$10$7EqJtq98hPqEX7fNZaFWoOgw62vpxHkNySFTsWqQOp5p.hKtLny1K";
+
     private final UsuarioService usuarioService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final LoginProtecaoService loginProtecaoService;
     private final LoginRateLimitService loginRateLimitService;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthController(UsuarioService usuarioService,
                           JwtService jwtService,
                           AuthenticationManager authenticationManager,
                           LoginProtecaoService loginProtecaoService,
-                          LoginRateLimitService loginRateLimitService) {
+                          LoginRateLimitService loginRateLimitService,
+                          PasswordEncoder passwordEncoder) {
         this.usuarioService = usuarioService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.loginProtecaoService = loginProtecaoService;
         this.loginRateLimitService = loginRateLimitService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Value("${jwt.access-token-ttl-seconds}")
@@ -89,13 +96,20 @@ public class AuthController {
                     .body(Map.of("error", bloqueio.message()));
         }
 
-        // Primeiro checa se o usuário existe e se está pendente
         Optional<Usuario> usuarioOpt = usuarioService.buscarPorNomeLogin(request.getNomeLogin());
-        if (usuarioOpt.isEmpty()) {
+
+        String senhaInformada = request.getSenha() == null ? "" : request.getSenha();
+        String senhaHash = usuarioOpt
+                .map(Usuario::getSenha)
+                .filter(senha -> senha != null && !senha.isBlank())
+                .orElse(DUMMY_PASSWORD_HASH);
+
+        boolean senhaCorreta = passwordEncoder.matches(senhaInformada, senhaHash);
+
+        if (usuarioOpt.isEmpty() || !senhaCorreta) {
             loginRateLimitService.registrarFalha(ip, request.getNomeLogin());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-                    "error", "Usuário ou senha inválidos!"
-            ));
+            usuarioOpt.ifPresent(usuario -> loginProtecaoService.registrarFalha(usuario.getNomeLogin()));
+            return respostaLoginInvalido();
         }
 
         Usuario usuario = usuarioOpt.get();
@@ -128,31 +142,16 @@ public class AuthController {
                     "error", e.getMessage()
             ));
         } catch (AuthenticationException e) {
-            var falhaUsuario = loginProtecaoService.registrarFalha(request.getNomeLogin());
             var falhaIp = loginRateLimitService.registrarFalha(ip, request.getNomeLogin());
 
-            if (falhaUsuario.isPresent() && falhaUsuario.get().bloqueado()) {
-            return ResponseEntity.status(HttpStatus.LOCKED).body(Map.of(
-                "error", falhaUsuario.get().mensagem()
-            ));
-            }
-
             if (falhaIp.isPresent()) {
-            var bloqueio = falhaIp.get();
-            return ResponseEntity.status(bloqueio.status())
-                .header(HttpHeaders.RETRY_AFTER, String.valueOf(bloqueio.retryAfterSeconds()))
-                .body(Map.of("error", bloqueio.message()));
+                var bloqueio = falhaIp.get();
+                return ResponseEntity.status(bloqueio.status())
+                        .header(HttpHeaders.RETRY_AFTER, String.valueOf(bloqueio.retryAfterSeconds()))
+                        .body(Map.of("error", bloqueio.message()));
             }
 
-            if (falhaUsuario.isPresent() && falhaUsuario.get().aviso()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-                "error", falhaUsuario.get().mensagem()
-            ));
-            }
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-                "error", "Usuário ou senha inválidos!"
-            ));
+            return respostaLoginInvalido();
         }
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -183,6 +182,12 @@ public class AuthController {
                 "token", jwt,
                 "message", "Login realizado com sucesso!",
                 "tipoUsuario", tipoUsuario
+        ));
+    }
+
+    private ResponseEntity<Map<String, String>> respostaLoginInvalido() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "error", LOGIN_INVALIDO_MESSAGE
         ));
     }
 
