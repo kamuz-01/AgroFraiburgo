@@ -1,0 +1,48 @@
+User-agent: *
+
+# Public pages that can be crawled and indexed.
+Allow: /
+Allow: /pagina_inicial
+Allow: /produtos
+Allow: /produto/
+Allow: /produtores
+Allow: /produtores/
+Allow: /feira
+Allow: /sobre
+Allow: /buscar
+Allow: /css/
+Allow: /js/
+Allow: /imagens/
+Allow: /manifest.json
+
+# Application APIs and authenticated areas.
+Disallow: /api/
+Disallow: /perfil
+Disallow: /home_consumidor
+Disallow: /home_produtor
+Disallow: /home_moderador
+Disallow: /catalogo_produtor
+Disallow: /cadastro_produtos
+Disallow: /lista_produtos
+Disallow: /produtores_pendentes
+Disallow: /produtor_pendente_detalhe
+Disallow: /listagem_feiras
+Disallow: /cadastro_feira
+Disallow: /administrar_usuarios
+Disallow: /moderacao_usuarios
+
+# Authentication and account recovery pages should not be indexed.
+Disallow: /login
+Disallow: /login.html
+Disallow: /inicio_usuarios
+Disallow: /inicio_usuarios.html
+Disallow: /criar_conta
+Disallow: /criar_conta.html
+Disallow: /recuperar_senha
+Disallow: /redefinir_senha
+Disallow: /oauth2/
+Disallow: /login/oauth2/
+
+# Technical/offline/error pages.
+Disallow: /offline
+Disallow: /error
