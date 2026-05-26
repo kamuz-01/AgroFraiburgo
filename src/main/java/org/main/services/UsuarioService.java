@@ -42,6 +42,8 @@ public class UsuarioService {
     private static final Path BASE_DIR = Paths.get(System.getProperty("user.dir"), "imagens-usuarios");
     private static final Path DEFAULTS_DIR = BASE_DIR.resolve("defaults");
     private static final Path DOCS_DIR = Paths.get(System.getProperty("user.dir"), "documentos-produtores");
+    private static final int TELEFONE_MIN_DIGITOS = 10;
+    private static final int TELEFONE_MAX_DIGITOS = 11;
 
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailBoasVindasService emailBoasVindasService) {
         this.usuarioRepository = usuarioRepository;
@@ -102,7 +104,7 @@ public class UsuarioService {
             usuario.setSexo(sexo.trim());
         }
         if (telefone != null && !telefone.isBlank()) {
-            usuario.setTelefone(telefone.trim());
+            usuario.setTelefone(normalizarTelefone(telefone));
         }
         if (cidade != null && !cidade.isBlank()) {
             usuario.setCidade(cidade.trim());
@@ -138,6 +140,18 @@ public class UsuarioService {
         }
 
         return usuarioRepository.save(usuario);
+    }
+
+    private String normalizarTelefone(String telefone) {
+        String telefoneNormalizado = apenasDigitos(telefone);
+        if (telefoneNormalizado.length() < TELEFONE_MIN_DIGITOS || telefoneNormalizado.length() > TELEFONE_MAX_DIGITOS) {
+            throw new IllegalArgumentException("Telefone deve conter 10 ou 11 dígitos numéricos.");
+        }
+        return telefoneNormalizado;
+    }
+
+    private String apenasDigitos(String valor) {
+        return valor == null ? "" : valor.replaceAll("\\D", "");
     }
 
     private void inicializarDiretorios() throws IOException {

@@ -33,6 +33,7 @@ public class CadastroUsuarioDTO {
     private String sexo;
 
     @NotBlank(message = "O telefone é obrigatório")
+    @Pattern(regexp = "\\d{10,11}", message = "O telefone deve conter 10 ou 11 dígitos numéricos")
     private String telefone;
 
     @Email(message = "E-mail inválido")
