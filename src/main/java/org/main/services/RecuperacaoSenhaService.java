@@ -1,6 +1,10 @@
 package org.main.services;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.HexFormat;
 import java.util.UUID;
 
 import org.main.models.RecuperacaoSenhaToken;
@@ -73,14 +77,16 @@ public class RecuperacaoSenhaService {
 
         tokenRepository.marcarTokensAtivosComoUsados(usuario.getIdUsuario(), agora);
 
+        String tokenBruto = UUID.randomUUID().toString();
+
         RecuperacaoSenhaToken token = new RecuperacaoSenhaToken();
         token.setUsuario(usuario);
-        token.setToken(UUID.randomUUID().toString());
+        token.setToken(hashToken(tokenBruto));
         token.setExpiraEm(agora.plusMinutes(MINUTOS_EXPIRACAO_TOKEN));
         token.setIpAddress(ipNormalizado);
         tokenRepository.save(token);
 
-        String link = montarLink(baseUrl, token.getToken());
+        String link = montarLink(baseUrl, tokenBruto);
         String corpoHtml = construirEmailHtml(usuario, link);
 
         emailService.enviarEmailHtml(usuario.getEmail(), "Recuperação de senha - AgroFraiburgo", corpoHtml);
@@ -133,7 +139,7 @@ public class RecuperacaoSenhaService {
         }
 
         RecuperacaoSenhaToken tokenValido = tokenRepository
-                .findByTokenAndUsadoEmIsNullAndExpiraEmAfter(token.trim(), LocalDateTime.now())
+                .findByTokenAndUsadoEmIsNullAndExpiraEmAfter(hashToken(token.trim()), LocalDateTime.now())
                 .orElseThrow(() -> new IllegalArgumentException("Token inválido ou expirado."));
 
         Usuario usuario = tokenValido.getUsuario();
@@ -150,8 +156,18 @@ public class RecuperacaoSenhaService {
         }
 
         return tokenRepository
-                .findByTokenAndUsadoEmIsNullAndExpiraEmAfter(token.trim(), LocalDateTime.now())
+                .findByTokenAndUsadoEmIsNullAndExpiraEmAfter(hashToken(token.trim()), LocalDateTime.now())
                 .isPresent();
+    }
+
+    static String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 indisponível.", e);
+        }
     }
 
     private String montarLink(String baseUrl, String token) {
