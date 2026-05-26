@@ -40,7 +40,7 @@ public class Avaliacao {
     @Column(name = "nota", nullable = false)
     private Integer nota;
 
-    @Column(name = "comentario")
+    @Column(name = "comentario", length = 255)
     private String comentario;
 
     @Column(name = "data_avaliacao", nullable = false, updatable = false)

@@ -18,6 +18,8 @@ import java.util.List;
 @Service
 public class ProdutoService {
 
+    private static final int DESCRICAO_MAX_CARACTERES = 255;
+
     private final ProdutoRepository produtoRepository;
 
     @Value("${upload.base-path:imagens-usuarios}")
@@ -57,7 +59,7 @@ public class ProdutoService {
         Produto produto = new Produto();
         produto.setProdutor(produtor);
         produto.setNomeProduto(nomeProduto);
-        produto.setDescricao(descricao);
+        produto.setDescricao(normalizarDescricao(descricao));
         produto.setPreco(preco);
         produto.setUnidadeMedida(unidadeMedida);
         produto.setQuantidadeEstoque(quantidadeEstoque);
@@ -86,7 +88,7 @@ public class ProdutoService {
         Produto produto = buscarPorIdEProprietario(idProduto, idProdutor);
 
         produto.setNomeProduto(nome);
-        produto.setDescricao(descricao);
+        produto.setDescricao(normalizarDescricao(descricao));
         produto.setPreco(preco);
         produto.setUnidadeMedida(unidade);
         produto.setQuantidadeEstoque(quantidade);
@@ -121,5 +123,22 @@ public class ProdutoService {
     public boolean removerProduto(Integer idProduto, Integer idProdutor) {
         Long removed = produtoRepository.deleteByIdProdutoAndProdutor_IdProdutor(idProduto, idProdutor);
         return removed != null && removed > 0;
+    }
+
+    private String normalizarDescricao(String descricao) {
+        if (descricao == null) {
+            return null;
+        }
+
+        String descricaoNormalizada = descricao.trim();
+        if (descricaoNormalizada.isEmpty()) {
+            return null;
+        }
+
+        if (descricaoNormalizada.length() > DESCRICAO_MAX_CARACTERES) {
+            throw new IllegalArgumentException("A descrição do produto deve ter no máximo 255 caracteres.");
+        }
+
+        return descricaoNormalizada;
     }
 }

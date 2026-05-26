@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AvaliacaoService {
 
+    private static final int COMENTARIO_MAX_CARACTERES = 255;
+
     private final AvaliacaoRepository avaliacaoRepository;
     private final ProdutorRepository produtorRepository;
 
@@ -42,7 +44,7 @@ public class AvaliacaoService {
         avaliacao.setIdConsumidor(idConsumidor);
         avaliacao.setIdProdutor(idProdutor);
         avaliacao.setNota(nota);
-        avaliacao.setComentario(comentario);
+        avaliacao.setComentario(normalizarComentario(comentario));
 
         Avaliacao salva = avaliacaoRepository.save(avaliacao);
         sincronizarAvaliacoesRecebidas(idProdutor);
@@ -56,5 +58,22 @@ public class AvaliacaoService {
             produtor.setAvaliacoesRecebidas((int) totalAvaliacoes);
             produtorRepository.save(produtor);
         });
+    }
+
+    private String normalizarComentario(String comentario) {
+        if (comentario == null) {
+            return null;
+        }
+
+        String comentarioNormalizado = comentario.trim();
+        if (comentarioNormalizado.isEmpty()) {
+            return null;
+        }
+
+        if (comentarioNormalizado.length() > COMENTARIO_MAX_CARACTERES) {
+            throw new IllegalArgumentException("O comentário da avaliação deve ter no máximo 255 caracteres.");
+        }
+
+        return comentarioNormalizado;
     }
 }
