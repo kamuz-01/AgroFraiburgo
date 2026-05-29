@@ -148,10 +148,12 @@ public class SecurityConfig {
                 .requestMatchers("/produtores_pendentes").hasRole("MODERADOR")
                 .requestMatchers("/listagem_feiras", "/listagem_feiras.html").hasRole("MODERADOR")
                 .requestMatchers("/cadastro_feira", "/cadastro_feira.html").hasRole("MODERADOR")
+                .requestMatchers("/cadastro_moderadores", "/cadastro_moderadores.html").hasRole("MODERADOR")
                 .requestMatchers("/administrar_usuarios", "/administrar_usuarios.html").hasRole("MODERADOR")
                 .requestMatchers("/moderacao_usuarios", "/moderacao_usuarios.html").hasRole("MODERADOR")
                 // APIs específicas por perfil
                 .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/cadastro/moderador").hasRole("MODERADOR")
                 .requestMatchers("/api/produtor/**").hasRole("PRODUTOR")
                 .requestMatchers("/api/produtos/**").hasRole("PRODUTOR")
                 .requestMatchers("/api/produtos/me").hasRole("PRODUTOR")

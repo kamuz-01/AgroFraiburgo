@@ -45,13 +45,8 @@ public class CadastroUsuarioMultipartController {
                     "id", usuario.getIdUsuario(),
                     "isProdutor", true
                 ));
-            }else if (dto.getTipoUsuario() == TipoUsuario.MODERADOR) {
-                usuario = usuarioService.cadastrarModerador(dto);
-                return ResponseEntity.ok(Map.of(
-                    "message", "Moderador cadastrado com sucesso!",
-                    "id", usuario.getIdUsuario(),
-                    "isProdutor", false
-                ));
+            } else if (dto.getTipoUsuario() == TipoUsuario.MODERADOR) {
+                return ResponseEntity.badRequest().body("Cadastro de moderadores deve ser feito por um moderador autenticado.");
             } else {
                 usuario = usuarioService.cadastrarConsumidor(dto);
                 return ResponseEntity.ok(Map.of(

@@ -525,7 +525,7 @@
         formData.delete("confirmPassword");
         formData.append("tipoUsuario", "MODERADOR");
 
-        const response = await axios.post("/api/usuarios/cadastro-multipart", formData, {
+        const response = await axios.post("/api/cadastro/moderador", formData, {
           headers: { "Content-Type": "multipart/form-data" }
         });
 
