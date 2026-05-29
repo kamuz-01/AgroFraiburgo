@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.main.config.JwtRefreshFilter;
+import org.main.enums.StatusConta;
 import org.main.models.Usuario;
 import org.main.repository.UsuarioRepository;
 import org.main.services.JwtService;
@@ -86,6 +87,7 @@ class JwtRefreshFilterTest {
         usuario.setEmail("joao@exemplo.com");
         usuario.setImagemPerfil("/img/perfil.png");
         usuario.setImagemCapa("/img/capa.webp");
+        usuario.setStatusConta(StatusConta.ATIVO);
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -105,6 +107,37 @@ class JwtRefreshFilterTest {
         assertThat(cookieCaptor.getValue().getName()).isEqualTo("AF_AUTH");
         assertThat(cookieCaptor.getValue().getValue()).isEqualTo("token-renovado");
         verify(jwtService).generateToken(anyMap());
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
+    void naoDeveRenovarTokenQuandoUsuarioEstiverBloqueado() throws Exception {
+        String token = "token-quase-expirando";
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                "123",
+                null,
+                List.of(new SimpleGrantedAuthority("ROLE_CONSUMIDOR"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(123);
+        usuario.setStatusConta(StatusConta.BLOQUEADO);
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        FilterChain filterChain = mock(FilterChain.class);
+
+        when(request.getCookies()).thenReturn(new Cookie[]{new Cookie("AF_AUTH", token)});
+        when(jwtService.validateToken(token)).thenReturn(true);
+        when(jwtService.getTokenRemainingSeconds(token)).thenReturn(300L);
+        when(jwtService.extractUserId(token)).thenReturn(123L);
+        when(usuarioRepository.findById(123)).thenReturn(Optional.of(usuario));
+
+        filter.doFilter(request, response, filterChain);
+
+        verify(jwtService, never()).generateToken(anyMap());
+        verify(response, never()).addCookie(org.mockito.ArgumentMatchers.any());
         verify(filterChain).doFilter(request, response);
     }
 }

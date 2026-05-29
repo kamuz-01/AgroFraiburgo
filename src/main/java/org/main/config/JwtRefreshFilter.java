@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.main.enums.StatusConta;
 import org.main.models.Usuario;
 import org.main.repository.UsuarioRepository;
 import org.main.services.JwtService;
@@ -58,7 +59,7 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                 Usuario usuarioLocal = usuarioRepository.findById(usuarioId.intValue())
                         .orElse(null);
 
-                if (usuarioLocal != null) {
+                if (usuarioLocal != null && usuarioLocal.getStatusConta() == StatusConta.ATIVO) {
                     List<String> roles = auth.getAuthorities().stream()
                         .map(authority -> authority.getAuthority())
                         .toList();
