@@ -128,7 +128,6 @@ public class SecurityConfig {
                     "/service-worker.js",
                     "/imagens/**",
                     "/css/**",
-                    "/api/auth/register/**",
                     "/api/usuarios/cadastro-multipart", 
                     "/oauth2/**",
                     "/login/oauth2/**",
@@ -152,7 +151,10 @@ public class SecurityConfig {
                 .requestMatchers("/administrar_usuarios", "/administrar_usuarios.html").hasRole("MODERADOR")
                 .requestMatchers("/moderacao_usuarios", "/moderacao_usuarios.html").hasRole("MODERADOR")
                 // APIs específicas por perfil
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/facebook").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/cadastro/moderador").hasRole("MODERADOR")
                 .requestMatchers("/api/produtor/**").hasRole("PRODUTOR")
                 .requestMatchers("/api/produtos/**").hasRole("PRODUTOR")
@@ -165,8 +167,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/moderacao/usuarios").hasRole("MODERADOR")
                 .requestMatchers("/api/moderacao/usuarios/*/status").hasRole("MODERADOR")
                 .requestMatchers("/api/moderador/**").hasRole("MODERADOR")
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/login.html", "/criar_conta.html", "/api/auth/**").permitAll()
+                .requestMatchers("/login.html", "/criar_conta.html").permitAll()
                 // Qualquer outra requisição que requer login
                 .anyRequest().authenticated()
             )
