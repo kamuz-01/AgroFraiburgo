@@ -211,6 +211,7 @@ public class UsuarioService {
         if (dto.getTipoUsuario() != TipoUsuario.PRODUTOR) {
             throw new IllegalArgumentException("Este método é apenas para produtores.");
         }
+        validarDuplicidade(dto);
 
         // Criar produtor
         Usuario usuario = new Usuario();
